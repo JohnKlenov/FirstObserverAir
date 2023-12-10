@@ -16,6 +16,11 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
+//        if NetworkMonitor.shared.isConnected {
+//           print(true)
+//        } else {
+//            print(false)
+//        }
 //        navController?.showPlaceholder()
 //        navController?.startSpinnerForPlaceholder()
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {

@@ -36,7 +36,7 @@ final class NetworkMonitor {
     
     func startMonitoring() {
         monitor.pathUpdateHandler = { path in
-            print("monitor.pathUpdateHandler")
+//            print("monitor.pathUpdateHandler")
             
             self.getConnectionType(path)
 #if targetEnvironment(simulator)
@@ -49,10 +49,10 @@ final class NetworkMonitor {
 #else
             self.isConnected = path.status == .satisfied
 #endif
-            print("isConnected: " + String(self.isConnected))
+//            print("isConnected: " + String(self.isConnected))
             
             //            логическое значение, которое возвращает true, если текущее соединение осуществляется через сотовую связь или точку доступа.
-            print("path.isExpensive - \(path.isExpensive)")
+//            print("path.isExpensive - \(path.isExpensive)")
             NotificationCenter.default.post(name: .connectivityStatus, object: nil)
         }
         monitor.start(queue: queue)
@@ -62,16 +62,16 @@ final class NetworkMonitor {
     func getConnectionType(_ path: NWPath) {
         if path.usesInterfaceType(.wifi) {
             self.connectionType = .wifi
-            print(".wifi")
+//            print(".wifi")
         } else if path.usesInterfaceType(.cellular) {
             self.connectionType = .cellular
-            print(".cellular")
+//            print(".cellular")
         } else if path.usesInterfaceType(.wiredEthernet) {
             self.connectionType = .ethernet
-            print(".ethernet")
+//            print(".ethernet")
         } else {
             connectionType = nil
-            print(".connectionType = nil")
+//            print(".connectionType = nil")
         }
     }
     

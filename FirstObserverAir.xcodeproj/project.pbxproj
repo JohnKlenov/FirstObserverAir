@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */; };
+		5E0701892B25DC3B00517EA0 /* UIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701882B25DC3B00517EA0 /* UIModels.swift */; };
 		5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35302B13DE8A0076FDC1 /* Resources.swift */; };
 		5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */; };
 		5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35362B13E1770076FDC1 /* TabBarController.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		5E0701882B25DC3B00517EA0 /* UIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIModels.swift; sourceTree = "<group>"; };
 		5E1A35302B13DE8A0076FDC1 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + ext.swift"; sourceTree = "<group>"; };
 		5E1A35362B13E1770076FDC1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				5E1A35602B161CF60076FDC1 /* AppSettings.swift */,
+				5E0701882B25DC3B00517EA0 /* UIModels.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */,
 				5E1A35422B13E77A0076FDC1 /* CatalogController.swift in Sources */,
 				5E88134D2AF4D8110044F299 /* AppDelegate.swift in Sources */,
+				5E0701892B25DC3B00517EA0 /* UIModels.swift in Sources */,
 				5E1A353D2B13E6E30076FDC1 /* HomeController.swift in Sources */,
 				5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */,
 				5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */,

@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         rootLaunchScreenController()
         window?.makeKeyAndVisible()
         
-        AppSettings.removeSettingsKey()
+//        AppSettings.removeSettingsKey()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             if AppSettings.didShowAppPresentation {
                 self.rootTabBarController()

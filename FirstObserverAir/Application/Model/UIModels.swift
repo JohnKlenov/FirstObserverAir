@@ -8,6 +8,12 @@
 import Foundation
 
 
+// MARK: All Controllers
+
+enum StateDataSource {
+    case firstDataUpdate
+    case followingDataUpdate
+}
 
 // MARK: - HomeController
 
@@ -19,6 +25,11 @@ enum ListenerErrorState {
 
 enum NetworkError: Error {
     case failParsingJSON(String)
+}
+
+struct SectionModel: Hashable {
+    let section: String
+    var items: [Item]
 }
 
 struct ProductItem: Hashable {
@@ -64,7 +75,7 @@ struct Shop {
     init(dict: [String: Any]) {
         name = dict["name"] as? String
         mall = dict["mall"] as? String
-        floor = dict["refImage"] as? String
+        floor = dict["floor"] as? String
         refImage = dict["refImage"] as? String
         telefon = dict["telefon"] as? String
         webSite = dict["webSite"] as? String
@@ -73,17 +84,17 @@ struct Shop {
 
 struct Pin {
     
-    let mall:String?
+    let name:String?
     let refImage:String?
     let address:String?
-    let objectType:String?
+    let typeMall:String?
     let latitude:Double?
     let longitude:Double?
     init(dict: [String: Any]) {
-        mall = dict["mall"] as? String
+        name = dict["name"] as? String
         refImage = dict["refImage"] as? String
         address = dict["address"] as? String
-        objectType = dict["objectType"] as? String
+        typeMall = dict["typeMall"] as? String
         latitude = dict["latitude"] as? Double
         longitude = dict["longitude"] as? Double
     }

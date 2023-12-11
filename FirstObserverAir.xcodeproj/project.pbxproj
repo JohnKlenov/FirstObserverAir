@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */; };
 		5E0701892B25DC3B00517EA0 /* UIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701882B25DC3B00517EA0 /* UIModels.swift */; };
+		5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E07018C2B27209A00517EA0 /* HomeFirebaseService.swift */; };
+		5E07018F2B27252700517EA0 /* CloudFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */; };
+		5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */; };
 		5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35302B13DE8A0076FDC1 /* Resources.swift */; };
 		5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */; };
 		5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35362B13E1770076FDC1 /* TabBarController.swift */; };
@@ -41,6 +44,9 @@
 /* Begin PBXFileReference section */
 		5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		5E0701882B25DC3B00517EA0 /* UIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIModels.swift; sourceTree = "<group>"; };
+		5E07018C2B27209A00517EA0 /* HomeFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFirebaseService.swift; sourceTree = "<group>"; };
+		5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFirestoreService.swift; sourceTree = "<group>"; };
+		5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + ext.swift"; sourceTree = "<group>"; };
 		5E1A35302B13DE8A0076FDC1 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + ext.swift"; sourceTree = "<group>"; };
 		5E1A35362B13E1770076FDC1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -83,6 +89,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5E07018A2B271B7600517EA0 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5E07018B2B271B8B00517EA0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5E07018C2B27209A00517EA0 /* HomeFirebaseService.swift */,
+				5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5E0701902B2733BC00517EA0 /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */,
+			);
+			path = Alert;
+			sourceTree = "<group>";
+		};
 		5E1A352E2B13DCAA0076FDC1 /* TabBarController */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +133,7 @@
 		5E1A35322B13DF240076FDC1 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				5E0701902B2733BC00517EA0 /* Alert */,
 				5E1A35332B13DF770076FDC1 /* Extensions */,
 				5E1A35302B13DE8A0076FDC1 /* Resources.swift */,
 			);
@@ -121,6 +152,8 @@
 		5E1A353A2B13E61F0076FDC1 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				5E07018B2B271B8B00517EA0 /* Model */,
+				5E07018A2B271B7600517EA0 /* View */,
 				5E1A353E2B13E7190076FDC1 /* Controller */,
 			);
 			path = Home;
@@ -412,14 +445,17 @@
 				5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */,
 				5E1A355D2B15FF720076FDC1 /* LaunchScreenController.swift in Sources */,
 				5E1A35552B14D2760076FDC1 /* PresentController.swift in Sources */,
+				5E07018F2B27252700517EA0 /* CloudFirestoreService.swift in Sources */,
 				5E1A35592B14D2E70076FDC1 /* ChildContentController.swift in Sources */,
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
 				5E1A35392B13E27E0076FDC1 /* NavigationController.swift in Sources */,
 				5E1A35522B14AE980076FDC1 /* UITabBarController + ext.swift in Sources */,
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
+				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
 				5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */,
 				5E1A354E2B13E8700076FDC1 /* ProfileController.swift in Sources */,
 				5E1A35612B161CF60076FDC1 /* AppSettings.swift in Sources */,
+				5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */,
 				5E1A35652B17246E0076FDC1 /* ActivityContainerView.swift in Sources */,
 				5E1A354A2B13E81E0076FDC1 /* CartController.swift in Sources */,
 				5E1A35462B13E7CC0076FDC1 /* MallsController.swift in Sources */,

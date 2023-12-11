@@ -34,22 +34,6 @@ final class FirebaseService {
         return UserDefaults.standard.string(forKey: "gender") ?? "Woman"
     }()
     
-    
-    // MARK: - helper methods
-    
-    func createItem(malls: [PreviewSection]? = nil, shops: [PreviewSection]? = nil, products: [ProductItem]? = nil) -> [Item] {
-
-        var items = [Item]()
-        if let malls = malls {
-            items = malls.map {Item(mall: $0, shop: nil, popularProduct: nil)}
-        } else if let shops = shops {
-            items = shops.map {Item(mall: nil, shop: $0, popularProduct: nil)}
-        } else if let products = products {
-            items = products.map {Item(mall: nil, shop: nil, popularProduct: $0)}
-        }
-        return items
-    }
-    
     func updateCartProducts() {
         NotificationCenter.default.post(name: Notification.Name("UpdateCartProducts"), object: nil)
     }
@@ -63,24 +47,24 @@ final class FirebaseService {
     
     // MARK: - CloudFirestore
     // если cartProducts пуст то как это может быть nil???
-    func fetchStartCollection(for path: String, completion: @escaping (Any?, Error?) -> Void) {
-        let collection = db.collection(path)
-        let quary = collection.order(by: "priorityIndex", descending: false)
+    func fetchCollection(for path: String, sorted: Bool = false, completion: @escaping (Any?, Error?) -> Void) {
+        let collection: Query = db.collection(path)
+        var query = collection
+        if sorted {
+            query = collection.order(by: "priorityIndex", descending: true)
+        }
         
-        let listener = quary.addSnapshotListener { (querySnapshot, error) in
-            
+        let listener = query.addSnapshotListener { (querySnapshot, error) in
             if let error = error {
                 completion(nil, error)
                 print("Returned message for analytic FB Crashlytics error")
                 return
             }
-            // !querySnapshot.isEmpty ??????????
             guard let querySnapshot = querySnapshot, !querySnapshot.isEmpty else {
                 completion(nil, error)
                 return
             }
             var documents = [[String : Any]]()
-            
             for document in querySnapshot.documents {
                 let documentData = document.data()
                 documents.append(documentData)
@@ -94,7 +78,7 @@ final class FirebaseService {
         
         let path = "usersAccount/\(String(describing: currentUserID))/cartProducts"
         
-        fetchStartCollection(for: path) { documents, error in
+        fetchCollection(for: path, sorted: true) { documents, error in
             guard let documents = documents else {
                 completion(nil)
                 return
@@ -309,25 +293,73 @@ final class FirebaseService {
 }
 
 
-struct FetchProductsDataResponse {
-    typealias JSON = [String : Any]
-    let items:[ProductItem]
-    
-    // мы можем сделать init не просто Failable а сделаем его throws
-    // throws что бы он выдавал какие то ошибки если что то не получается
-    init(documents: Any) throws {
-        // если мы не сможем получить array то мы выплюним ошибку throw
-        guard let array = documents as? [JSON] else { throw NetworkError.failParsingJSON("Failed to parse JSON")
-        }
-//        HomeScreenCloudFirestoreService.
-        var items = [ProductItem]()
-        for dictionary in array {
-            // если у нас не получился comment то просто продолжаем - continue
-            // потому что тут целый массив и малали один не получился остальные получаться
-            let item = ProductItem(dict: dictionary)
-            items.append(item)
-        }
-        self.items = items
-    }
-}
 
+
+
+// MARK: - Trash
+
+//    func fetchCollectionSortedByIndex(for path: String, completion: @escaping (Any?, Error?) -> Void) {
+//        let collection = db.collection(path)
+//        let quary = collection.order(by: "priorityIndex", descending: true)
+//
+//        let listener = quary.addSnapshotListener { (querySnapshot, error) in
+//
+//            if let error = error {
+//                completion(nil, error)
+//                print("Returned message for analytic FB Crashlytics error")
+//                return
+//            }
+//            // !querySnapshot.isEmpty ??????????
+//            guard let querySnapshot = querySnapshot, !querySnapshot.isEmpty else {
+//                completion(nil, error)
+//                return
+//            }
+//            var documents = [[String : Any]]()
+//
+//            for document in querySnapshot.documents {
+//                let documentData = document.data()
+//                documents.append(documentData)
+//            }
+//            completion(documents, nil)
+//        }
+//        listeners[path] = listener
+//    }
+    
+//    func fetchCollection(for path: String, completion: @escaping (Any?, Error?) -> Void) {
+//        let collection = db.collection(path)
+//        let listener = collection.addSnapshotListener { (querySnapshot, error) in
+//
+//            if let error = error {
+//                completion(nil, error)
+//                print("Returned message for analytic FB Crashlytics error")
+//                return
+//            }
+//            // !querySnapshot.isEmpty ??????????
+//            guard let querySnapshot = querySnapshot, !querySnapshot.isEmpty else {
+//                completion(nil, error)
+//                return
+//            }
+//            var documents = [[String : Any]]()
+//
+//            for document in querySnapshot.documents {
+//                let documentData = document.data()
+//                documents.append(documentData)
+//            }
+//            completion(documents, nil)
+//        }
+//        listeners[path] = listener
+//    }
+
+//
+//    func createItem(malls: [PreviewSection]? = nil, shops: [PreviewSection]? = nil, products: [ProductItem]? = nil) -> [Item] {
+//
+//        var items = [Item]()
+//        if let malls = malls {
+//            items = malls.map {Item(mall: $0, shop: nil, popularProduct: nil)}
+//        } else if let shops = shops {
+//            items = shops.map {Item(mall: nil, shop: $0, popularProduct: nil)}
+//        } else if let products = products {
+//            items = products.map {Item(mall: nil, shop: nil, popularProduct: $0)}
+//        }
+//        return items
+//    }

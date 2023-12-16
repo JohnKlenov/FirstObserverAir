@@ -32,6 +32,25 @@ struct SectionModel: Hashable {
     var items: [Item]
 }
 
+struct Item: Hashable {
+    let mall: PreviewSection?
+    let shop: PreviewSection?
+    let popularProduct: ProductItem?
+}
+
+struct PreviewSection: Hashable {
+    let name: String?
+    let refImage: String?
+    let floor: Int?
+    let priorityIndex:Int?
+    init(dict: [String: Any]) {
+        name = dict["name"] as? String
+        refImage = dict["refImage"] as? String
+        floor = dict["refImage"] as? Int
+        priorityIndex = dict["priorityIndex"] as? Int
+    }
+}
+
 struct ProductItem: Hashable {
     let brand: String?
     let model: String?
@@ -100,21 +119,6 @@ struct Pin {
     }
 }
 
-struct PreviewSection: Hashable {
-    let name: String?
-    let refImage: String?
-    let floor: Int?
-    let priorityIndex:Int?
-    init(dict: [String: Any]) {
-        name = dict["name"] as? String
-        refImage = dict["refImage"] as? String
-        floor = dict["refImage"] as? Int
-        priorityIndex = dict["priorityIndex"] as? Int
-    }
-}
 
-struct Item: Hashable {
-    let mall: PreviewSection?
-    let shop: PreviewSection?
-    let popularProduct: ProductItem?
-}
+
+

@@ -126,6 +126,7 @@ extension HomeFirebaseService: HomeModelInput {
     
     @objc func handleSuccessfulFetchPersonalDataNotification(_ notification: NSNotification) {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
+        print("SuccessfulFetchPersonalDataNotification")
         firstFetchData()
     }
     
@@ -224,13 +225,11 @@ extension HomeFirebaseService: HomeModelInput {
         DispatchQueue.main.async {
             
             let firstError = self.firstError(in: self.firstErrors)
-            //            print test
-            print("firstErrors - \(self.firstErrors)")
-            print("pinMall - \(String(describing: self.serviceFB.pinMall))")
-            print("shops - \(String(describing: self.serviceFB.shops))")
             self.firstErrors.removeAll()
-            
             guard self.dataHome?.count == 3, firstError == nil else {
+                
+               
+                
                 self.output?.updateData(data: self.dataHome, error: firstError)
                 self.dataHome = nil
                 /// при restartGender нельзя удалять всех наблюдателей!!!
@@ -253,10 +252,9 @@ extension HomeFirebaseService: HomeModelInput {
         
         pathsRelatedListener.append("shopsMan")
         shopsService.fetchShops(path: "shopsMan") { shopsMan, error in
-            print("fetchShops @@@@ - \(String(describing: shopsMan))")
-            guard let _ = self.serviceFB.shops?["Man"] else {
+            guard let _ = self.serviceFB.shops["Man"] else {
                 if let shopsMan = shopsMan, error == nil {
-                    self.serviceFB.shops?["Man"] = shopsMan
+                    self.serviceFB.shops["Man"] = shopsMan
                 }
                 self.firstErrors.append(error)
                 self.semaphoreRelate.signal()
@@ -266,7 +264,7 @@ extension HomeFirebaseService: HomeModelInput {
                 return
             }
             
-            self.serviceFB.shops?["Man"] = shopsMan
+            self.serviceFB.shops["Man"] = shopsMan
         }
         semaphoreRelate.wait()
         

@@ -48,7 +48,6 @@ final class HomeController: UIViewController {
 // MARK: - Selectors
 private extension HomeController {
     @objc func handleFailedFetchPersonalDataNotification(_ notification: NSNotification) {
-        print("handleFailedFetchPersonalDataNotification")
         stopLoad()
         if let userInfo = notification.userInfo,
            let error = userInfo["error"] as? NSError,
@@ -159,7 +158,6 @@ extension HomeController:HomeModelOutput {
     
     func updateData(data: [String:SectionModel]?, error: Error?) {
         
-        print("func updateData - \(String(describing: error))")
         stopLoad()
         
         switch self.stateDataSource {
@@ -176,12 +174,6 @@ extension HomeController:HomeModelOutput {
             self.navController?.hiddenPlaceholder()
             self.stateDataSource = .followingDataUpdate
             self.dataSource = data
-            dataSource.forEach { (key, value) in
-                print("###################### - \(value)")
-            }
-            
-            
-            
             
         case .followingDataUpdate:
             guard let data = data, error == nil else {

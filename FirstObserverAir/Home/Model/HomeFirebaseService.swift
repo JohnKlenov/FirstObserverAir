@@ -126,7 +126,6 @@ extension HomeFirebaseService: HomeModelInput {
     
     @objc func handleSuccessfulFetchPersonalDataNotification(_ notification: NSNotification) {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
-        print("SuccessfulFetchPersonalDataNotification")
         firstFetchData()
     }
     

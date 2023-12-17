@@ -73,10 +73,6 @@ class ProductCloudFirestoreService {
             
         }
     }
-    
-//    static func removeListeners(for path: String) {
-//        ManagerFB.shared.removeListeners(for: path)
-//    }
 }
 
 
@@ -119,7 +115,6 @@ class ShopsCloudFirestoreService {
                 let response = try FetchShopDataResponse(documents: documents)
                 completion(response.items, nil)
             } catch {
-                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 //                ManagerFB.shared.CrashlyticsMethod
                 completion(nil, error)
             }

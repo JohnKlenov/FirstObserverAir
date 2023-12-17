@@ -74,36 +74,43 @@ final class FirebaseService {
         listeners[path] = listener
     }
     
-    func fetchCartProducts(completion: @escaping ([ProductItem]?) -> Void) {
-        
-        let path = "usersAccount/\(String(describing: currentUserID))/cartProducts"
-        
-        fetchCollection(for: path, sorted: true) { documents, error in
-            guard let documents = documents else {
-                completion(nil)
-                return
-            }
-            
-            do {
-                let response = try FetchProductsDataResponse(documents: documents)
-                completion(response.items)
-            } catch {
-                //                ManagerFB.shared.CrashlyticsMethod
-                completion(nil)
-            }
-            
-        }
-    }
+//    func fetchCartProducts(completion: @escaping ([ProductItem]?) -> Void) {
+//
+//        let path = "usersAccount/\(String(describing: currentUserID))/cartProducts"
+//
+//        fetchCollection(for: path, sorted: true) { documents, error in
+//            guard let documents = documents else {
+//                completion(nil)
+//                return
+//            }
+//
+//            do {
+//                let response = try FetchProductsDataResponse(documents: documents)
+//                completion(response.items)
+//            } catch {
+//                //                ManagerFB.shared.CrashlyticsMethod
+//                completion(nil)
+//            }
+//
+//        }
+//    }
     
     func removeListenerForCardProducts() {
-        let path = "usersAccount/\(String(describing: currentUserID))/cartProducts"
-        removeListeners(for: path)
+        guard let currentUserID = currentUserID else {
+            return
+        }
+        removeListeners(for: currentUserID)
     }
     
     func removeListeners(for path: String) {
         listeners.filter { $0.key == path }
-        .forEach { $0.value.remove() }
+        .forEach {
+            $0.value.remove()
+            listeners.removeValue(forKey: $0.key)
+        }
     }
+
+
     
     
     // MARK: - Auth
@@ -122,15 +129,15 @@ final class FirebaseService {
     
     func userListener(currentUser: @escaping (User?) -> Void) {
         handle = Auth.auth().addStateDidChangeListener { (auth, user) in
-            print("func userListener - \(user?.uid)")
+            print("func userListener - \(String(describing: user?.uid))")
             currentUser(user)
         }
     }
     
     func removeStateDidChangeListener() {
-                if let handle = handle {
-                    Auth.auth().removeStateDidChangeListener(handle)
-                }
+        if let handle = handle {
+            Auth.auth().removeStateDidChangeListener(handle)
+        }
     }
     
     
@@ -140,20 +147,19 @@ final class FirebaseService {
     /// оповещаем  model homeVC(через NotificationCenter) о том что мы получили user и его cartProducts и инициализируем получение следующих данных
     
     func observeUserAndCardProducts() {
-//        do {
-//            try Auth.auth().signOut()
-//        } catch let signOutError as NSError {
-//            print("Error signing out: %@", signOutError)
-//        }
-
+        //        do {
+        //            try Auth.auth().signOut()
+        //        } catch let signOutError as NSError {
+        //            print("Error signing out: %@", signOutError)
+        //        }
+        
         
         /// .tooManyRequests(anonimus) + .logIn
         updateUser { error, state in
-            print("updateUser { error, state in $$$$$$$$$$$$$$$$")
             if let error = error, let state = state  {
-
-                    let userInfo: [String: Any] = ["error": error, "enumValue": state]
-                    NotificationCenter.default.post(name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil, userInfo: userInfo)
+                
+                let userInfo: [String: Any] = ["error": error, "enumValue": state]
+                NotificationCenter.default.post(name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil, userInfo: userInfo)
             } else {
                 self.fetchCartProducts()
             }
@@ -164,7 +170,6 @@ final class FirebaseService {
     
         userListener { user in
             if let _ = user {
-                print("updateUser user - \(String(describing: user?.uid))")
                 // можем делать его пустым currentCartProducts = []
                 // потому что его состояние контролируется.
                 self.currentCartProducts = nil
@@ -184,7 +189,6 @@ final class FirebaseService {
         
         Auth.auth().signInAnonymously { (authResult, error) in
             guard let error = error else { return }
-            print("Auth.auth().signInAnonymously error- \(error)")
             completion(error, .restartObserveUser)
         }
     }
@@ -196,16 +200,9 @@ final class FirebaseService {
             return
         }
         
-//        let path = "usersAccount/\(user.uid)"
-//        let docRef = Firestore.firestore().document(path)
-//        print("if let document = document, document.exists")
-//        let docRef = db.collection("usersAccount").document(user.uid)
-//        let docRef = db.collection("users").document(user.uid)
         let docRef = db.collection("users").document(user.uid).collection("cartProducts").document(user.uid)
         
         docRef.getDocument { (document, error) in
-            print("document - \(String(describing: document))")
-            print("document.exists - \(String(describing: document?.exists))")
             guard error == nil else {
                 completion(error, .restartObserveUser)
                 return
@@ -213,7 +210,6 @@ final class FirebaseService {
             
             /// document.exists - если по ссылки нет документа(пустые поля) вернет false даже если там лежит коллекция
             if let document = document, document.exists {
-                print(" document = document, document.exists - \(document)")
                 completion(nil, nil)
             } else {
                 self.addEmptyCartProducts { error, state in
@@ -241,7 +237,6 @@ final class FirebaseService {
     }
     
     func fetchData(completion: @escaping ([ProductItem]?, Error?, ListenerErrorState?) -> Void) {
-        print("func fetchData(completion")
         guard let user = currentUser else {
             let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
             completion(nil, error, .restartObserveUser)
@@ -260,20 +255,16 @@ final class FirebaseService {
         /// получим только те данные которые придут после нового прослушивание
         let listener = quary.addSnapshotListener { (querySnapshot, error) in
             
-//            print("fetchData - \(String(describing: error))")
             if let error = error {
-                print("quary.addSnapshotListener error - \(error)")
                 completion(nil, error, .restartFetchCartProducts)
                 return
             }
             guard let querySnapshot = querySnapshot else {
-                print("quary.addSnapshotListener error - \(String(describing: querySnapshot))")
                 completion(nil, error, .restartFetchCartProducts)
                 return
             }
             
             if querySnapshot.isEmpty {
-                print("querySnapshot.isEmpty")
                 completion([], nil, nil)
                 return
             }
@@ -281,12 +272,10 @@ final class FirebaseService {
             
             for document in querySnapshot.documents {
                 let documentData = document.data()
-                print("document.data() - \(document.data())")
                 documents.append(documentData)
             }
             do {
                 let response = try FetchProductsDataResponse(documents: documents)
-                print("response.items - \(response.items)")
                 completion(response.items, nil, nil)
             } catch {
                 completion(nil, error, .restartFetchCartProducts)
@@ -311,49 +300,8 @@ final class FirebaseService {
                 completion(nil, nil)
             }
         }
-//        let collectionRef = db.collection("users").document(user.uid).collection("cartProducts")
-//        collectionRef.addDocument(data: [:]) { error in
-//            print("addEmptyCartProducts - \(String(describing: error))")
-//            if error != nil {
-//                completion(error, .restartObserveUser)
-//            } else {
-//                completion(nil, nil)
-//            }
-//        }
     }
 }
-
-//        let path = "usersAccount/\(user.uid)/cartProducts"
-//        let path = "users/cartsProduct/\(user.uid)"
-        
-//        let collectionRef = db.collection(path)
-//        let userDocumentRef = db.collection("users").document("cartsProduct").collection(user.uid)
-//        userDocumentRef.setData([:]) { error in
-//            if let error = error {
-//                completion(error, .restartObserveUser)
-////                зкште
-//            } else {
-//                completion(nil, nil)
-//            }
-//        }
-
-//        let usersCollection = Firestore.firestore().collection("usersAccount")
-//        let userDocument = usersCollection.document(user.uid)
-//        userDocument.collection("cartProducts").addDocument(data: [:]) { error in
-//            print("addEmptyCartProducts - \(error)")
-//            if error != nil {
-//                completion(error, .restartObserveUser)
-//            } else {
-//                completion(nil, nil)
-//            }
-//        }
-//        userDocumentRef.setData([:]) { error in
-//            if let error = error {
-//                completion(error, .restartObserveUser)
-//            } else {
-//                completion(nil, nil)
-//            }
-//        }
 
 
 // MARK: - Trash

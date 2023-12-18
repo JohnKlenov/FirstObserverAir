@@ -15,9 +15,12 @@ protocol HomeModelOutput:AnyObject {
 final class HomeController: UIViewController {
 
     private var homeModel: HomeModelInput?
+    
     var navController: NavigationController? {
             return self.navigationController as? NavigationController
         }
+    private var collectionViewLayout:UICollectionView!
+    private var collectionViewDataSource: UICollectionViewDiffableDataSource<SectionModel, Item>?
     
     var stateDataSource: StateDataSource = .firstDataUpdate
     var dataSource:[String : SectionModel] = [:] {
@@ -70,11 +73,17 @@ private extension HomeController {
 private extension HomeController {
     
     func setupView() {
-        view.backgroundColor = .red
+        view.backgroundColor = R.Colors.systemBackground
         homeModel = HomeFirebaseService(output: self)
-//        startLoad()
-//        homeModel?.firstFetchData()
         checkConnectionAndSetupModel()
+        
+//        setupCollectionView()
+//        setupConstraints()
+//        createDataSource()
+//        collectionViewLayout.delegate = self
+//        tabBarController?.view.isUserInteractionEnabled = false
+//        title = "Observer"
+//        navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
 
@@ -189,42 +198,15 @@ extension HomeController:HomeModelOutput {
     }
 }
     
-    
-    
-    
-//extension AbstractHomeViewController:HeaderMallSectionDelegate {
-//    func didSelectSegmentControl(gender: String) {
-//        homeModel?.setGender(gender: gender)
-//        switchGender()
-//    }
-//}
-//
-//// view
-//
-//protocol HeaderMallSectionDelegate: AnyObject {
-//    func didSelectSegmentControl(gender:String)
-//}
-//
-//class HeaderSegmentedControlView: UICollectionReusableView {
-//    weak var delegate: HeaderSegmentedControlViewDelegate?
-//
-//    func configureCell(title: String, gender:String) {
-//        //        segmentedControl.selectedSegmentIndex = gender == "Woman" ? 0 : 1
-//        //        label.text = title
-//    }
-//
-//    @objc func didTapSegmentedControl(_ segmentControl: UISegmentedControl) {
-//        switch segmentControl.selectedSegmentIndex {
-//        case 0:
-//            delegate?.didSelectSegmentControl(gender: "Woman")
-//        case 1:
-//            delegate?.didSelectSegmentControl(gender: "Man")
-//        default:
-//            break
-//        }
-//    }
-//
-//}
+
+// MARK: - HeaderMallSectionDelegate
+extension HomeController:HeaderMallSectionDelegate {
+    func didSelectSegmentControl(gender: String) {
+        homeModel?.setGender(gender: gender)
+        switchGender()
+    }
+}
+
     
     
     

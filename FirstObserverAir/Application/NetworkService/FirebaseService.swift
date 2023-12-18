@@ -57,7 +57,7 @@ final class FirebaseService {
         let listener = query.addSnapshotListener { (querySnapshot, error) in
             if let error = error {
                 completion(nil, error)
-                print("Returned message for analytic FB Crashlytics error")
+                print("Returned message for analytic FB Crashlytics error FirebaseService")
                 return
             }
             guard let querySnapshot = querySnapshot, !querySnapshot.isEmpty else {

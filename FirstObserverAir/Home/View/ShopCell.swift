@@ -42,12 +42,12 @@ class ShopCell: UICollectionViewCell {
 // MARK: - Setting Views
 private extension ShopCell {
     func setupView() {
-        backgroundColor = R.Colors.secondarySystemBackground
-        addSubview(imageView)
+        contentView.backgroundColor = R.Colors.secondarySystemBackground
+        contentView.addSubview(imageView)
         setupConstraints()
         storage = Storage.storage()
-        layer.cornerRadius = 10
-        clipsToBounds = true
+        contentView.layer.cornerRadius = 10
+        contentView.clipsToBounds = true
     }
 }
 
@@ -60,8 +60,10 @@ extension ShopCell {
             let placeholderImage = UIImage(named: "DefaultImage")
             
             imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { (image, error, cacheType, url) in
-                guard let image = image else {
+                guard let image = image, error == nil else {
                     // Обработка ошибок
+                    self.imageView.image = UIImage(named: "DefaultImage")
+                    print("Returned message for analytic FB Crashlytics error ShopCell")
                     return
                 }
                 // Настройка цвета изображения в зависимости от текущей темы
@@ -72,7 +74,6 @@ extension ShopCell {
                     self.imageView.image = image
                 }
             }
-            
         }else {
             imageView.image = UIImage(named: "DefaultImage")
             
@@ -83,6 +84,6 @@ extension ShopCell {
 // MARK: - Layout
 private extension ShopCell {
     func setupConstraints() {
-        NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: topAnchor, constant: 4), imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4), imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4), imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4)])
+        NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4), imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4), imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4), imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)])
     }
 }

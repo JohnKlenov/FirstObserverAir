@@ -53,8 +53,8 @@ class MallCell: UICollectionViewCell {
 // MARK: - Setting Views
 private extension MallCell {
     func setupView() {
-        addSubview(imageView)
-        addSubview(nameMall)
+        contentView.addSubview(imageView)
+        contentView.addSubview(nameMall)
         setupConstraints()
         storage = Storage.storage()
     }
@@ -77,12 +77,12 @@ extension MallCell {
 // MARK: - Layout
 private extension MallCell {
     func setupConstraints() {
-        NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: topAnchor),
-                                     imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-                                     imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-                                     imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
-                                     nameMall.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-                                     nameMall.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20)
+        NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                                     imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                                     imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                                     imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                                     nameMall.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+                                     nameMall.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20)
                                     ])
     }
 }

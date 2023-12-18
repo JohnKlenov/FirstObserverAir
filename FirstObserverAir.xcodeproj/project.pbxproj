@@ -42,6 +42,7 @@
 		5E8813742AF4EF550044F299 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5E8813732AF4EF550044F299 /* FirebaseStorage */; };
 		5EC492362B303E600061C71F /* MallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492352B303E5F0061C71F /* MallCell.swift */; };
 		5EC492382B304C410061C71F /* ShopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492372B304C410061C71F /* ShopCell.swift */; };
+		5EC4923A2B3063370061C71F /* PopProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492392B3063370061C71F /* PopProductCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,6 +77,7 @@
 		5E8813662AF4DB7A0044F299 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5EC492352B303E5F0061C71F /* MallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallCell.swift; sourceTree = "<group>"; };
 		5EC492372B304C410061C71F /* ShopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCell.swift; sourceTree = "<group>"; };
+		5EC492392B3063370061C71F /* PopProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopProductCell.swift; sourceTree = "<group>"; };
 		7825D1DA704646FD8066C1FF /* Pods-FirstObserverAir.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.debug.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.debug.xcconfig"; sourceTree = "<group>"; };
 		B18A769C546D160C4027A549 /* Pods_FirstObserverAir.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirstObserverAir.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4508FD6D2E2DE773BDBC40E /* Pods-FirstObserverAir.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.release.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.release.xcconfig"; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 			children = (
 				5EC492352B303E5F0061C71F /* MallCell.swift */,
 				5EC492372B304C410061C71F /* ShopCell.swift */,
+				5EC492392B3063370061C71F /* PopProductCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -525,6 +528,7 @@
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
 				5E1A35392B13E27E0076FDC1 /* NavigationController.swift in Sources */,
 				5E1A35522B14AE980076FDC1 /* UITabBarController + ext.swift in Sources */,
+				5EC4923A2B3063370061C71F /* PopProductCell.swift in Sources */,
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
 				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
 				5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */,

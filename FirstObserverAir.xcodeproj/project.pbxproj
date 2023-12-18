@@ -43,6 +43,10 @@
 		5EC492362B303E600061C71F /* MallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492352B303E5F0061C71F /* MallCell.swift */; };
 		5EC492382B304C410061C71F /* ShopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492372B304C410061C71F /* ShopCell.swift */; };
 		5EC4923A2B3063370061C71F /* PopProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492392B3063370061C71F /* PopProductCell.swift */; };
+		5EC4923E2B3076F10061C71F /* BackgroundCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC4923D2B3076F10061C71F /* BackgroundCollectionReusableView.swift */; };
+		5EC492402B3079250061C71F /* HeaderPopProductSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC4923F2B3079250061C71F /* HeaderPopProductSection.swift */; };
+		5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492412B307A950061C71F /* HeaderShopSection.swift */; };
+		5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492432B307CF90061C71F /* HeaderMallSection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +82,10 @@
 		5EC492352B303E5F0061C71F /* MallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallCell.swift; sourceTree = "<group>"; };
 		5EC492372B304C410061C71F /* ShopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCell.swift; sourceTree = "<group>"; };
 		5EC492392B3063370061C71F /* PopProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopProductCell.swift; sourceTree = "<group>"; };
+		5EC4923D2B3076F10061C71F /* BackgroundCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundCollectionReusableView.swift; sourceTree = "<group>"; };
+		5EC4923F2B3079250061C71F /* HeaderPopProductSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderPopProductSection.swift; sourceTree = "<group>"; };
+		5EC492412B307A950061C71F /* HeaderShopSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderShopSection.swift; sourceTree = "<group>"; };
+		5EC492432B307CF90061C71F /* HeaderMallSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderMallSection.swift; sourceTree = "<group>"; };
 		7825D1DA704646FD8066C1FF /* Pods-FirstObserverAir.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.debug.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.debug.xcconfig"; sourceTree = "<group>"; };
 		B18A769C546D160C4027A549 /* Pods_FirstObserverAir.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirstObserverAir.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4508FD6D2E2DE773BDBC40E /* Pods-FirstObserverAir.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.release.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.release.xcconfig"; sourceTree = "<group>"; };
@@ -120,9 +128,8 @@
 		5E07018A2B271B7600517EA0 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				5EC492352B303E5F0061C71F /* MallCell.swift */,
-				5EC492372B304C410061C71F /* ShopCell.swift */,
-				5EC492392B3063370061C71F /* PopProductCell.swift */,
+				5EC4923C2B3076B00061C71F /* Header */,
+				5EC4923B2B3076900061C71F /* Cell */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -389,6 +396,27 @@
 			path = "Supporting files";
 			sourceTree = "<group>";
 		};
+		5EC4923B2B3076900061C71F /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				5EC492372B304C410061C71F /* ShopCell.swift */,
+				5EC492392B3063370061C71F /* PopProductCell.swift */,
+				5EC492352B303E5F0061C71F /* MallCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		5EC4923C2B3076B00061C71F /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				5EC4923D2B3076F10061C71F /* BackgroundCollectionReusableView.swift */,
+				5EC4923F2B3079250061C71F /* HeaderPopProductSection.swift */,
+				5EC492412B307A950061C71F /* HeaderShopSection.swift */,
+				5EC492432B307CF90061C71F /* HeaderMallSection.swift */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -513,6 +541,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5EC492402B3079250061C71F /* HeaderPopProductSection.swift in Sources */,
 				5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */,
 				5E1A35422B13E77A0076FDC1 /* CatalogController.swift in Sources */,
 				5E88134D2AF4D8110044F299 /* AppDelegate.swift in Sources */,
@@ -527,17 +556,20 @@
 				5E1A35592B14D2E70076FDC1 /* ChildContentController.swift in Sources */,
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
 				5E1A35392B13E27E0076FDC1 /* NavigationController.swift in Sources */,
+				5EC4923E2B3076F10061C71F /* BackgroundCollectionReusableView.swift in Sources */,
 				5E1A35522B14AE980076FDC1 /* UITabBarController + ext.swift in Sources */,
 				5EC4923A2B3063370061C71F /* PopProductCell.swift in Sources */,
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
 				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
 				5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */,
 				5E1A354E2B13E8700076FDC1 /* ProfileController.swift in Sources */,
+				5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */,
 				5EC492382B304C410061C71F /* ShopCell.swift in Sources */,
 				5E1A35612B161CF60076FDC1 /* AppSettings.swift in Sources */,
 				5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */,
 				5E1A35652B17246E0076FDC1 /* ActivityContainerView.swift in Sources */,
 				5E1A354A2B13E81E0076FDC1 /* CartController.swift in Sources */,
+				5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */,
 				5E1A35462B13E7CC0076FDC1 /* MallsController.swift in Sources */,
 				5E1A35672B1734A90076FDC1 /* PlaceholderView.swift in Sources */,
 				5E88134F2AF4D8110044F299 /* SceneDelegate.swift in Sources */,

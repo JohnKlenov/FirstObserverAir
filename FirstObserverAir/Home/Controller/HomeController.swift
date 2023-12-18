@@ -192,7 +192,7 @@ extension HomeController:HomeModelOutput {
     
     
     
-//extension AbstractHomeViewController:HeaderSegmentedControlViewDelegate {
+//extension AbstractHomeViewController:HeaderMallSectionDelegate {
 //    func didSelectSegmentControl(gender: String) {
 //        homeModel?.setGender(gender: gender)
 //        switchGender()
@@ -201,7 +201,7 @@ extension HomeController:HomeModelOutput {
 //
 //// view
 //
-//protocol HeaderSegmentedControlViewDelegate: AnyObject {
+//protocol HeaderMallSectionDelegate: AnyObject {
 //    func didSelectSegmentControl(gender:String)
 //}
 //

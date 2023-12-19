@@ -23,7 +23,7 @@ final class HomeController: UIViewController {
     private var collectionViewDataSource: UICollectionViewDiffableDataSource<SectionModel, Item>?
     
     var stateDataSource: StateDataSource = .firstDataUpdate
-    var dataSource:[String : SectionModel] = [:] {
+    var dataSource:[SectionModel] = [] {
         didSet {
         }
     }
@@ -126,6 +126,12 @@ private extension HomeController {
         startLoad()
         homeModel?.firstFetchData()
     }
+    
+    func convertDictionaryToArray(data:[String : SectionModel]) -> [SectionModel] {
+        let sortedDictionary = data.sorted { $0.key < $1.key }
+        let array = Array(sortedDictionary.map({ $0.value }))
+        return array
+    }
 }
 
 
@@ -162,6 +168,105 @@ private extension HomeController {
     }
 }
 
+// MARK: - Setting CollectionView
+private extension HomeController {
+    
+    func createCollectionView() {
+        
+        collectionViewLayout = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
+        view.addSubview(collectionViewLayout)
+        collectionViewLayout.translatesAutoresizingMaskIntoConstraints = false
+        collectionViewLayout.backgroundColor = .clear
+        
+        collectionViewLayout.register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
+        collectionViewLayout.register(ShopCell.self, forCellWithReuseIdentifier: ShopCell.reuseID)
+        collectionViewLayout.register(PopProductCell.self, forCellWithReuseIdentifier: PopProductCell.reuseID)
+        collectionViewLayout.register(HeaderMallSection.self, forSupplementaryViewOfKind: "HeaderMall", withReuseIdentifier: HeaderMallSection.headerIdentifier)
+        collectionViewLayout.register(HeaderShopSection.self, forSupplementaryViewOfKind: "HeaderShop", withReuseIdentifier: HeaderShopSection.headerIdentifier)
+        collectionViewLayout.register(HeaderPopProductSection.self, forSupplementaryViewOfKind: "HeaderPopProduct", withReuseIdentifier: HeaderPopProductSection.headerIdentifier)
+    }
+    
+    func createLayout() -> UICollectionViewLayout {
+        
+        let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            let section = self.dataSource[sectionIndex]
+            
+            switch section.section {
+            case "Malls":
+                return self.mallSection()
+            case "Shops":
+                return self.shopSection()
+            case "PopularProducts":
+                return self.popProductSection()
+            default:
+                print("default createLayout")
+                return self.mallSection()
+            }
+        }
+        layout.register(BackgroundViewCollectionReusableView.self, forDecorationViewOfKind: "background")
+    return layout
+    }
+    
+    func mallSection() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalWidth(0.55))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 15)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+        section.orthogonalScrollingBehavior = .continuous
+
+        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(200))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderMall", alignment: .top)
+        section.boundarySupplementaryItems = [header]
+        return section
+    }
+    
+    func shopSection() -> NSCollectionLayoutSection {
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/5), heightDimension: .fractionalWidth(1/5))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 10)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 20, bottom: 5, trailing: 20)
+        section.orthogonalScrollingBehavior = .continuous
+        
+        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(200))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderShop", alignment: .top)
+        section.boundarySupplementaryItems = [header]
+        return section
+    }
+    
+    func popProductSection() -> NSCollectionLayoutSection {
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: nil, top: NSCollectionLayoutSpacing.fixed(10), trailing: nil, bottom: nil)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+        group.interItemSpacing = .fixed(10)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 10, trailing: 15)
+        
+        let background = NSCollectionLayoutDecorationItem.background(elementKind: "background")
+        background.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
+        section.decorationItems = [background]
+        
+        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderPopProduct", alignment: .top)
+        header.pinToVisibleBounds = true
+        section.boundarySupplementaryItems = [header]
+        return section
+    }
+
+}
 
 // MARK: - HomeModelOutput
 extension HomeController:HomeModelOutput {
@@ -183,7 +288,8 @@ extension HomeController:HomeModelOutput {
             }
             self.navController?.hiddenPlaceholder()
             self.stateDataSource = .followingDataUpdate
-            self.dataSource = data
+            
+            self.dataSource = self.convertDictionaryToArray(data: data)
             
         case .followingDataUpdate:
             guard let data = data, error == nil else {
@@ -192,7 +298,7 @@ extension HomeController:HomeModelOutput {
                 }
                 return
             }
-            self.dataSource = data
+            self.dataSource = self.convertDictionaryToArray(data: data)
             self.homeModel?.updateModelGender()
         }
     }

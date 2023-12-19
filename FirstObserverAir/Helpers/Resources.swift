@@ -88,8 +88,8 @@ enum R {
                     static let segmentedControlMan = "Man"
                     static let segmentedControlWoman = "Woman"
                     static let headerProductView = "Products"
-                    static let headerCategoryView = "Brands"
-                    static let headerMallsView = "Malls"
+                    static let headerShopView = "Shops"
+                    static let headerMallView = "Malls"
                     static let headerCategoryViewAllShops = "AllShops"
                 }
             }

@@ -76,11 +76,8 @@ private extension HomeController {
         view.backgroundColor = R.Colors.systemBackground
         homeModel = HomeFirebaseService(output: self)
         checkConnectionAndSetupModel()
+        setupCollectionView()
         
-//        setupCollectionView()
-//        setupConstraints()
-//        createDataSource()
-//        collectionViewLayout.delegate = self
 //        tabBarController?.view.isUserInteractionEnabled = false
 //        title = "Observer"
 //        navigationController?.navigationBar.prefersLargeTitles = true
@@ -170,6 +167,13 @@ private extension HomeController {
 
 // MARK: - Setting CollectionView
 private extension HomeController {
+    
+    func setupCollectionView() {
+        createCollectionView()
+        setupConstraintsCollectionView()
+        createDataSource()
+        collectionViewLayout.delegate = self
+    }
     
     func createCollectionView() {
         
@@ -265,9 +269,78 @@ private extension HomeController {
         section.boundarySupplementaryItems = [header]
         return section
     }
+    
+    func createDataSource() {
+
+        collectionViewDataSource = UICollectionViewDiffableDataSource<SectionModel, Item>(collectionView: collectionViewLayout, cellProvider: { collectionView, indexPath, cellData in
+            switch self.dataSource[indexPath.section].section {
+            case "Malls":
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell
+                cell?.configureCell(model: cellData)
+                return cell
+            case "Shops":
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCell.reuseID, for: indexPath) as? ShopCell
+                cell?.configureCell(model: cellData)
+                return cell
+            case "PopularProducts":
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PopProductCell.reuseID, for: indexPath) as? PopProductCell
+                cell?.configureCell(model: cellData)
+                return cell
+            default:
+                print("default createDataSource")
+                return UICollectionViewCell()
+            }
+        })
+        
+        collectionViewDataSource?.supplementaryViewProvider = { collectionView, kind, IndexPath in
+            
+            if kind == "HeaderMall" {
+                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderMallSection.headerIdentifier, withReuseIdentifier: HeaderMallSection.headerIdentifier, for: IndexPath) as? HeaderMallSection
+                cell?.delegate = self
+                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerMallView, gender: self.homeModel?.gender ?? "Woman")
+//                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerProductView)
+                return cell
+            } else if kind == "HeaderShop" {
+                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderShopSection.headerIdentifier, withReuseIdentifier: HeaderShopSection.headerIdentifier, for: IndexPath) as? HeaderShopSection
+                cell?.delegate = self
+                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerShopView)
+                return cell
+            } else if kind == "HeaderPopProduct" {
+                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderPopProductSection.headerIdentifier, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: IndexPath) as? HeaderPopProductSection
+                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerProductView)
+                return cell
+            } else {
+                return nil
+            }
+        }
+    }
+    
+    private func reloadData() {
+
+        var snapshot = NSDiffableDataSourceSnapshot<SectionModel, Item>()
+        snapshot.appendSections(dataSource)
+
+        for section in dataSource {
+            snapshot.appendItems(section.items, toSection: section)
+        }
+        collectionViewDataSource?.apply(snapshot)
+       
+    }
 
 }
 
+// MARK: - Layout
+private extension HomeController {
+    func setupConstraintsCollectionView() {
+        NSLayoutConstraint.activate([collectionViewLayout.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionViewLayout.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionViewLayout.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionViewLayout.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
+    }
+}
+
+extension HomeController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("indexPath - \(indexPath.row)")
+    }
+}
 // MARK: - HomeModelOutput
 extension HomeController:HomeModelOutput {
     
@@ -312,6 +385,16 @@ extension HomeController:HeaderMallSectionDelegate {
         switchGender()
     }
 }
+
+// MARK: - HeaderShopSectionDelegate
+extension HomeController:HeaderShopSectionDelegate {
+    func didSelectAllShopButton() {
+        print("")
+    }
+    
+    
+}
+
 
     
     

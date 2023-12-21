@@ -25,6 +25,7 @@ final class HomeController: UIViewController {
     var stateDataSource: StateDataSource = .firstDataUpdate
     var dataSource:[SectionModel] = [] {
         didSet {
+            reloadData()
         }
     }
     

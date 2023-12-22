@@ -157,17 +157,18 @@ final class FirebaseService {
     /// оповещаем  model homeVC(через NotificationCenter) о том что мы получили user и его cartProducts и инициализируем получение следующих данных
     
     func observeUserAndCardProducts() {
-        //        do {
-        //            try Auth.auth().signOut()
-        //        } catch let signOutError as NSError {
-        //            print("Error signing out: %@", signOutError)
-        //        }
+//                do {
+//                    try Auth.auth().signOut()
+//                    print("try Auth.auth().signOut()")
+//                } catch let signOutError as NSError {
+//                    print("Error signing out: %@", signOutError)
+//                }
         
         
-        /// .tooManyRequests(anonimus) + .logIn
+//        / .tooManyRequests(anonimus) + .logIn
         updateUser { error, state in
             if let error = error, let state = state  {
-                
+
                 let userInfo: [String: Any] = ["error": error, "enumValue": state]
                 NotificationCenter.default.post(name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil, userInfo: userInfo)
             } else {

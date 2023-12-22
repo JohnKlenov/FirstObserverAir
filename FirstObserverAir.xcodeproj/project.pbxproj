@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B73D28316EC4B1F8B4F983D /* Pods_FirstObserverAir.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B18A769C546D160C4027A549 /* Pods_FirstObserverAir.framework */; };
 		5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */; };
 		5E0701892B25DC3B00517EA0 /* UIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701882B25DC3B00517EA0 /* UIModels.swift */; };
 		5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E07018C2B27209A00517EA0 /* HomeFirebaseService.swift */; };
@@ -35,11 +34,6 @@
 		5E88134F2AF4D8110044F299 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88134E2AF4D8110044F299 /* SceneDelegate.swift */; };
 		5E8813562AF4D8180044F299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8813552AF4D8180044F299 /* Assets.xcassets */; };
 		5E8813672AF4DB7A0044F299 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5E8813662AF4DB7A0044F299 /* GoogleService-Info.plist */; };
-		5E88136C2AF4EF550044F299 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 5E88136B2AF4EF550044F299 /* FirebaseAuth */; };
-		5E88136E2AF4EF550044F299 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 5E88136D2AF4EF550044F299 /* FirebaseCrashlytics */; };
-		5E8813702AF4EF550044F299 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5E88136F2AF4EF550044F299 /* FirebaseDatabase */; };
-		5E8813722AF4EF550044F299 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 5E8813712AF4EF550044F299 /* FirebaseFirestore */; };
-		5E8813742AF4EF550044F299 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5E8813732AF4EF550044F299 /* FirebaseStorage */; };
 		5EC492362B303E600061C71F /* MallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492352B303E5F0061C71F /* MallCell.swift */; };
 		5EC492382B304C410061C71F /* ShopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492372B304C410061C71F /* ShopCell.swift */; };
 		5EC4923A2B3063370061C71F /* PopProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492392B3063370061C71F /* PopProductCell.swift */; };
@@ -47,9 +41,11 @@
 		5EC492402B3079250061C71F /* HeaderPopProductSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC4923F2B3079250061C71F /* HeaderPopProductSection.swift */; };
 		5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492412B307A950061C71F /* HeaderShopSection.swift */; };
 		5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492432B307CF90061C71F /* HeaderMallSection.swift */; };
+		E1DD2CCA647A52952EE5B773 /* Pods_FirstObserverAir.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9782C997E00BA48649C30F1F /* Pods_FirstObserverAir.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		25B33F3694BF03C8F4D45936 /* Pods-FirstObserverAir.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.debug.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.debug.xcconfig"; sourceTree = "<group>"; };
 		5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		5E0701882B25DC3B00517EA0 /* UIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIModels.swift; sourceTree = "<group>"; };
 		5E07018C2B27209A00517EA0 /* HomeFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFirebaseService.swift; sourceTree = "<group>"; };
@@ -86,9 +82,8 @@
 		5EC4923F2B3079250061C71F /* HeaderPopProductSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderPopProductSection.swift; sourceTree = "<group>"; };
 		5EC492412B307A950061C71F /* HeaderShopSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderShopSection.swift; sourceTree = "<group>"; };
 		5EC492432B307CF90061C71F /* HeaderMallSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderMallSection.swift; sourceTree = "<group>"; };
-		7825D1DA704646FD8066C1FF /* Pods-FirstObserverAir.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.debug.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.debug.xcconfig"; sourceTree = "<group>"; };
-		B18A769C546D160C4027A549 /* Pods_FirstObserverAir.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirstObserverAir.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E4508FD6D2E2DE773BDBC40E /* Pods-FirstObserverAir.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.release.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.release.xcconfig"; sourceTree = "<group>"; };
+		6AA0408173C8FC1180172F7B /* Pods-FirstObserverAir.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.release.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.release.xcconfig"; sourceTree = "<group>"; };
+		9782C997E00BA48649C30F1F /* Pods_FirstObserverAir.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirstObserverAir.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,33 +91,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5E88136E2AF4EF550044F299 /* FirebaseCrashlytics in Frameworks */,
-				5E8813702AF4EF550044F299 /* FirebaseDatabase in Frameworks */,
-				5E8813722AF4EF550044F299 /* FirebaseFirestore in Frameworks */,
-				5E88136C2AF4EF550044F299 /* FirebaseAuth in Frameworks */,
-				5E8813742AF4EF550044F299 /* FirebaseStorage in Frameworks */,
-				3B73D28316EC4B1F8B4F983D /* Pods_FirstObserverAir.framework in Frameworks */,
+				E1DD2CCA647A52952EE5B773 /* Pods_FirstObserverAir.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0EAD123675F20DECA7E677F0 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				B18A769C546D160C4027A549 /* Pods_FirstObserverAir.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		3D5041C79978B878D6051182 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7825D1DA704646FD8066C1FF /* Pods-FirstObserverAir.debug.xcconfig */,
-				E4508FD6D2E2DE773BDBC40E /* Pods-FirstObserverAir.release.xcconfig */,
+				25B33F3694BF03C8F4D45936 /* Pods-FirstObserverAir.debug.xcconfig */,
+				6AA0408173C8FC1180172F7B /* Pods-FirstObserverAir.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		5D83CA4EC9B797E6302DCEEE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9782C997E00BA48649C30F1F /* Pods_FirstObserverAir.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		5E07018A2B271B7600517EA0 /* View */ = {
@@ -310,7 +300,7 @@
 				5E88134B2AF4D8110044F299 /* FirstObserverAir */,
 				5E88134A2AF4D8110044F299 /* Products */,
 				3D5041C79978B878D6051182 /* Pods */,
-				0EAD123675F20DECA7E677F0 /* Frameworks */,
+				5D83CA4EC9B797E6302DCEEE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -424,24 +414,17 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5E88135D2AF4D8180044F299 /* Build configuration list for PBXNativeTarget "FirstObserverAir" */;
 			buildPhases = (
-				A3FABBD01A22D48C78AC2CFC /* [CP] Check Pods Manifest.lock */,
+				F13B4354689CEBD2D35E8F56 /* [CP] Check Pods Manifest.lock */,
 				5E8813452AF4D8110044F299 /* Sources */,
 				5E8813462AF4D8110044F299 /* Frameworks */,
 				5E8813472AF4D8110044F299 /* Resources */,
-				D3930EB20C2621A909DBD0F5 /* [CP] Embed Pods Frameworks */,
+				0947D446E7D1279B5022713B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = FirstObserverAir;
-			packageProductDependencies = (
-				5E88136B2AF4EF550044F299 /* FirebaseAuth */,
-				5E88136D2AF4EF550044F299 /* FirebaseCrashlytics */,
-				5E88136F2AF4EF550044F299 /* FirebaseDatabase */,
-				5E8813712AF4EF550044F299 /* FirebaseFirestore */,
-				5E8813732AF4EF550044F299 /* FirebaseStorage */,
-			);
 			productName = FirstObserverAir;
 			productReference = 5E8813492AF4D8110044F299 /* FirstObserverAir.app */;
 			productType = "com.apple.product-type.application";
@@ -470,9 +453,6 @@
 				Base,
 			);
 			mainGroup = 5E8813402AF4D8110044F299;
-			packageReferences = (
-				5E8813682AF4EF550044F299 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-			);
 			productRefGroup = 5E88134A2AF4D8110044F299 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -495,7 +475,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		A3FABBD01A22D48C78AC2CFC /* [CP] Check Pods Manifest.lock */ = {
+		0947D446E7D1279B5022713B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F13B4354689CEBD2D35E8F56 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -515,23 +512,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D3930EB20C2621A909DBD0F5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -697,7 +677,7 @@
 		};
 		5E88135E2AF4D8180044F299 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7825D1DA704646FD8066C1FF /* Pods-FirstObserverAir.debug.xcconfig */;
+			baseConfigurationReference = 25B33F3694BF03C8F4D45936 /* Pods-FirstObserverAir.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -724,7 +704,7 @@
 		};
 		5E88135F2AF4D8180044F299 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E4508FD6D2E2DE773BDBC40E /* Pods-FirstObserverAir.release.xcconfig */;
+			baseConfigurationReference = 6AA0408173C8FC1180172F7B /* Pods-FirstObserverAir.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -771,45 +751,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		5E8813682AF4EF550044F299 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		5E88136B2AF4EF550044F299 /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5E8813682AF4EF550044F299 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-		5E88136D2AF4EF550044F299 /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5E8813682AF4EF550044F299 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
-		};
-		5E88136F2AF4EF550044F299 /* FirebaseDatabase */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5E8813682AF4EF550044F299 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseDatabase;
-		};
-		5E8813712AF4EF550044F299 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5E8813682AF4EF550044F299 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
-		};
-		5E8813732AF4EF550044F299 /* FirebaseStorage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5E8813682AF4EF550044F299 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseStorage;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5E8813412AF4D8110044F299 /* Project object */;
 }

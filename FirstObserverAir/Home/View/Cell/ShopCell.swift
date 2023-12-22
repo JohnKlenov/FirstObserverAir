@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import FirebaseStorage
+//import FirebaseStorage
 import FirebaseStorageUI
 
 class ShopCell: UICollectionViewCell {
@@ -34,8 +34,8 @@ class ShopCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageView.sd_cancelCurrentImageLoad()
-        imageView.image = nil
+//        imageView.sd_cancelCurrentImageLoad()
+//        imageView.image = nil
     }
 }
 
@@ -61,9 +61,10 @@ extension ShopCell {
             
             imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { (image, error, cacheType, url) in
                 guard let image = image, error == nil else {
+                    
                     // Обработка ошибок
                     self.imageView.image = UIImage(named: "DefaultImage")
-                    print("Returned message for analytic FB Crashlytics error ShopCell")
+                    print("Returned message for analytic FB Crashlytics error ShopCell - \(String(describing: error?.localizedDescription))")
                     return
                 }
                 // Настройка цвета изображения в зависимости от текущей темы

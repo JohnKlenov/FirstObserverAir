@@ -9,7 +9,7 @@ import Foundation
 
 // Протокол для модели данных
 protocol HomeModelInput: AnyObject {
-    var gender:String { get set }
+    func returnGender() -> String
     func fetchGenderData()
     func firstFetchData()
     func isSwitchGender(completion: @escaping () -> Void)
@@ -43,6 +43,7 @@ class HomeFirebaseService {
     lazy var firstErrors: [Error?] = []
     lazy var stateDataSource: StateDataSource = .firstDataUpdate
     lazy var isFirstStartSuccessful = false
+    lazy var gender: String = ""
     
     let previewService = PreviewCloudFirestoreService()
     let productService = ProductCloudFirestoreService()
@@ -51,6 +52,7 @@ class HomeFirebaseService {
     
     init(output: HomeModelOutput) {
         self.output = output
+        updateModelGender()
         NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulFetchPersonalDataNotification), name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
     }
     
@@ -103,18 +105,10 @@ class HomeFirebaseService {
 
 extension HomeFirebaseService: HomeModelInput {
     
-    /// данное свойство gender вычисляемое, в отличие от хранимого:
-    /// var gender2: String = { return serviceFB.currentGender }()
-    /// оно gender каждый раз вычисляет новое значение а gender2 инициализируется однажды и всегда хранит одно и тоже значение
-    var gender: String {
-        get {
-            return serviceFB.currentGender
-        }
-        set {
-            serviceFB.currentGender = newValue
-        }
+    func returnGender() -> String {
+        return gender
     }
-
+    
     func restartFetchCartProducts() {
         serviceFB.fetchCartProducts()
     }

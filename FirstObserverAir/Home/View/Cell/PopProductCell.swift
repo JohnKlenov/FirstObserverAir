@@ -96,8 +96,8 @@ class PopProductCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageView.sd_cancelCurrentImageLoad()
-        imageView.image = nil
+//        imageView.sd_cancelCurrentImageLoad()
+//        imageView.image = nil
     }
 }
 

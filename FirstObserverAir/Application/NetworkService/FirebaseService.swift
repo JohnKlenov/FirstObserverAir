@@ -40,9 +40,9 @@ final class FirebaseService {
     }
    
     
-    var currentGender:String = {
+    var currentGender:String {
         return UserDefaults.standard.string(forKey: "gender") ?? "Woman"
-    }()
+    }
     
     func updateCartProducts() {
         NotificationCenter.default.post(name: Notification.Name("UpdateCartProducts"), object: nil)

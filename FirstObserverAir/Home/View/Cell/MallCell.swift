@@ -26,6 +26,7 @@ class MallCell: UICollectionViewCell {
     let nameMall: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = .systemRed
         label.numberOfLines = 0
         label.textAlignment = .left
         label.textColor = R.Colors.labelWhite
@@ -45,8 +46,8 @@ class MallCell: UICollectionViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        imageView.sd_cancelCurrentImageLoad()
-        imageView.image = nil
+//        imageView.sd_cancelCurrentImageLoad()
+//        imageView.image = nil
     }
 }
 
@@ -71,6 +72,7 @@ extension MallCell {
             imageView.image = UIImage(named: "DefaultImage")
         }
         nameMall.text = model.mall?.name
+//        print("model.mall?.name - \(model.mall?)")
     }
 }
 

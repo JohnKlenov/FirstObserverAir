@@ -19,13 +19,12 @@ final class HomeController: UIViewController {
     var navController: NavigationController? {
             return self.navigationController as? NavigationController
         }
-    private var collectionViewLayout:UICollectionView!
-    private var collectionViewDataSource: UICollectionViewDiffableDataSource<SectionModel, Item>?
+    private var collectionView:HomeCollectionView!
     
     var stateDataSource: StateDataSource = .firstDataUpdate
     var dataSource:[SectionModel] = [] {
         didSet {
-            reloadData()
+            collectionView.reloadData(data: dataSource)
         }
     }
     
@@ -80,7 +79,7 @@ private extension HomeController {
         setupCollectionView()
         
 //        tabBarController?.view.isUserInteractionEnabled = false
-//        title = "Observer"
+        title = "Observer"
 //        navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
@@ -168,172 +167,19 @@ private extension HomeController {
 
 // MARK: - Setting CollectionView
 private extension HomeController {
-    
     func setupCollectionView() {
-        createCollectionView()
+        collectionView = HomeCollectionView(gender: homeModel?.returnGender() ?? "Woman")
+        collectionView.delegate = self
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
         setupConstraintsCollectionView()
-        createDataSource()
-        collectionViewLayout.delegate = self
     }
-    
-    func createCollectionView() {
-        
-        collectionViewLayout = UICollectionView(frame: view.bounds, collectionViewLayout: createLayout())
-        view.addSubview(collectionViewLayout)
-        collectionViewLayout.translatesAutoresizingMaskIntoConstraints = false
-        collectionViewLayout.backgroundColor = .clear
-        
-        collectionViewLayout.register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
-        collectionViewLayout.register(ShopCell.self, forCellWithReuseIdentifier: ShopCell.reuseID)
-        collectionViewLayout.register(PopProductCell.self, forCellWithReuseIdentifier: PopProductCell.reuseID)
-        collectionViewLayout.register(HeaderMallSection.self, forSupplementaryViewOfKind: "HeaderMall", withReuseIdentifier: HeaderMallSection.headerIdentifier)
-        collectionViewLayout.register(HeaderShopSection.self, forSupplementaryViewOfKind: "HeaderShop", withReuseIdentifier: HeaderShopSection.headerIdentifier)
-        collectionViewLayout.register(HeaderPopProductSection.self, forSupplementaryViewOfKind: "HeaderPopProduct", withReuseIdentifier: HeaderPopProductSection.headerIdentifier)
-    }
-    
-    func createLayout() -> UICollectionViewLayout {
-        
-        let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
-            let section = self.dataSource[sectionIndex]
-            
-            switch section.section {
-            case "Malls":
-                return self.mallSection()
-            case "Shops":
-                return self.shopSection()
-            case "PopularProducts":
-                return self.popProductSection()
-            default:
-                print("default createLayout")
-                return self.mallSection()
-            }
-        }
-        layout.register(BackgroundViewCollectionReusableView.self, forDecorationViewOfKind: "background")
-    return layout
-    }
-    
-    func mallSection() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalWidth(0.55))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 15)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-        section.orthogonalScrollingBehavior = .continuous
-
-        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(200))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderMall", alignment: .top)
-        section.boundarySupplementaryItems = [header]
-        return section
-    }
-    
-    func shopSection() -> NSCollectionLayoutSection {
-        
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/5), heightDimension: .fractionalWidth(1/5))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 10)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 20, bottom: 5, trailing: 20)
-        section.orthogonalScrollingBehavior = .continuous
-        
-        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(200))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderShop", alignment: .top)
-        section.boundarySupplementaryItems = [header]
-        return section
-    }
-    
-    func popProductSection() -> NSCollectionLayoutSection {
-        
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.edgeSpacing = NSCollectionLayoutEdgeSpacing(leading: nil, top: NSCollectionLayoutSpacing.fixed(10), trailing: nil, bottom: nil)
-
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
-        group.interItemSpacing = .fixed(10)
-        
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 10, trailing: 15)
-        
-        let background = NSCollectionLayoutDecorationItem.background(elementKind: "background")
-        background.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
-        section.decorationItems = [background]
-        
-        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderPopProduct", alignment: .top)
-        header.pinToVisibleBounds = true
-        section.boundarySupplementaryItems = [header]
-        return section
-    }
-    
-    func createDataSource() {
-
-        collectionViewDataSource = UICollectionViewDiffableDataSource<SectionModel, Item>(collectionView: collectionViewLayout, cellProvider: { collectionView, indexPath, cellData in
-            switch self.dataSource[indexPath.section].section {
-            case "Malls":
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell
-                cell?.configureCell(model: cellData)
-                return cell
-            case "Shops":
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCell.reuseID, for: indexPath) as? ShopCell
-                cell?.configureCell(model: cellData)
-                return cell
-            case "PopularProducts":
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PopProductCell.reuseID, for: indexPath) as? PopProductCell
-                cell?.configureCell(model: cellData)
-                return cell
-            default:
-                print("default createDataSource")
-                return UICollectionViewCell()
-            }
-        })
-        
-        collectionViewDataSource?.supplementaryViewProvider = { collectionView, kind, IndexPath in
-            
-            if kind == "HeaderMall" {
-                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderMallSection.headerIdentifier, withReuseIdentifier: HeaderMallSection.headerIdentifier, for: IndexPath) as? HeaderMallSection
-                cell?.delegate = self
-                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerMallView, gender: self.homeModel?.gender ?? "Woman")
-//                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerProductView)
-                return cell
-            } else if kind == "HeaderShop" {
-                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderShopSection.headerIdentifier, withReuseIdentifier: HeaderShopSection.headerIdentifier, for: IndexPath) as? HeaderShopSection
-                cell?.delegate = self
-                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerShopView)
-                return cell
-            } else if kind == "HeaderPopProduct" {
-                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderPopProductSection.headerIdentifier, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: IndexPath) as? HeaderPopProductSection
-                cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerProductView)
-                return cell
-            } else {
-                return nil
-            }
-        }
-    }
-    
-    private func reloadData() {
-
-        var snapshot = NSDiffableDataSourceSnapshot<SectionModel, Item>()
-        snapshot.appendSections(dataSource)
-
-        for section in dataSource {
-            snapshot.appendItems(section.items, toSection: section)
-        }
-        collectionViewDataSource?.apply(snapshot)
-       
-    }
-
 }
 
 // MARK: - Layout
 private extension HomeController {
     func setupConstraintsCollectionView() {
-        NSLayoutConstraint.activate([collectionViewLayout.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionViewLayout.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionViewLayout.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionViewLayout.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
+        NSLayoutConstraint.activate([collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
     }
 }
 
@@ -342,6 +188,7 @@ extension HomeController: UICollectionViewDelegate {
         print("indexPath - \(indexPath.row)")
     }
 }
+
 // MARK: - HomeModelOutput
 extension HomeController:HomeModelOutput {
     
@@ -392,8 +239,6 @@ extension HomeController:HeaderShopSectionDelegate {
     func didSelectAllShopButton() {
         print("")
     }
-    
-    
 }
 
 

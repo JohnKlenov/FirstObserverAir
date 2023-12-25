@@ -195,7 +195,11 @@ private extension HomeCollectionView {
 
 // MARK: - Setting DataSource
 extension HomeCollectionView {
-    func reloadData(data: [SectionModel]) {
+    func reloadData(data: [SectionModel], gender:String) {
+        self.gender = gender
         self.data = data
+        data[1].items.forEach { item in
+            print("shop - \(item.shop?.priorityIndex)")
+        }
     }
 }

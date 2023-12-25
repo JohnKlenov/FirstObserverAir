@@ -98,7 +98,7 @@ class HomeFirebaseService {
         deleteRelatedListeners()
     }
     
-    func firstError(in errors: [Error?]) -> Error? {
+    func returnFirstError(in errors: [Error?]) -> Error? {
         return errors.compactMap { $0 }.first
     }
 }
@@ -226,7 +226,7 @@ extension HomeFirebaseService: HomeModelInput {
         
         DispatchQueue.main.async {
             
-            let firstError = self.firstError(in: self.firstErrors)
+            let firstError = self.returnFirstError(in: self.firstErrors)
             self.firstErrors.removeAll()
             guard self.dataHome?.count == 3, firstError == nil else {
                 

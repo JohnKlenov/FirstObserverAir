@@ -41,6 +41,7 @@ struct Item: Hashable {
 struct PreviewSection: Hashable {
     let name: String?
     let refImage: String?
+    /// floor должен быть String для previewMall
     let floor: Int?
     let priorityIndex:Int?
     init(dict: [String: Any]) {

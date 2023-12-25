@@ -26,7 +26,6 @@ class MallCell: UICollectionViewCell {
     let nameMall: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = .systemRed
         label.numberOfLines = 0
         label.textAlignment = .left
         label.textColor = R.Colors.labelWhite
@@ -72,7 +71,6 @@ extension MallCell {
             imageView.image = UIImage(named: "DefaultImage")
         }
         nameMall.text = model.mall?.name
-//        print("model.mall?.name - \(model.mall?)")
     }
 }
 

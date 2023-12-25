@@ -22,6 +22,16 @@ class ShopCell: UICollectionViewCell {
         return image
     }()
     
+    let nameLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.tintColor = R.Colors.label
+        label.isHidden = true
+        return label
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -43,6 +53,7 @@ class ShopCell: UICollectionViewCell {
 private extension ShopCell {
     func setupView() {
         contentView.backgroundColor = R.Colors.secondarySystemBackground
+        contentView.addSubview(nameLabel)
         contentView.addSubview(imageView)
         setupConstraints()
         storage = Storage.storage()
@@ -76,7 +87,10 @@ extension ShopCell {
                 }
             }
         }else {
-            imageView.image = UIImage(named: "DefaultImage")
+            imageView.isHidden = true
+            nameLabel.isHidden = false
+            nameLabel.text = model.shop?.name
+            //            imageView.image = UIImage(named: "DefaultImage")
             
         }
     }
@@ -86,5 +100,7 @@ extension ShopCell {
 private extension ShopCell {
     func setupConstraints() {
         NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4), imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4), imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4), imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)])
+        
+        NSLayoutConstraint.activate([nameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor), nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)])
     }
 }

@@ -24,7 +24,7 @@ final class HomeController: UIViewController {
     var stateDataSource: StateDataSource = .firstDataUpdate
     var dataSource:[SectionModel] = [] {
         didSet {
-            collectionView.reloadData(data: dataSource)
+            collectionView.reloadData(data: dataSource, gender: homeModel?.returnGender() ?? "Woman")
         }
     }
     
@@ -110,6 +110,7 @@ private extension HomeController {
     
     func switchGender() {
         homeModel?.isSwitchGender(completion: {
+            self.homeModel?.updateModelGender()
             self.forceFetchGenderData()
         })
     }
@@ -170,6 +171,8 @@ private extension HomeController {
     func setupCollectionView() {
         collectionView = HomeCollectionView(gender: homeModel?.returnGender() ?? "Woman")
         collectionView.delegate = self
+        collectionView.headerMallDelegate = self
+        collectionView.headerShopDelegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
         setupConstraintsCollectionView()
@@ -219,8 +222,8 @@ extension HomeController:HomeModelOutput {
                 }
                 return
             }
+//            self.homeModel?.updateModelGender()
             self.dataSource = self.convertDictionaryToArray(data: data)
-            self.homeModel?.updateModelGender()
         }
     }
 }

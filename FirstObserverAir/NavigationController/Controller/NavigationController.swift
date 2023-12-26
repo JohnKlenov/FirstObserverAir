@@ -28,6 +28,7 @@ final class NavigationController: UINavigationController {
 private extension NavigationController {
     
     func setupView() {
+        navigationBar.tintColor = R.Colors.label
         configurePlaceholderView()
     }
 }

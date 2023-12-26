@@ -164,6 +164,12 @@ private extension HomeController {
         // Например, если у вас есть кнопка:
         // myButton.isEnabled = true
     }
+    
+    func setupEmptyTitleBackButton() {
+        let backButton = UIBarButtonItem()
+        backButton.title = ""
+        navigationItem.backBarButtonItem = backButton
+    }
 }
 
 // MARK: - Setting CollectionView
@@ -240,7 +246,9 @@ extension HomeController:HeaderMallSectionDelegate {
 // MARK: - HeaderShopSectionDelegate
 extension HomeController:HeaderShopSectionDelegate {
     func didSelectAllShopButton() {
-        print("")
+        let allShops = AllShopsController(shops: dataSource[1])
+        setupEmptyTitleBackButton()
+        navigationController?.pushViewController(allShops, animated: true)
     }
 }
 

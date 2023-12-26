@@ -26,7 +26,8 @@ class ShopCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
-        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        label.numberOfLines = 1
         label.tintColor = R.Colors.label
         label.isHidden = true
         return label
@@ -44,6 +45,9 @@ class ShopCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        print("prepareForReuse")
+        imageView.isHidden = false
+        nameLabel.isHidden = true
 //        imageView.sd_cancelCurrentImageLoad()
 //        imageView.image = nil
     }
@@ -65,16 +69,15 @@ private extension ShopCell {
 // MARK: - Setting
 extension ShopCell {
     func configureCell(model: Item) {
-        
         if let urlString = model.shop?.refImage {
             let urlRef = storage.reference(forURL: urlString)
-            let placeholderImage = UIImage(named: "DefaultImage")
+            let placeholderImage = UIImage(systemName: "photo")
             
             imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { (image, error, cacheType, url) in
                 guard let image = image, error == nil else {
                     
                     // Обработка ошибок
-                    self.imageView.image = UIImage(named: "DefaultImage")
+                    self.imageView.image = UIImage(systemName: "photo")
                     print("Returned message for analytic FB Crashlytics error ShopCell - \(String(describing: error?.localizedDescription))")
                     return
                 }
@@ -90,8 +93,6 @@ extension ShopCell {
             imageView.isHidden = true
             nameLabel.isHidden = false
             nameLabel.text = model.shop?.name
-            //            imageView.image = UIImage(named: "DefaultImage")
-            
         }
     }
 }
@@ -101,6 +102,6 @@ private extension ShopCell {
     func setupConstraints() {
         NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4), imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4), imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4), imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)])
         
-        NSLayoutConstraint.activate([nameLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor), nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)])
+        NSLayoutConstraint.activate([nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor), nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5), nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5)])
     }
 }

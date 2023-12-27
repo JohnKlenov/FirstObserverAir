@@ -31,8 +31,9 @@ final class ListProductCollectionView: UICollectionView {
 private extension ListProductCollectionView {
     func setupView() {
         backgroundColor = .clear
-//        createDataSource()
-//        registerView()
+        delegate = self
+        dataSource = self
+        registerView()
     }
 }
 
@@ -64,7 +65,7 @@ private extension ListProductCollectionView {
     }
     
     func registerView() {
-
+        register(PopProductCell.self, forCellWithReuseIdentifier: PopProductCell.reuseID)
     }
 }
 
@@ -72,6 +73,30 @@ private extension ListProductCollectionView {
 extension ListProductCollectionView {
     func updateData(data: [ProductItem]) {
         self.data = data
+    }
+}
+
+// MARK: UICollectionViewDelegate + UICollectionViewDataSource
+extension ListProductCollectionView: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        data.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PopProductCell", for: indexPath) as? PopProductCell else {
+            print("Returned message for analytic FB Crashlytics error ListProductCollectionView")
+            return UICollectionViewCell()
+        }
+        let product = data[indexPath.item]
+        cell.configureCell(model: product)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("didSelectItemAt - \(indexPath.row)")
+//                let product = data[indexPath.item]
+//                delegate?.didSelectProduct(product: product)
     }
 }
 

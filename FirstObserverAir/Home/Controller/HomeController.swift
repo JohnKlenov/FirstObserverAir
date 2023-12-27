@@ -195,7 +195,23 @@ private extension HomeController {
 
 extension HomeController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("indexPath - \(indexPath.row)")
+        print("indexPath - \(indexPath.section)")
+        switch indexPath.section {
+        case 0:
+            print("0")
+        case 1:
+            print("1")
+            let gender = homeModel?.returnGender() ?? ""
+            let path = "products\(gender)"
+            let valueField = dataSource[indexPath.section].items[indexPath.row].shop?.name ?? ""
+            let modelListController = ListProductService(path: path, keyField: "shops", valueField: valueField, isArrayField: true)
+            let shopProductVC = ListProductController(modelInput: modelListController, title: valueField)
+            navigationController?.pushViewController(shopProductVC, animated: true)
+        case 2:
+            print("2")
+        default:
+            print("default")
+        }
     }
 }
 

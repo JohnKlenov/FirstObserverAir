@@ -128,19 +128,33 @@ extension PopProductCell {
         }
     }
     
-    func configureCell(model: Item) {
+    func configureCell(model: ProductItem) {
         
-        if let firstRef = model.popularProduct?.refImage?.first {
+        if let firstRef = model.refImage?.first {
             let urlRef = storage.reference(forURL: firstRef)
             self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
         } else {
             imageView.image = UIImage(named: "DefaultImage")
         }
-        brandLabel.text = model.popularProduct?.brand
-        modelLabel.text = model.popularProduct?.model
-        shopLabel.text = model.popularProduct?.shops?.first
-        priceLabel.text = "\(model.popularProduct?.price ?? 0) BYN"
+        brandLabel.text = model.brand
+        modelLabel.text = model.model
+        shopLabel.text = model.shops?.first
+        priceLabel.text = "\(model.price ?? 0) BYN"
     }
+    
+//    func configureCell(model: Item) {
+//
+//        if let firstRef = model.popularProduct?.refImage?.first {
+//            let urlRef = storage.reference(forURL: firstRef)
+//            self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
+//        } else {
+//            imageView.image = UIImage(named: "DefaultImage")
+//        }
+//        brandLabel.text = model.popularProduct?.brand
+//        modelLabel.text = model.popularProduct?.model
+//        shopLabel.text = model.popularProduct?.shops?.first
+//        priceLabel.text = "\(model.popularProduct?.price ?? 0) BYN"
+//    }
 }
 
 // MARK: - Layout

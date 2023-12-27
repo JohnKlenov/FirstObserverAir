@@ -141,7 +141,8 @@ private extension HomeCollectionView {
                 return cell
             case "PopularProducts":
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PopProductCell.reuseID, for: indexPath) as? PopProductCell
-                cell?.configureCell(model: cellData)
+                let defaultProductDict: [String: Any] = [:]
+                cell?.configureCell(model: cellData.popularProduct ?? ProductItem(dict: defaultProductDict))
                 return cell
             default:
                 print("default createDataSource")
@@ -198,8 +199,5 @@ extension HomeCollectionView {
     func reloadData(data: [SectionModel], gender:String) {
         self.gender = gender
         self.data = data
-        data[1].items.forEach { item in
-            print("shop - \(item.shop?.priorityIndex)")
         }
     }
-}

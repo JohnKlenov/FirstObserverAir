@@ -9,21 +9,16 @@ import UIKit
 
 final class ListProductController: UIViewController {
     
-    private var dataSource:[ProductItem] = [] {
-        didSet {
-            
-        }
-    }
-    
     private var listProductModel: ListProductModelInput
+    
     private var navController: NavigationController? {
             return self.navigationController as? NavigationController
         }
-    private var collectionView:HomeCollectionView!
-    
-    init(modelInput: ListProductModelInput) {
+    private var collectionView:ListProductCollectionView!
+    init(modelInput: ListProductModelInput, title:String) {
         self.listProductModel = modelInput
         super.init(nibName: nil, bundle: nil)
+        self.title = title
     }
     
     required init?(coder: NSCoder) {
@@ -32,6 +27,8 @@ final class ListProductController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+        fetchProduct()
     }
 }
 
@@ -42,14 +39,15 @@ private extension ListProductController {
         listProductModel.fetchProduct { products, error in
             self.stopLoad()
             guard let products = products, error == nil else {
-                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
-                    self.fetchProduct()
-                } cancelActionHandler: {
-                    print("BackNC")
-                }
+                print("error?.localizedDescription - \(String(describing: error?.localizedDescription))")
+//                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
+//                    self.fetchProduct()
+//                } cancelActionHandler: {
+//                    print("BackNC")
+//                }
                 return
             }
-            self.dataSource = products
+            self.collectionView.updateData(data: products)
         }
     }
 }
@@ -58,6 +56,9 @@ private extension ListProductController {
 private extension ListProductController {
     
     func setupView() {
+        view.backgroundColor = R.Colors.systemBackground
+        setupCollectionView()
+        setupConstraintsCollectionView()
     }
 }
 
@@ -97,22 +98,17 @@ private extension ListProductController {
 // MARK: - Setting CollectionView
 private extension ListProductController {
     func setupCollectionView() {
-//        collectionView = HomeCollectionView(gender: homeModel?.returnGender() ?? "Woman")
-//        collectionView.delegate = self
-//        collectionView.headerMallDelegate = self
-//        collectionView.headerShopDelegate = self
-//        collectionView.translatesAutoresizingMaskIntoConstraints = false
-//        view.addSubview(collectionView)
-//        setupConstraintsCollectionView()
+        collectionView = ListProductCollectionView()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
+        setupConstraintsCollectionView()
     }
-    
-    
 }
 
 // MARK: - Layout
 private extension ListProductController {
     func setupConstraintsCollectionView() {
-//        NSLayoutConstraint.activate([collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
+        NSLayoutConstraint.activate([collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
     }
 }
 

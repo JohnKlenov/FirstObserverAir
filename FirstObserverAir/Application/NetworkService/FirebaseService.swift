@@ -84,7 +84,7 @@ final class FirebaseService {
         listeners[path] = listener
     }
     
-    func fetchCollectionSortedAndFiltered(for path: String, isArrayField: Bool = false, keyField:String, valueField:String, completion: @escaping (Any?, Error?) -> Void) {
+    func fetchCollectionSortedAndFiltered(for path: String, isArrayField: Bool, keyField:String, valueField:String, completion: @escaping (Any?, Error?) -> Void) {
         let collection: Query = db.collection(path)
         var query = collection
         if isArrayField {

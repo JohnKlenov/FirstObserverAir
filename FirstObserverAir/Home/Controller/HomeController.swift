@@ -19,6 +19,7 @@ final class HomeController: UIViewController {
     var navController: NavigationController? {
             return self.navigationController as? NavigationController
         }
+    
     private var collectionView:HomeCollectionView!
     
     var stateDataSource: StateDataSource = .firstDataUpdate

@@ -114,5 +114,4 @@ private extension AllShopCell {
         
         NSLayoutConstraint.activate([nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor), nameLabel.leadingAnchor.constraint(equalTo: imageCell.leadingAnchor, constant: 5)])
     }
-//    , nameLabel.trailingAnchor.constraint(equalTo: imageCell.trailingAnchor, constant: -5)
 }

@@ -48,9 +48,6 @@ struct FetchPreviewDataResponse {
             let item = PreviewSection(dict: dictionary)
             items.append(item)
         }
-        items.forEach { item in
-            print("item - \(item.priorityIndex)")
-        }
         self.items = items
     }
 }

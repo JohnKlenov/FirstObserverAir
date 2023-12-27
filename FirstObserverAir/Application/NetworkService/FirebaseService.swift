@@ -84,26 +84,34 @@ final class FirebaseService {
         listeners[path] = listener
     }
     
-//    func fetchCartProducts(completion: @escaping ([ProductItem]?) -> Void) {
-//
-//        let path = "usersAccount/\(String(describing: currentUserID))/cartProducts"
-//
-//        fetchCollection(for: path, sorted: true) { documents, error in
-//            guard let documents = documents else {
-//                completion(nil)
-//                return
-//            }
-//
-//            do {
-//                let response = try FetchProductsDataResponse(documents: documents)
-//                completion(response.items)
-//            } catch {
-//                //                ManagerFB.shared.CrashlyticsMethod
-//                completion(nil)
-//            }
-//
-//        }
-//    }
+    func fetchCollectionSortedAndFiltered(for path: String, isArrayField: Bool = false, keyField:String, valueField:String, completion: @escaping (Any?, Error?) -> Void) {
+        let collection: Query = db.collection(path)
+        var query = collection
+        if isArrayField {
+            query = collection.whereField(keyField, arrayContains: valueField).order(by: "priorityIndex", descending: true)
+        } else {
+            query = collection.whereField(keyField, isEqualTo: valueField).order(by: "priorityIndex", descending: true)
+        }
+        
+        query.getDocuments { (querySnapshot, error) in
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            guard let querySnapshot = querySnapshot else {
+                completion(nil, error)
+                return
+            }
+            var documents = [[String : Any]]()
+            for document in querySnapshot.documents {
+                let documentData = document.data()
+                documents.append(documentData)
+            }
+            completion(documents, nil)
+        }
+    }
+
+    
     
     func removeListenerForCardProducts() {
         guard let currentUserID = currentUserID else {
@@ -381,4 +389,25 @@ final class FirebaseService {
 //            items = products.map {Item(mall: nil, shop: nil, popularProduct: $0)}
 //        }
 //        return items
+//    }
+
+//    func fetchCartProducts(completion: @escaping ([ProductItem]?) -> Void) {
+//
+//        let path = "usersAccount/\(String(describing: currentUserID))/cartProducts"
+//
+//        fetchCollection(for: path, sorted: true) { documents, error in
+//            guard let documents = documents else {
+//                completion(nil)
+//                return
+//            }
+//
+//            do {
+//                let response = try FetchProductsDataResponse(documents: documents)
+//                completion(response.items)
+//            } catch {
+//                //                ManagerFB.shared.CrashlyticsMethod
+//                completion(nil)
+//            }
+//
+//        }
 //    }

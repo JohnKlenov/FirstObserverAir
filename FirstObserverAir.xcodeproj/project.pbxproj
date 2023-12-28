@@ -145,14 +145,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		5E0701902B2733BC00517EA0 /* Alert */ = {
-			isa = PBXGroup;
-			children = (
-				5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */,
-			);
-			path = Alert;
-			sourceTree = "<group>";
-		};
 		5E1A352E2B13DCAA0076FDC1 /* TabBarController */ = {
 			isa = PBXGroup;
 			children = (
@@ -173,7 +165,6 @@
 		5E1A35322B13DF240076FDC1 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				5E0701902B2733BC00517EA0 /* Alert */,
 				5E1A35332B13DF770076FDC1 /* Extensions */,
 				5E1A35302B13DE8A0076FDC1 /* Resources.swift */,
 			);
@@ -183,6 +174,7 @@
 		5E1A35332B13DF770076FDC1 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */,
 				5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */,
 				5E1A35512B14AE980076FDC1 /* UITabBarController + ext.swift */,
 			);

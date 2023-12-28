@@ -32,6 +32,7 @@ final class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        setBackButtonWithoutTitle("")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -138,12 +139,12 @@ private extension HomeController {
 private extension HomeController {
     func startLoad() {
         startSpiner()
-        disableControls()
+        setUserInteraction(false)
     }
     
     func stopLoad() {
         stopSpiner()
-        enableControls()
+        setUserInteraction(true)
     }
     
     func startSpiner() {
@@ -154,23 +155,18 @@ private extension HomeController {
         navController?.stopSpinner()
     }
     
-    func disableControls() {
-        // Отключите все элементы управления
-        // Например, если у вас есть кнопка:
-        // myButton.isEnabled = false
-    }
+//    func disableControls() {
+//        // Отключите все элементы управления
+//        // Например, если у вас есть кнопка:
+//        // myButton.isEnabled = false
+//    }
+//
+//    func enableControls() {
+//        // Включите все элементы управления
+//        // Например, если у вас есть кнопка:
+//        // myButton.isEnabled = true
+//    }
     
-    func enableControls() {
-        // Включите все элементы управления
-        // Например, если у вас есть кнопка:
-        // myButton.isEnabled = true
-    }
-    
-    func setupEmptyTitleBackButton() {
-        let backButton = UIBarButtonItem()
-        backButton.title = ""
-        navigationItem.backBarButtonItem = backButton
-    }
 }
 
 // MARK: - Setting CollectionView
@@ -264,7 +260,6 @@ extension HomeController:HeaderMallSectionDelegate {
 extension HomeController:HeaderShopSectionDelegate {
     func didSelectAllShopButton() {
         let allShops = AllShopsController(shops: dataSource[1])
-        setupEmptyTitleBackButton()
         navigationController?.pushViewController(allShops, animated: true)
     }
 }

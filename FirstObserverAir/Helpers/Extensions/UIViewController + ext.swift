@@ -28,4 +28,31 @@ extension UIViewController {
         }
         self.present(alert, animated: true)
     }
+    
+    
+    // MARK: NavigationController
+    func setBackButtonWithoutTitle(_ title: String) {
+        let item = UIBarButtonItem(title: title, style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = item
+    }
+    
+    
+    // MARK: disable and enable controls
+    func setViewUserInteraction(_ isEnabled: Bool) {
+            view.isUserInteractionEnabled = isEnabled
+        }
+
+        func setNavigationBarUserInteraction(_ isEnabled: Bool) {
+            navigationController?.navigationBar.isUserInteractionEnabled = isEnabled
+        }
+
+        func setTabBarUserInteraction(_ isEnabled: Bool) {
+            tabBarController?.tabBar.isUserInteractionEnabled = isEnabled
+        }
+
+        func setUserInteraction(_ isEnabled: Bool) {
+            setViewUserInteraction(isEnabled)
+            setNavigationBarUserInteraction(isEnabled)
+            setTabBarUserInteraction(isEnabled)
+        }
 }

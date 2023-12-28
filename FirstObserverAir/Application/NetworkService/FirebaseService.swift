@@ -84,13 +84,14 @@ final class FirebaseService {
         listeners[path] = listener
     }
     
-    func fetchCollectionSortedAndFiltered(for path: String, isArrayField: Bool, keyField:String, valueField:String, completion: @escaping (Any?, Error?) -> Void) {
+    func fetchCollectionFiltered(for path: String, isArrayField: Bool, keyField:String, valueField:String, completion: @escaping (Any?, Error?) -> Void) {
         let collection: Query = db.collection(path)
         var query = collection
         if isArrayField {
-            query = collection.whereField(keyField, arrayContains: valueField).order(by: "priorityIndex", descending: true)
+            query = collection.whereField(keyField, arrayContains: valueField)
+//                .order(by: "priorityIndex", descending: true)
         } else {
-            query = collection.whereField(keyField, isEqualTo: valueField).order(by: "priorityIndex", descending: true)
+            query = collection.whereField(keyField, isEqualTo: valueField)
         }
         
         query.getDocuments { (querySnapshot, error) in

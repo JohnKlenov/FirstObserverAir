@@ -140,7 +140,7 @@ private extension HomeCollectionView {
                 cell?.configureCell(model: cellData)
                 return cell
             case "PopularProducts":
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PopProductCell.reuseID, for: indexPath) as? PopProductCell
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.reuseID, for: indexPath) as? ProductCell
                 let defaultProductDict: [String: Any] = [:]
                 cell?.configureCell(model: cellData.popularProduct ?? ProductItem(dict: defaultProductDict))
                 return cell
@@ -175,7 +175,7 @@ private extension HomeCollectionView {
     func registerView() {
         register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
         register(ShopCell.self, forCellWithReuseIdentifier: ShopCell.reuseID)
-        register(PopProductCell.self, forCellWithReuseIdentifier: PopProductCell.reuseID)
+        register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.reuseID)
         register(HeaderMallSection.self, forSupplementaryViewOfKind: "HeaderMall", withReuseIdentifier: HeaderMallSection.headerIdentifier)
         register(HeaderShopSection.self, forSupplementaryViewOfKind: "HeaderShop", withReuseIdentifier: HeaderShopSection.headerIdentifier)
         register(HeaderPopProductSection.self, forSupplementaryViewOfKind: "HeaderPopProduct", withReuseIdentifier: HeaderPopProductSection.headerIdentifier)

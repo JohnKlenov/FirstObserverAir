@@ -69,15 +69,15 @@ private extension ShopCell {
 // MARK: - Setting
 extension ShopCell {
     func configureCell(model: Item) {
+        let placeholderImage = UIImage(systemName: "photo")
+        
         if let urlString = model.shop?.refImage {
             let urlRef = storage.reference(forURL: urlString)
-            let placeholderImage = UIImage(systemName: "photo")
-            
             imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { (image, error, cacheType, url) in
                 guard let image = image, error == nil else {
                     
                     // Обработка ошибок
-                    self.imageView.image = UIImage(systemName: "photo")
+                    self.imageView.image = placeholderImage
                     print("Returned message for analytic FB Crashlytics error ShopCell - \(String(describing: error?.localizedDescription))")
                     return
                 }

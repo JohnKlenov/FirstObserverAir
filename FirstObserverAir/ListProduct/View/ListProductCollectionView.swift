@@ -65,7 +65,7 @@ private extension ListProductCollectionView {
     }
     
     func registerView() {
-        register(PopProductCell.self, forCellWithReuseIdentifier: PopProductCell.reuseID)
+        register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.reuseID)
     }
 }
 
@@ -84,7 +84,7 @@ extension ListProductCollectionView: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PopProductCell", for: indexPath) as? PopProductCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductCell.reuseID, for: indexPath) as? ProductCell else {
             print("Returned message for analytic FB Crashlytics error ListProductCollectionView")
             return UICollectionViewCell()
         }

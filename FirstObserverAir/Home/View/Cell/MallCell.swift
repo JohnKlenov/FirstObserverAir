@@ -20,6 +20,7 @@ class MallCell: UICollectionViewCell {
         image.layer.cornerRadius = 10
         image.clipsToBounds = true
         image.contentMode = .scaleAspectFill
+        image.tintColor = R.Colors.label
         return image
     }()
     
@@ -63,12 +64,13 @@ private extension MallCell {
 // MARK: - Setting
 extension MallCell {
     func configureCell(model:Item) {
-        
+        let placeholderImage = UIImage(systemName: "photo")
+        placeholderImage?.withRenderingMode(.alwaysTemplate)
         if let firstRef = model.mall?.refImage {
             let urlRef = storage.reference(forURL: firstRef)
-            self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
+            self.imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage)
         } else {
-            imageView.image = UIImage(named: "DefaultImage")
+            imageView.image = placeholderImage
         }
         nameMall.text = model.mall?.name
     }

@@ -33,7 +33,7 @@ final class ListProductService {
 extension ListProductService: ListProductModelInput {
     func fetchProduct(completion: @escaping ([ProductItem]?, Error?) -> Void) {
         
-        serviceFB.fetchCollectionSortedAndFiltered(for: path, isArrayField: isArrayField, keyField: keyField, valueField: valueField) { documents, error in
+        serviceFB.fetchCollectionFiltered(for: path, isArrayField: isArrayField, keyField: keyField, valueField: valueField) { documents, error in
             guard let documents = documents, error == nil else {
                 completion(nil, error)
                 return

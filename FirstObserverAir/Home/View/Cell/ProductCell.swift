@@ -9,15 +9,16 @@ import UIKit
 //import FirebaseStorage
 import FirebaseStorageUI
 
-class PopProductCell: UICollectionViewCell {
+class ProductCell: UICollectionViewCell {
     
-    static var reuseID = "PopProductCell"
+    static var reuseID = "ProductCell"
     var storage: Storage!
     
     let imageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
+        image.tintColor = R.Colors.label
         image.layer.cornerRadius = 8
         image.clipsToBounds = true
         return image
@@ -102,7 +103,7 @@ class PopProductCell: UICollectionViewCell {
 }
 
 // MARK: - Setting Views
-private extension PopProductCell {
+private extension ProductCell {
     func setupView() {
         configureStackView()
         contentView.addSubview(imageView)
@@ -116,7 +117,7 @@ private extension PopProductCell {
 }
 
 // MARK: - Setting
-extension PopProductCell {
+extension ProductCell {
     
     private func configureStackView() {
         [shopLabel, priceLabel].forEach { view in
@@ -129,36 +130,25 @@ extension PopProductCell {
     }
     
     func configureCell(model: ProductItem) {
+       
+        let placeholderImage = UIImage(systemName: "photo")
+        placeholderImage?.withRenderingMode(.alwaysTemplate)
         
         if let firstRef = model.refImage?.first {
             let urlRef = storage.reference(forURL: firstRef)
-            self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
+            self.imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage)
         } else {
-            imageView.image = UIImage(named: "DefaultImage")
+            imageView.image = placeholderImage
         }
         brandLabel.text = model.brand
         modelLabel.text = model.model
         shopLabel.text = model.shops?.first
         priceLabel.text = "\(model.price ?? 0) BYN"
     }
-    
-//    func configureCell(model: Item) {
-//
-//        if let firstRef = model.popularProduct?.refImage?.first {
-//            let urlRef = storage.reference(forURL: firstRef)
-//            self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
-//        } else {
-//            imageView.image = UIImage(named: "DefaultImage")
-//        }
-//        brandLabel.text = model.popularProduct?.brand
-//        modelLabel.text = model.popularProduct?.model
-//        shopLabel.text = model.popularProduct?.shops?.first
-//        priceLabel.text = "\(model.popularProduct?.price ?? 0) BYN"
-//    }
 }
 
 // MARK: - Layout
-private extension PopProductCell {
+private extension ProductCell {
     func setupConstraints() {
         
         let topImageViewCnstr = imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8)
@@ -188,3 +178,24 @@ private extension PopProductCell {
         bottomLabelCnstr.isActive = true
     }
 }
+
+
+
+
+
+
+
+// MARK: Trash
+//    func configureCell(model: Item) {
+//
+//        if let firstRef = model.popularProduct?.refImage?.first {
+//            let urlRef = storage.reference(forURL: firstRef)
+//            self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
+//        } else {
+//            imageView.image = UIImage(named: "DefaultImage")
+//        }
+//        brandLabel.text = model.popularProduct?.brand
+//        modelLabel.text = model.popularProduct?.model
+//        shopLabel.text = model.popularProduct?.shops?.first
+//        priceLabel.text = "\(model.popularProduct?.price ?? 0) BYN"
+//    }

@@ -12,7 +12,7 @@ extension UIViewController {
     func showErrorAlert(message: String, state: StateDataSource, tryActionHandler: @escaping () -> Void, cancelActionHandler: (() -> Void)? = nil) {
         
         let alert = UIAlertController(title: "Oops!", message: message, preferredStyle: .alert)
-        let tryAction = UIAlertAction(title: "Try agayn", style: .cancel) { _ in
+        let tryAction = UIAlertAction(title: "Try again", style: .default) { _ in
             tryActionHandler()
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in

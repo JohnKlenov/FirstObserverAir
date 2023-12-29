@@ -9,7 +9,7 @@ import UIKit
 
 final class ListProductController: UIViewController {
     
-    private var listProductModel: ListProductModelInput
+    private weak var listProductModel: ListProductModelInput?
     
     private var navController: NavigationController? {
             return self.navigationController as? NavigationController
@@ -36,15 +36,16 @@ final class ListProductController: UIViewController {
 private extension ListProductController {
     func fetchProduct() {
         startLoad()
-        listProductModel.fetchProduct { products, error in
+        listProductModel?.fetchProduct { [weak self] products, error in
+            /// если ListProductController освобождается (например, если пользователь нажимает кнопку “назад”), self внутри обратного вызова становится nil
+            guard let self = self else { return }
             self.stopLoad()
             guard let products = products, error == nil else {
-                print("error?.localizedDescription - \(String(describing: error?.localizedDescription))")
-//                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
-//                    self.fetchProduct()
-//                } cancelActionHandler: {
-//                    print("BackNC")
-//                }
+                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
+                    self.fetchProduct()
+                } cancelActionHandler: {
+                    self.navigationController?.popViewController(animated: true)
+                }
                 return
             }
             self.collectionView.updateData(data: products)
@@ -66,12 +67,10 @@ private extension ListProductController {
 private extension ListProductController {
     func startLoad() {
         startSpiner()
-        disableControls()
     }
     
     func stopLoad() {
         stopSpiner()
-        enableControls()
     }
     
     func startSpiner() {
@@ -80,18 +79,6 @@ private extension ListProductController {
     
     func stopSpiner() {
         navController?.stopSpinner()
-    }
-    
-    func disableControls() {
-        // Отключите все элементы управления
-        // Например, если у вас есть кнопка:
-        // myButton.isEnabled = false
-    }
-    
-    func enableControls() {
-        // Включите все элементы управления
-        // Например, если у вас есть кнопка:
-        // myButton.isEnabled = true
     }
 }
 

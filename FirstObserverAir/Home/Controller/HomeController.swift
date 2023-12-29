@@ -58,7 +58,7 @@ private extension HomeController {
            let error = userInfo["error"] as? NSError,
            let enumValue = userInfo["enumValue"] as? ListenerErrorState {
             showErrorAlert(message: error.localizedDescription, state: self.stateDataSource) {
-                self.startLoad()
+                self.startLoadFirst()
                 switch enumValue {
                     
                 case .restartFetchCartProducts:
@@ -79,8 +79,6 @@ private extension HomeController {
         homeModel = HomeFirebaseService(output: self)
         checkConnectionAndSetupModel()
         setupCollectionView()
-        
-//        tabBarController?.view.isUserInteractionEnabled = false
         title = "Observer"
 //        navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -106,7 +104,7 @@ private extension HomeController {
     }
     
     func fetchDataAndUser() {
-        startLoad()
+        startLoadFirst()
         homeModel?.observeUserAndCardProducts()
     }
     
@@ -118,12 +116,12 @@ private extension HomeController {
     }
     
     func forceFetchGenderData() {
-        startLoad()
+        startLoadFollowing()
         homeModel?.fetchGenderData()
     }
     
     func forceFirstFetchData() {
-        startLoad()
+        startLoadFirst()
         homeModel?.firstFetchData()
     }
     
@@ -137,9 +135,15 @@ private extension HomeController {
 
 // MARK: - Setting
 private extension HomeController {
-    func startLoad() {
+    
+    func startLoadFirst() {
         startSpiner()
         setUserInteraction(false)
+    }
+    
+    func startLoadFollowing() {
+        startSpiner()
+        setViewUserInteraction(false)
     }
     
     func stopLoad() {
@@ -154,19 +158,6 @@ private extension HomeController {
     func stopSpiner() {
         navController?.stopSpinner()
     }
-    
-//    func disableControls() {
-//        // Отключите все элементы управления
-//        // Например, если у вас есть кнопка:
-//        // myButton.isEnabled = false
-//    }
-//
-//    func enableControls() {
-//        // Включите все элементы управления
-//        // Например, если у вас есть кнопка:
-//        // myButton.isEnabled = true
-//    }
-    
 }
 
 // MARK: - Setting CollectionView
@@ -241,7 +232,6 @@ extension HomeController:HomeModelOutput {
                 }
                 return
             }
-//            self.homeModel?.updateModelGender()
             self.dataSource = self.convertDictionaryToArray(data: data)
         }
     }

@@ -31,6 +31,10 @@ final class AllShopsController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    deinit {
+        print("deinit AllShopsController")
+    }
 }
 
 // MARK: - Setting Views

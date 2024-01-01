@@ -109,6 +109,10 @@ extension NavigationController {
         activityView.stopAnimating()
         activityView.removeFromSuperview()
     }
+    
+    func isAnimatingSpiner() -> Bool {
+        return activityView.isAnimating
+    }
 }
 
 

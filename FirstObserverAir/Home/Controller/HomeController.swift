@@ -37,6 +37,10 @@ final class HomeController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if let isAnimating = navController?.isAnimatingSpiner(), isAnimating {
+            print("spiner animating")
+//            stopLoad()
+        }
         switchGender()
         /// можно переместить его во viewDidLoad
         NotificationCenter.default.addObserver(self, selector: #selector(handleFailedFetchPersonalDataNotification(_:)), name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil)
@@ -92,6 +96,7 @@ private extension HomeController {
     func checkConnectionAndSetupModel() {
         
         if NetworkMonitor.shared.isConnected {
+            print("NetworkMonitor.shared.isConnected")
             navController?.hiddenPlaceholder()
             fetchDataAndUser()
         } else {
@@ -191,8 +196,9 @@ extension HomeController: UICollectionViewDelegate {
             let gender = homeModel?.returnGender() ?? ""
             let path = "products\(gender)"
             let valueField = dataSource[indexPath.section].items[indexPath.row].shop?.name ?? ""
-            let modelListController = ListProductService(path: path, keyField: "shops", valueField: valueField, isArrayField: true)
+            let modelListController: ListProductModelInput = ListProductService(path: path, keyField: "shops", valueField: valueField, isArrayField: true)
             let shopProductVC = ListProductController(modelInput: modelListController, title: valueField)
+//            let shopProductVC = ListProductController(path: "", keyField: "", valueField: "", isArrayField: true, title: "")
             navigationController?.pushViewController(shopProductVC, animated: true)
         case 2:
             print("2")

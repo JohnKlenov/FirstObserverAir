@@ -85,16 +85,18 @@ final class FirebaseService {
     }
     
     func fetchCollectionFiltered(for path: String, isArrayField: Bool, keyField:String, valueField:String, completion: @escaping (Any?, Error?) -> Void) {
+        
         let collection: Query = db.collection(path)
         var query = collection
-        if isArrayField {
-            query = collection.whereField(keyField, arrayContains: valueField)
-//                .order(by: "priorityIndex", descending: true)
-        } else {
-            query = collection.whereField(keyField, isEqualTo: valueField)
-        }
+//        if isArrayField {
+//            query = collection.whereField(keyField, arrayContains: valueField)
+////                .order(by: "priorityIndex", descending: true)
+//        } else {
+//            query = collection.whereField(keyField, isEqualTo: valueField)
+//        }
         
         query.getDocuments { (querySnapshot, error) in
+            print("query.getDocuments")
             if let error = error {
                 completion(nil, error)
                 return
@@ -109,6 +111,10 @@ final class FirebaseService {
                 documents.append(documentData)
             }
             completion(documents, nil)
+//             Имитация задержки в сети
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+//                        completion(documents, nil)
+//                    }
         }
     }
 

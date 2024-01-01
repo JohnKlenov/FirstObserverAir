@@ -1,15 +1,15 @@
 //
-//  PopProductCell.swift
+//  TestView.swift
 //  FirstObserverAir
 //
-//  Created by Evgenyi on 18.12.23.
+//  Created by Evgenyi on 31.12.23.
 //
 
 import UIKit
 //import FirebaseStorage
 import FirebaseStorageUI
 
-class ProductCell: UICollectionViewCell {
+class ProductCell2: UICollectionViewCell {
     
     static var reuseID = "ProductCell"
     var storage: Storage!
@@ -107,7 +107,7 @@ class ProductCell: UICollectionViewCell {
 }
 
 // MARK: - Setting Views
-private extension ProductCell {
+private extension ProductCell2 {
     func setupView() {
         configureStackView()
         contentView.addSubview(imageView)
@@ -121,7 +121,7 @@ private extension ProductCell {
 }
 
 // MARK: - Setting
-extension ProductCell {
+extension ProductCell2 {
     
     private func configureStackView() {
         [shopLabel, priceLabel].forEach { view in
@@ -152,7 +152,7 @@ extension ProductCell {
 }
 
 // MARK: - Layout
-private extension ProductCell {
+private extension ProductCell2 {
     func setupConstraints() {
         
         let topImageViewCnstr = imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8)
@@ -182,24 +182,3 @@ private extension ProductCell {
         bottomLabelCnstr.isActive = true
     }
 }
-
-
-
-
-
-
-
-// MARK: Trash
-//    func configureCell(model: Item) {
-//
-//        if let firstRef = model.popularProduct?.refImage?.first {
-//            let urlRef = storage.reference(forURL: firstRef)
-//            self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
-//        } else {
-//            imageView.image = UIImage(named: "DefaultImage")
-//        }
-//        brandLabel.text = model.popularProduct?.brand
-//        modelLabel.text = model.popularProduct?.model
-//        shopLabel.text = model.popularProduct?.shops?.first
-//        priceLabel.text = "\(model.popularProduct?.price ?? 0) BYN"
-//    }

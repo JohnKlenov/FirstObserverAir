@@ -43,6 +43,10 @@ class AllShopCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("deinit AllShopCell")
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         imageCell.isHidden = false

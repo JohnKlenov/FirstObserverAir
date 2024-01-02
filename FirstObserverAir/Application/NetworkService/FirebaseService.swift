@@ -88,12 +88,12 @@ final class FirebaseService {
         
         let collection: Query = db.collection(path)
         var query = collection
-//        if isArrayField {
-//            query = collection.whereField(keyField, arrayContains: valueField)
-////                .order(by: "priorityIndex", descending: true)
-//        } else {
-//            query = collection.whereField(keyField, isEqualTo: valueField)
-//        }
+        if isArrayField {
+            query = collection.whereField(keyField, arrayContains: valueField)
+//                .order(by: "priorityIndex", descending: true)
+        } else {
+            query = collection.whereField(keyField, isEqualTo: valueField)
+        }
         
         query.getDocuments { (querySnapshot, error) in
             print("query.getDocuments")

@@ -8,7 +8,12 @@
 import MapKit
 import UIKit
 
-class NewProductViewController: UIViewController {
+// Протокол для обработки полученных данных
+protocol ProductModelOutput:AnyObject {
+    func updateData(shops: [Shop]?, pins: [Pin]?)
+}
+
+final class NewProductViewController: UIViewController {
     
     
     private let scrollView: UIScrollView = {
@@ -95,14 +100,15 @@ class NewProductViewController: UIViewController {
         return tapRecognizer
     }()
     
-
+    private var productModel: ProductModelInput?
+    
     // MARK: - Constraint property -
     var heightCnstrTableView: NSLayoutConstraint!
     
     
     
     // MARK: - model property -
-    var dataSource:ProductItem?
+    var dataSource:ProductItem
     var arrayPin:[Places] = []
     var isAddedToCard = false {
         didSet {
@@ -118,15 +124,23 @@ class NewProductViewController: UIViewController {
 //        return .portrait // Разрешить все ориентации для этого контроллера
 //    }
     
+    init(product: ProductItem) {
+        self.dataSource = product
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = R.Colors.systemBackground
         tabBarController?.tabBar.isHidden = true
-        navigationItem.largeTitleDisplayMode = .never
+//        navigationItem.largeTitleDisplayMode = .never
         
         // fetch data -> spiner -> if success -> configureViews
-        
+        productModel = ProductFirebaseService(output: self)
         setupBtn()
         configureToCardButton()
         setupScrollView()
@@ -290,8 +304,8 @@ class NewProductViewController: UIViewController {
 //        priceLabel.text = productModel?.price
 //        descriptionLabel.text = productModel?.description
 //        pageControl.numberOfPages = productModel?.refArray.count ?? 1
-        pageControl.numberOfPages = dataSource?.refImage?.count ?? 1
-        pagesView.configureView(currentPage: 1, count: dataSource?.refImage?.count ?? 0)
+        pageControl.numberOfPages = dataSource.refImage?.count ?? 1
+        pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
         mapView.arrayPin = arrayPin
         mapView.delegateMap = self
         mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
@@ -437,7 +451,7 @@ class NewProductViewController: UIViewController {
         if scrollView == imageCollectionView {
             let currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
             pageControl.currentPage = currentPage
-            pagesView.configureView(currentPage: currentPage + 1, count: dataSource?.refImage?.count ?? 0)
+            pagesView.configureView(currentPage: currentPage + 1, count: dataSource.refImage?.count ?? 0)
         } else {
             print("scrolling another view")
 
@@ -538,7 +552,7 @@ class NewProductViewController: UIViewController {
     @objc func didTapPageControl(_ sender: UIPageControl) {
 
         imageCollectionView.scrollToItem(at: IndexPath(item: sender.currentPage, section: 0), at: .centeredHorizontally, animated: true)
-        pagesView.configureView(currentPage: sender.currentPage + 1, count: dataSource?.refImage?.count ?? 0)
+        pagesView.configureView(currentPage: sender.currentPage + 1, count: dataSource.refImage?.count ?? 0)
 //        let x = CGFloat(pageControl.currentPage) * scrollView.frame.size.width
 //                imageProductCollectionView.setContentOffset(CGPoint(x:x, y:0), animated: true)
     
@@ -555,7 +569,7 @@ class NewProductViewController: UIViewController {
 extension NewProductViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataSource?.refImage?.count ?? 0
+        return dataSource.refImage?.count ?? 0
     }
     
     
@@ -636,6 +650,12 @@ extension NewProductViewController: MapViewManagerDelegate {
     }
 }
 
+
+extension NewProductViewController: ProductModelOutput {
+    func updateData(shops: [Shop]?, pins: [Pin]?) {
+        <#code#>
+    }
+}
 
 
 

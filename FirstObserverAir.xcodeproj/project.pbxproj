@@ -15,6 +15,7 @@
 		5E0DE9052B45479700F3387C /* AdditionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9042B45479700F3387C /* AdditionStatus.swift */; };
 		5E0DE9072B458ABA00F3387C /* MinskMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9062B458ABA00F3387C /* MinskMapView.swift */; };
 		5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9092B458FFC00F3387C /* MapViewModel.swift */; };
+		5E0DE90C2B459B9000F3387C /* ProductFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */; };
 		5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35302B13DE8A0076FDC1 /* Resources.swift */; };
 		5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */; };
 		5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35362B13E1770076FDC1 /* TabBarController.swift */; };
@@ -69,6 +70,7 @@
 		5E0DE9042B45479700F3387C /* AdditionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionStatus.swift; sourceTree = "<group>"; };
 		5E0DE9062B458ABA00F3387C /* MinskMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinskMapView.swift; sourceTree = "<group>"; };
 		5E0DE9092B458FFC00F3387C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFirebaseService.swift; sourceTree = "<group>"; };
 		5E1A35302B13DE8A0076FDC1 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + ext.swift"; sourceTree = "<group>"; };
 		5E1A35362B13E1770076FDC1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 		5E7D7E662B44A0B40009B8E8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -696,6 +699,7 @@
 				5E1A35652B17246E0076FDC1 /* ActivityContainerView.swift in Sources */,
 				5E1A354A2B13E81E0076FDC1 /* CartController.swift in Sources */,
 				5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */,
+				5E0DE90C2B459B9000F3387C /* ProductFirebaseService.swift in Sources */,
 				5E22B1412B3C0D4E00CDD18A /* ListProductService.swift in Sources */,
 				5E1A35462B13E7CC0076FDC1 /* MallsController.swift in Sources */,
 				5E1A35672B1734A90076FDC1 /* PlaceholderView.swift in Sources */,

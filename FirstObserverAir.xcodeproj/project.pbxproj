@@ -12,6 +12,9 @@
 		5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E07018C2B27209A00517EA0 /* HomeFirebaseService.swift */; };
 		5E07018F2B27252700517EA0 /* CloudFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */; };
 		5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */; };
+		5E0DE9052B45479700F3387C /* AdditionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9042B45479700F3387C /* AdditionStatus.swift */; };
+		5E0DE9072B458ABA00F3387C /* MinskMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9062B458ABA00F3387C /* MinskMapView.swift */; };
+		5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9092B458FFC00F3387C /* MapViewModel.swift */; };
 		5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35302B13DE8A0076FDC1 /* Resources.swift */; };
 		5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */; };
 		5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35362B13E1770076FDC1 /* TabBarController.swift */; };
@@ -35,6 +38,12 @@
 		5E22B13F2B3C0B0000CDD18A /* ListProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B13E2B3C0B0000CDD18A /* ListProductController.swift */; };
 		5E22B1412B3C0D4E00CDD18A /* ListProductService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B1402B3C0D4E00CDD18A /* ListProductService.swift */; };
 		5E22B1432B3C443500CDD18A /* ListProductCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B1422B3C443500CDD18A /* ListProductCollectionView.swift */; };
+		5E7D7E6A2B44A0EE0009B8E8 /* ProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */; };
+		5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */; };
+		5E7D7E6E2B44A94E0009B8E8 /* FooterCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6D2B44A94E0009B8E8 /* FooterCollectionView.swift */; };
+		5E7D7E702B44ABD80009B8E8 /* ImageNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6F2B44ABD80009B8E8 /* ImageNumber.swift */; };
+		5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E712B44ACAD0009B8E8 /* MallTableViewCell.swift */; };
+		5E7D7E742B44AD030009B8E8 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E732B44AD030009B8E8 /* DetailController.swift */; };
 		5E88134D2AF4D8110044F299 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88134C2AF4D8110044F299 /* AppDelegate.swift */; };
 		5E88134F2AF4D8110044F299 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88134E2AF4D8110044F299 /* SceneDelegate.swift */; };
 		5E8813562AF4D8180044F299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8813552AF4D8180044F299 /* Assets.xcassets */; };
@@ -57,6 +66,9 @@
 		5E07018C2B27209A00517EA0 /* HomeFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFirebaseService.swift; sourceTree = "<group>"; };
 		5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFirestoreService.swift; sourceTree = "<group>"; };
 		5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + ext.swift"; sourceTree = "<group>"; };
+		5E0DE9042B45479700F3387C /* AdditionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdditionStatus.swift; sourceTree = "<group>"; };
+		5E0DE9062B458ABA00F3387C /* MinskMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinskMapView.swift; sourceTree = "<group>"; };
+		5E0DE9092B458FFC00F3387C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		5E1A35302B13DE8A0076FDC1 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + ext.swift"; sourceTree = "<group>"; };
 		5E1A35362B13E1770076FDC1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -80,6 +92,12 @@
 		5E22B13E2B3C0B0000CDD18A /* ListProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListProductController.swift; sourceTree = "<group>"; };
 		5E22B1402B3C0D4E00CDD18A /* ListProductService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListProductService.swift; sourceTree = "<group>"; };
 		5E22B1422B3C443500CDD18A /* ListProductCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListProductCollectionView.swift; sourceTree = "<group>"; };
+		5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductController.swift; sourceTree = "<group>"; };
+		5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		5E7D7E6D2B44A94E0009B8E8 /* FooterCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterCollectionView.swift; sourceTree = "<group>"; };
+		5E7D7E6F2B44ABD80009B8E8 /* ImageNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageNumber.swift; sourceTree = "<group>"; };
+		5E7D7E712B44ACAD0009B8E8 /* MallTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallTableViewCell.swift; sourceTree = "<group>"; };
+		5E7D7E732B44AD030009B8E8 /* DetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
 		5E8813492AF4D8110044F299 /* FirstObserverAir.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstObserverAir.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E88134C2AF4D8110044F299 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5E88134E2AF4D8110044F299 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -143,6 +161,15 @@
 				5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		5E0DE9082B458F7E00F3387C /* MapService */ = {
+			isa = PBXGroup;
+			children = (
+				5E0DE9062B458ABA00F3387C /* MinskMapView.swift */,
+				5E0DE9092B458FFC00F3387C /* MapViewModel.swift */,
+			);
+			path = MapService;
 			sourceTree = "<group>";
 		};
 		5E1A352E2B13DCAA0076FDC1 /* TabBarController */ = {
@@ -357,6 +384,44 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		5E7D7E652B44A0920009B8E8 /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				5E7D7E682B44A0C60009B8E8 /* Controller */,
+				5E7D7E672B44A0BF0009B8E8 /* View */,
+				5E7D7E662B44A0B40009B8E8 /* Model */,
+			);
+			path = Product;
+			sourceTree = "<group>";
+		};
+		5E7D7E662B44A0B40009B8E8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5E7D7E672B44A0BF0009B8E8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */,
+				5E7D7E6D2B44A94E0009B8E8 /* FooterCollectionView.swift */,
+				5E7D7E6F2B44ABD80009B8E8 /* ImageNumber.swift */,
+				5E7D7E712B44ACAD0009B8E8 /* MallTableViewCell.swift */,
+				5E0DE9042B45479700F3387C /* AdditionStatus.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5E7D7E682B44A0C60009B8E8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */,
+				5E7D7E732B44AD030009B8E8 /* DetailController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		5E8813402AF4D8110044F299 = {
 			isa = PBXGroup;
 			children = (
@@ -378,8 +443,7 @@
 		5E88134B2AF4D8110044F299 /* FirstObserverAir */ = {
 			isa = PBXGroup;
 			children = (
-				5E22B13A2B3C0AAD00CDD18A /* ListProduct */,
-				5E22B1332B3AE40000CDD18A /* AllShops */,
+				5E7D7E652B44A0920009B8E8 /* Product */,
 				5E8813652AF4D91E0044F299 /* Supporting files */,
 				5E1A35322B13DF240076FDC1 /* Helpers */,
 				5E8813602AF4D87F0044F299 /* Application */,
@@ -392,6 +456,8 @@
 				5E1A354B2B13E8380076FDC1 /* Profile */,
 				5E1A35532B14D1F50076FDC1 /* Onboard */,
 				5E1A355B2B15FF3B0076FDC1 /* LaunchScreen */,
+				5E22B1332B3AE40000CDD18A /* AllShops */,
+				5E22B13A2B3C0AAD00CDD18A /* ListProduct */,
 			);
 			path = FirstObserverAir;
 			sourceTree = "<group>";
@@ -399,6 +465,7 @@
 		5E8813602AF4D87F0044F299 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				5E0DE9082B458F7E00F3387C /* MapService */,
 				5E8813612AF4D88B0044F299 /* Model */,
 				5E8813622AF4D8920044F299 /* View */,
 				5E8813632AF4D89E0044F299 /* Controller */,
@@ -595,6 +662,7 @@
 				5E0701892B25DC3B00517EA0 /* UIModels.swift in Sources */,
 				5E1A353D2B13E6E30076FDC1 /* HomeController.swift in Sources */,
 				5E22B13F2B3C0B0000CDD18A /* ListProductController.swift in Sources */,
+				5E7D7E702B44ABD80009B8E8 /* ImageNumber.swift in Sources */,
 				5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */,
 				5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */,
 				5E22B1392B3AE91700CDD18A /* AllShopCell.swift in Sources */,
@@ -602,11 +670,16 @@
 				5E1A35552B14D2760076FDC1 /* PresentController.swift in Sources */,
 				5E07018F2B27252700517EA0 /* CloudFirestoreService.swift in Sources */,
 				5E1A35592B14D2E70076FDC1 /* ChildContentController.swift in Sources */,
+				5E7D7E6E2B44A94E0009B8E8 /* FooterCollectionView.swift in Sources */,
 				5E22B1372B3AE59300CDD18A /* AllShops.swift in Sources */,
+				5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */,
+				5E0DE9052B45479700F3387C /* AdditionStatus.swift in Sources */,
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
 				5E99AB5C2B358B7C00FA9FD4 /* HomeCollectionView.swift in Sources */,
 				5E1A35392B13E27E0076FDC1 /* NavigationController.swift in Sources */,
+				5E7D7E6A2B44A0EE0009B8E8 /* ProductController.swift in Sources */,
 				5EC4923E2B3076F10061C71F /* BackgroundCollectionReusableView.swift in Sources */,
+				5E7D7E742B44AD030009B8E8 /* DetailController.swift in Sources */,
 				5E1A35522B14AE980076FDC1 /* UITabBarController + ext.swift in Sources */,
 				5EC4923A2B3063370061C71F /* ProductCell.swift in Sources */,
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
@@ -615,8 +688,11 @@
 				5E1A354E2B13E8700076FDC1 /* ProfileController.swift in Sources */,
 				5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */,
 				5EC492382B304C410061C71F /* ShopCell.swift in Sources */,
+				5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */,
 				5E1A35612B161CF60076FDC1 /* AppSettings.swift in Sources */,
+				5E0DE9072B458ABA00F3387C /* MinskMapView.swift in Sources */,
 				5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */,
+				5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */,
 				5E1A35652B17246E0076FDC1 /* ActivityContainerView.swift in Sources */,
 				5E1A354A2B13E81E0076FDC1 /* CartController.swift in Sources */,
 				5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */,

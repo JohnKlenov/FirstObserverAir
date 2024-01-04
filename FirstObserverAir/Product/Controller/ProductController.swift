@@ -10,7 +10,7 @@ import UIKit
 
 // Протокол для обработки полученных данных
 protocol ProductModelOutput:AnyObject {
-    func updateData(shops: [Shop]?, pins: [Pin]?)
+    func updateData(shops: [Shop]?, pins: [Pin]?, isAddedToCard:Bool)
 }
 
 final class NewProductViewController: UIViewController {
@@ -141,6 +141,9 @@ final class NewProductViewController: UIViewController {
         
         // fetch data -> spiner -> if success -> configureViews
         productModel = ProductFirebaseService(output: self)
+        productModel?.fetchPinAndShopForProduct(shops: dataSource.shops, model: dataSource.model)
+        
+        
         setupBtn()
         configureToCardButton()
         setupScrollView()
@@ -652,8 +655,8 @@ extension NewProductViewController: MapViewManagerDelegate {
 
 
 extension NewProductViewController: ProductModelOutput {
-    func updateData(shops: [Shop]?, pins: [Pin]?) {
-        <#code#>
+    func updateData(shops: [Shop]?, pins: [Pin]?, isAddedToCard: Bool) {
+        print("updateData")
     }
 }
 

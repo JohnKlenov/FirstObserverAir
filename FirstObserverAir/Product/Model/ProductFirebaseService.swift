@@ -57,6 +57,9 @@ private extension ProductFirebaseService {
         return uniqueMallArray
     }
     
+    // test
+    
+    
     func fetchShops(shopsProduct: [String]) -> [Shop]? {
         var shopsList: [Shop] = []
         let gender = serviceFB.currentGender
@@ -66,6 +69,7 @@ private extension ProductFirebaseService {
         allShops.forEach { shop in
             if shopsProduct.contains(shop.name ?? "") {
                 shopsList.append(shop)
+                print("")
             }
         }
         return shopsList

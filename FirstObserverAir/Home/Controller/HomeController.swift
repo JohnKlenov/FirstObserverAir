@@ -252,6 +252,19 @@ extension HomeController:HeaderMallSectionDelegate {
     }
 }
 
+// Home if pressed cancel -> togle gender for modal and root property(возвращаем все как было) + segment(switch)
+// Mall -> Если мы уже init Mall in viewWillAppear switchGender() + homeModel?.isSwitchGender(completion) не срабатывает и обновление данных не происходит
+// Mall -> Если мы не init Mall -> in viewDidLoad init MallModel(self) + init() { updateModelGender() } -> fetch data failed
+// Mall -> first fetch data failed -> create placeholder for rootView с btn Try! (выставляем флаг в viewWillAppear и при новом переходе снова fetch data)
+
+// Home didSelectSegmentControl -> homeModel?.setGender(gender: gender)(root) -> func switchGender() + self.homeModel?.updateModelGender() = semgment switch (Man)
+// if error -> cancel переходим на другой item(VC) ->
+// Mall item(VC) -> func switchGender() + self.homeModel?.updateModelGender() -> forceFetchGenderData() semgment not switch (Woman)
+// if error -> cancel переходим на другой item(VC) ->
+// Catalog tem(VC) -> func switchGender() + self.homeModel?.updateModelGender() -> forceFetchGenderData() semgment switch (Man) !!!Success
+
+// back  Mall item(VC) -> func switchGender() -> не срабатывает forceFetchGenderData() segment Woman контент Man
+
 // MARK: - HeaderShopSectionDelegate
 extension HomeController:HeaderShopSectionDelegate {
     func didSelectAllShopButton() {

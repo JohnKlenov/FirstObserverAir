@@ -257,6 +257,7 @@ extension HomeFirebaseService: HomeModelInput {
             guard let _ = self.serviceFB.shops["Man"] else {
                 if let shopsMan = shopsMan, error == nil {
                     self.serviceFB.shops["Man"] = shopsMan
+                    self.serviceFB.shops["Woman"] = shopsMan
                 }
                 self.firstErrors.append(error)
                 self.semaphoreRelate.signal()
@@ -265,7 +266,7 @@ extension HomeFirebaseService: HomeModelInput {
             guard let shopsMan = shopsMan, error == nil else {
                 return
             }
-            
+            self.serviceFB.shops["Woman"] = shopsMan
             self.serviceFB.shops["Man"] = shopsMan
         }
         semaphoreRelate.wait()

@@ -10,10 +10,10 @@ import UIKit
 
 // Протокол для обработки полученных данных
 protocol ProductModelOutput:AnyObject {
-    func updateData(shops: [Shop]?, pins: [Pin]?, isAddedToCard:Bool)
+    func updateData(shops: [Shop], pins: [Pin], isAddedToCard:Bool)
 }
 
-final class NewProductViewController: UIViewController {
+final class ProductController: UIViewController {
     
     
     private let scrollView: UIScrollView = {
@@ -110,6 +110,7 @@ final class NewProductViewController: UIViewController {
     // MARK: - model property -
     var dataSource:ProductItem
     var arrayPin:[Places] = []
+    var shops: [Shop] = []
     var isAddedToCard = false {
         didSet {
             addItemToCartBtn.setNeedsUpdateConfiguration()
@@ -143,16 +144,12 @@ final class NewProductViewController: UIViewController {
         productModel = ProductFirebaseService(output: self)
         productModel?.fetchPinAndShopForProduct(shops: dataSource.shops, model: dataSource.model)
         
+        /// сначала получаем данные + преобразовываем
+    
+        ///  setupView
         
-        setupBtn()
-        configureToCardButton()
-        setupScrollView()
-        setupCollectionView()
-        setupStackView()
-        setupTableView()
-        setupSubviews()
-        setupConstraints()
-        configureViews()
+        
+        /// передаем isAddedToCard
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -178,7 +175,17 @@ final class NewProductViewController: UIViewController {
     }
     
     
-    
+    func setupView() {
+        setupBtn()
+        configureToCardButton()
+        setupScrollView()
+        setupCollectionView()
+        setupStackView()
+        setupTableView()
+        setupSubviews()
+        setupConstraints()
+        configureViews()
+    }
     
     @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
         
@@ -249,6 +256,13 @@ final class NewProductViewController: UIViewController {
     func setupBtn() {
         addItemToCartBtn = createButton(withTitle: R.Strings.OtherControllers.Product.addToCardButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(addItemToCartPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         webPageForItemtBtn = createButton(withTitle: R.Strings.OtherControllers.Product.websiteButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForItemPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
+        
+        if dataSource.model == nil {
+            addItemToCartBtn.isHidden = true
+        }
+        if dataSource.originalContent == nil {
+            webPageForItemtBtn.isHidden = true
+        }
     }
     
     func createStackViewWithLabels(firstLabelText: String, firstLabelFont: UIFont, secondLabelText: String, secondLabelFont: UIFont) -> UIStackView {
@@ -387,9 +401,17 @@ final class NewProductViewController: UIViewController {
     }
     
     private func setupStackView() {
-
-        let nameStack = createStackViewWithLabels(firstLabelText: "", firstLabelFont: UIFont.systemFont(ofSize: 20, weight: .bold), secondLabelText: "", secondLabelFont: UIFont.systemFont(ofSize: 17, weight: .medium))
-        let descriptionStack = createStackViewWithLabels(firstLabelText: R.Strings.OtherControllers.Product.descriptionTitleLabel, firstLabelFont: UIFont.systemFont(ofSize: 17, weight: .bold), secondLabelText: "", secondLabelFont: UIFont.systemFont(ofSize: 15, weight: .medium))
+       
+        /// nameStack
+        let brand = dataSource.brand ?? ""
+        let model = dataSource.model ?? ""
+        let brandModel = "\(brand) \(model)"
+        let price = dataSource.price != nil ? String(dataSource.price!) : ""
+        /// descriptionStack
+        let description = dataSource.description ?? ""
+        
+        let nameStack = createStackViewWithLabels(firstLabelText: brandModel, firstLabelFont: UIFont.systemFont(ofSize: 20, weight: .bold), secondLabelText: price, secondLabelFont: UIFont.systemFont(ofSize: 17, weight: .medium))
+        let descriptionStack = createStackViewWithLabels(firstLabelText: R.Strings.OtherControllers.Product.descriptionTitleLabel, firstLabelFont: UIFont.systemFont(ofSize: 17, weight: .bold), secondLabelText: description, secondLabelFont: UIFont.systemFont(ofSize: 15, weight: .medium))
         let btnStack = createStackViewWithBtns(firstButton: webPageForItemtBtn, secondButton: addItemToCartBtn)
 
         let subviews = [nameStack, btnStack, descriptionStack]
@@ -560,6 +582,16 @@ final class NewProductViewController: UIViewController {
 //                imageProductCollectionView.setContentOffset(CGPoint(x:x, y:0), animated: true)
     
     }
+    //            guard let latitude = pin.latitude, let longitude = pin.longitude else { return }
+    
+    func getMapPin(pins:[Pin]) {
+        pins.forEach { pin in
+            if let latitude = pin.latitude, let longitude = pin.longitude {
+                let pinMap = Places(title: pin.name, locationName: pin.address, discipline: pin.typeMall, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), imageName: pin.refImage)
+                self.arrayPin.append(pinMap)
+            }
+        }
+    }
     
     deinit {
         print("Deinit NewProductViewController")
@@ -569,18 +601,18 @@ final class NewProductViewController: UIViewController {
 
 
 // MARK: - UICollectionViewDelegate -
-extension NewProductViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension ProductController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource.refImage?.count ?? 0
     }
     
     
-    
+    /// as? ImageCell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.reuseID, for: indexPath) as! ImageCell
-//        guard let refImage = productModel?.refArray[indexPath.row] else { return UICollectionViewCell() }
-//        cell.configureCell(refImage: refImage)
+        guard let refImage = dataSource.refImage?[indexPath.row] else { return UICollectionViewCell() }
+        cell.configureCell(refImage: refImage)
         return cell
     }
     
@@ -601,7 +633,7 @@ extension NewProductViewController: UICollectionViewDelegate, UICollectionViewDa
 
 // MARK: - -
 
-extension NewProductViewController: UITableViewDelegate, UITableViewDataSource {
+extension ProductController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrayPin.count
@@ -646,7 +678,7 @@ extension NewProductViewController: UITableViewDelegate, UITableViewDataSource {
 
 // MARK: - MapViewManagerDelegate -
 
-extension NewProductViewController: MapViewManagerDelegate {
+extension ProductController: MapViewManagerDelegate {
     
     func selectAnnotationView(isSelect: Bool) {
         isMapSelected = isSelect
@@ -654,9 +686,14 @@ extension NewProductViewController: MapViewManagerDelegate {
 }
 
 
-extension NewProductViewController: ProductModelOutput {
-    func updateData(shops: [Shop]?, pins: [Pin]?, isAddedToCard: Bool) {
-        print("updateData")
+extension ProductController: ProductModelOutput {
+    func updateData(shops: [Shop], pins: [Pin], isAddedToCard: Bool) {
+        print("updateData shops: \(shops), pins: \(pins), isAddedToCard: \(isAddedToCard)")
+        
+        getMapPin(pins: pins)
+        self.shops = shops
+        setupView()
+        self.isAddedToCard = isAddedToCard
     }
 }
 

@@ -202,6 +202,10 @@ extension HomeController: UICollectionViewDelegate {
             navigationController?.pushViewController(shopProductVC, animated: true)
         case 2:
             print("2")
+            if let product = dataSource[indexPath.section].items[indexPath.row].popularProduct {
+                let productVC = ProductController(product: product)
+                navigationController?.pushViewController(productVC, animated: true)
+            }
         default:
             print("default")
         }

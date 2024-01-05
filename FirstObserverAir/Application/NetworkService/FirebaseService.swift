@@ -27,18 +27,7 @@ final class FirebaseService {
         }
     }
     var shops:[String:[Shop]] = [:]
-    var pinMall: [Pin]? {
-        didSet {
-//            func getMap() {
-//                self.placesMap = []
-//                placesFB.forEach { place in
-//                    let pin = Places(title: place.name, locationName: place.address, discipline:"Торговый центр", coordinate: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude), imageName: place.refImage)
-//                    self.placesMap.append(pin)
-//                }
-//            }
-        }
-    }
-   
+    var pinMall: [Pin]?
     
     var currentGender:String {
         return UserDefaults.standard.string(forKey: "gender") ?? "Woman"

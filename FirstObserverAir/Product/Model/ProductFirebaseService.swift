@@ -26,16 +26,21 @@ class ProductFirebaseService {
 extension ProductFirebaseService: ProductModelInput {
     func fetchPinAndShopForProduct(shops: [String]?, model: String?) {
         
-        guard let shops = shops, let model = model else {
-            output?.updateData(shops: nil, pins: nil, isAddedToCard: false)
-            return
+        var isAddedToCard = false
+        var shopsForProduct:[Shop] = []
+        var pinMall:[Pin] = []
+        
+        if let model = model {
+            isAddedToCard = addItemToCart(currentModel: model)
         }
         
-        let isAddedToCard = addItemToCart(currentModel: model)
-        let shopsForProduct = fetchShops(shopsProduct: shops)
-        let pinMall = fetchPinMall(shopsForProduct: <#T##[Shop]#>)
+        if let shops = shops {
+            shopsForProduct = fetchShops(shopsProduct: shops)
+        }
         
-        output?.updateData(shops: shopsForProduct, pins: [], isAddedToCard: isAddedToCard)
+        pinMall = fetchPinMall(shopsForProduct: shopsForProduct)
+        
+        output?.updateData(shops: shopsForProduct, pins: pinMall, isAddedToCard: isAddedToCard)
     }
 }
 
@@ -57,29 +62,26 @@ private extension ProductFirebaseService {
         return uniqueMallArray
     }
     
-    // test
     
-    
-    func fetchShops(shopsProduct: [String]) -> [Shop]? {
+    func fetchShops(shopsProduct: [String]) -> [Shop] {
         var shopsList: [Shop] = []
         let gender = serviceFB.currentGender
         
-        guard let allShops = serviceFB.shops[gender] else {return nil}
+        guard let allShops = serviceFB.shops[gender] else {return shopsList}
         
         allShops.forEach { shop in
             if shopsProduct.contains(shop.name ?? "") {
                 shopsList.append(shop)
-                print("")
             }
         }
         return shopsList
     }
     
-    func fetchPinMall(shopsForProduct: [Shop]) -> [Pin]? {
+    func fetchPinMall(shopsForProduct: [Shop]) -> [Pin] {
     
         var pinList: [Pin] = []
 
-        guard let pinMall = serviceFB.pinMall else {return nil}
+        guard let pinMall = serviceFB.pinMall else {return pinList}
         // тут мы создаем список malls в котором есть данный Shop (мы заложили возможность что один товар может быть в разных Shop, то есть продукт может быть в двух shop в одном mall?) (но у нас правило один уникальный продукт для mall)?
         let mallList = createUniqueMallArray(from: shopsForProduct)
         

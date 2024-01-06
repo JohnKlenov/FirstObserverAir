@@ -45,7 +45,6 @@ class ShopCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        print("prepareForReuse")
         imageView.isHidden = false
         nameLabel.isHidden = true
 //        imageView.sd_cancelCurrentImageLoad()

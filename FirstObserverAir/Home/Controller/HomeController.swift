@@ -218,31 +218,33 @@ extension HomeController:HomeModelOutput {
     func updateData(data: [String:SectionModel]?, error: Error?) {
         
         stopLoad()
-        
-        switch self.stateDataSource {
+        switch stateDataSource {
             
         case .firstDataUpdate:
             guard let data = data, error == nil else {
-                
-                self.navController?.showPlaceholder()
-                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: self.stateDataSource) {
+                navController?.showPlaceholder()
+                showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: stateDataSource) {
                     self.forceFirstFetchData()
                 }
                 return
             }
-            self.navController?.hiddenPlaceholder()
-            self.stateDataSource = .followingDataUpdate
+            navController?.hiddenPlaceholder()
+            stateDataSource = .followingDataUpdate
             
-            self.dataSource = self.convertDictionaryToArray(data: data)
+            dataSource = convertDictionaryToArray(data: data)
             
         case .followingDataUpdate:
             guard let data = data, error == nil else {
-                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: self.stateDataSource) {
+                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: stateDataSource) {
                     self.forceFetchGenderData()
+                } cancelActionHandler: {
+                    /// when we pressed cancel switchGender not work and not observer
+                    self.homeModel?.toggleGender()
+                    NotificationCenter.default.post(name: NSNotification.Name("SwitchSegmentControlNotification"), object: nil)
                 }
                 return
             }
-            self.dataSource = self.convertDictionaryToArray(data: data)
+            dataSource = convertDictionaryToArray(data: data)
         }
     }
 }
@@ -281,6 +283,11 @@ extension HomeController:HeaderShopSectionDelegate {
     
     
     
+// MARK: - Trash
+
+//                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: self.stateDataSource) {
+//                    self.forceFetchGenderData()
+//                }
     
     
     

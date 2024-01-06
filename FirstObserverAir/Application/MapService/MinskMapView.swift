@@ -28,7 +28,6 @@ class MinskMapView: MKMapView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        print(" override init(frame: CGRect) ")
         delegate = self
 //        calculateRegion()
         isZoomEnabled = false
@@ -51,7 +50,7 @@ class MinskMapView: MKMapView {
         // если > 0 нужно не увеличивать а уменьшать newRegion
         guard percentWidth > 0 else { return }
         let plusPercent:Double = Double(Int(percentWidth))/100
-        print(" plusPercent - \(plusPercent)")
+//        print(" plusPercent - \(plusPercent)")
         let newRegion = Int(18000*plusPercent*10)
         
         regionMap = CLLocationDistance(newRegion)
@@ -84,11 +83,11 @@ extension MinskMapView: MKMapViewDelegate {
                 imageView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
                 imageView.contentMode = .scaleAspectFit
                 imageView.sd_setImage(with: refStorage, placeholderImage: UIImage(named: "DefaultImage")) { image, error, cacheType, storageRef in
-                    if let error = error {
-                        print("error - \(error)")
+                    if let _ = error {
+//                        print("error - \(error)")
                     } else {
-                        if let image = image {
-                            print("image for leftCalloutAccessoryView - \(image)")
+                        if let _ = image {
+//                            print("image for leftCalloutAccessoryView - \(image)")
                             DispatchQueue.main.async {
                                 view.leftCalloutAccessoryView = imageView
                             }
@@ -113,7 +112,7 @@ extension MinskMapView: MKMapViewDelegate {
 
 extension MKMapView {
     func centerLocation(_ location: CLLocation, regionRadius: CLLocationDistance) {
-        print("centerLocation centerLocation centerLocation \(regionRadius)")
+//        print("centerLocation centerLocation centerLocation \(regionRadius)")
         let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
         setRegion(coordinateRegion, animated: true)
     

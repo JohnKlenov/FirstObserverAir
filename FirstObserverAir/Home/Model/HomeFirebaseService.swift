@@ -9,6 +9,7 @@ import Foundation
 
 // Протокол для модели данных
 protocol HomeModelInput: AnyObject {
+    func toggleGender()
     func returnGender() -> String
     func fetchGenderData()
     func firstFetchData()
@@ -105,6 +106,16 @@ class HomeFirebaseService {
 
 extension HomeFirebaseService: HomeModelInput {
     
+    func toggleGender() {
+        if gender == "Man" {
+            setGender(gender: "Woman")
+            updateModelGender()
+        } else {
+            setGender(gender: "Man")
+            updateModelGender()
+        }
+    }
+    
     func returnGender() -> String {
         return gender
     }
@@ -151,7 +162,6 @@ extension HomeFirebaseService: HomeModelInput {
             
         dataHome = [:]
         deleteGenderListeners()
-        
         pathsGenderListener.append("previewMall\(gender)")
         previewService.fetchPreviewSection(path: "previewMall\(gender)") { malls, error in
             
@@ -228,12 +238,12 @@ extension HomeFirebaseService: HomeModelInput {
             
             let firstError = self.returnFirstError(in: self.firstErrors)
             self.firstErrors.removeAll()
+            
             guard self.dataHome?.count == 3, firstError == nil else {
                 
-               
-                
-                self.output?.updateData(data: self.dataHome, error: firstError)
                 self.dataHome = nil
+                self.output?.updateData(data: self.dataHome, error: firstError)
+//                self.dataHome = nil
                 /// при restartGender нельзя удалять всех наблюдателей!!!
                 if self.stateDataSource == .firstDataUpdate, !self.isFirstStartSuccessful {
                     self.deleteAllListeners()

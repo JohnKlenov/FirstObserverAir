@@ -113,7 +113,9 @@ final class ProductController: UIViewController {
     var shops: [Shop] = []
     var isAddedToCard = false {
         didSet {
-            addItemToCartBtn.setNeedsUpdateConfiguration()
+            if let _ = addItemToCartBtn {
+                addItemToCartBtn.setNeedsUpdateConfiguration()
+            }
         }
     }
     
@@ -139,17 +141,8 @@ final class ProductController: UIViewController {
         view.backgroundColor = R.Colors.systemBackground
         tabBarController?.tabBar.isHidden = true
 //        navigationItem.largeTitleDisplayMode = .never
-        
-        // fetch data -> spiner -> if success -> configureViews
         productModel = ProductFirebaseService(output: self)
         productModel?.fetchPinAndShopForProduct(shops: dataSource.shops, model: dataSource.model)
-        
-        /// сначала получаем данные + преобразовываем
-    
-        ///  setupView
-        
-        
-        /// передаем isAddedToCard
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -174,6 +167,14 @@ final class ProductController: UIViewController {
         heightCnstrTableView.constant = heightTV
     }
     
+    func setupDataSource(shopsProduct: [Shop], pinsProduct: [Pin], isAddedToCardProduct: Bool) {
+        getMapPin(pins: pinsProduct)
+        shops = shopsProduct
+        isAddedToCard = isAddedToCardProduct
+        pageControl.numberOfPages = dataSource.refImage?.count ?? 1
+        pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
+        mapView.arrayPin = arrayPin
+    }
     
     func setupView() {
         setupBtn()
@@ -182,9 +183,9 @@ final class ProductController: UIViewController {
         setupCollectionView()
         setupStackView()
         setupTableView()
-        setupSubviews()
+        setupMapView()
+        addSubviews()
         setupConstraints()
-        configureViews()
     }
     
     @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
@@ -316,14 +317,7 @@ final class ProductController: UIViewController {
         return stackViewForButton
     }
 
-    private func configureViews() {
-//        nameLabel.text = productModel?.model
-//        priceLabel.text = productModel?.price
-//        descriptionLabel.text = productModel?.description
-//        pageControl.numberOfPages = productModel?.refArray.count ?? 1
-        pageControl.numberOfPages = dataSource.refImage?.count ?? 1
-        pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
-        mapView.arrayPin = arrayPin
+    private func setupMapView() {
         mapView.delegateMap = self
         mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
         mapView.addGestureRecognizer(mapTapGestureRecognizer)
@@ -418,7 +412,7 @@ final class ProductController: UIViewController {
         subviews.forEach { compositeStackView.addArrangedSubview($0) }
     }
     
-    private func setupSubviews() {
+    private func addSubviews() {
         
         
         containerView.addSubview(imageCollectionView)
@@ -688,12 +682,9 @@ extension ProductController: MapViewManagerDelegate {
 
 extension ProductController: ProductModelOutput {
     func updateData(shops: [Shop], pins: [Pin], isAddedToCard: Bool) {
-        print("updateData shops: \(shops), pins: \(pins), isAddedToCard: \(isAddedToCard)")
-        
-        getMapPin(pins: pins)
-        self.shops = shops
+//        originalContent : https://all-stars.by/store/women/shoes/krossovki/krossovki-nike-wmns-waffle-debut-dh9523-100/
+        setupDataSource(shopsProduct: shops, pinsProduct: pins, isAddedToCardProduct: isAddedToCard)
         setupView()
-        self.isAddedToCard = isAddedToCard
     }
 }
 
@@ -822,3 +813,10 @@ extension ProductController: ProductModelOutput {
 //        compositeStackView.addArrangedSubview(stackViewForLabel)
 //        compositeStackView.addArrangedSubview(stackViewForButton)
 //        compositeStackView.addArrangedSubview(stackViewForDescription)
+
+//        pageControl.numberOfPages = dataSource.refImage?.count ?? 1
+//        pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
+//        mapView.arrayPin = arrayPin
+//        mapView.delegateMap = self
+//        mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
+//        mapView.addGestureRecognizer(mapTapGestureRecognizer)

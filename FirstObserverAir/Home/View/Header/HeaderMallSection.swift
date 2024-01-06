@@ -40,6 +40,7 @@ class HeaderMallSection: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleSwitchSegmentControlNotification), name: NSNotification.Name("SwitchSegmentControlNotification"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -76,6 +77,18 @@ private extension HeaderMallSection {
 
 // MARK: - Selectors
 private extension HeaderMallSection {
+    
+    @objc func handleSwitchSegmentControlNotification(_ notification: NSNotification) {
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            segmentedControl.selectedSegmentIndex = 1
+        case 1:
+            segmentedControl.selectedSegmentIndex = 0
+        default:
+            break
+        }
+    }
+
     
     @objc func didTapSegmentedControl(_ segmentControl: UISegmentedControl) {
         switch segmentControl.selectedSegmentIndex {

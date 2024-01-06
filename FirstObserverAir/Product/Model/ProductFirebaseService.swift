@@ -47,7 +47,10 @@ extension ProductFirebaseService: ProductModelInput {
 private extension ProductFirebaseService {
     
     func addItemToCart(currentModel:String) -> Bool {
-        guard let cartProduct = serviceFB.currentCartProducts else { return false }
+        guard let cartProduct = serviceFB.currentCartProducts else {
+            print("Returned message for analytic FB Crashlytics error ProductFirebaseService func addItemToCart(currentModel:String) -> Bool")
+            return false
+        }
         return cartProduct.contains { $0.model == currentModel }
     }
     
@@ -67,7 +70,10 @@ private extension ProductFirebaseService {
         var shopsList: [Shop] = []
         let gender = serviceFB.currentGender
         
-        guard let allShops = serviceFB.shops[gender] else {return shopsList}
+        guard let allShops = serviceFB.shops[gender] else {
+            print("Returned message for analytic FB Crashlytics error ProductFirebaseService func fetchShops(shopsProduct: [String]) -> [Shop]")
+            return shopsList
+        }
         
         allShops.forEach { shop in
             if shopsProduct.contains(shop.name ?? "") {
@@ -81,7 +87,10 @@ private extension ProductFirebaseService {
     
         var pinList: [Pin] = []
 
-        guard let pinMall = serviceFB.pinMall else {return pinList}
+        guard let pinMall = serviceFB.pinMall else {
+            print("Returned message for analytic FB Crashlytics error ProductFirebaseService func fetchPinMall(shopsForProduct: [Shop]) -> [Pin]")
+            return pinList
+        }
         // тут мы создаем список malls в котором есть данный Shop (мы заложили возможность что один товар может быть в разных Shop, то есть продукт может быть в двух shop в одном mall?) (но у нас правило один уникальный продукт для mall)?
         let mallList = createUniqueMallArray(from: shopsForProduct)
         

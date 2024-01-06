@@ -15,7 +15,6 @@ protocol ProductModelOutput:AnyObject {
 
 final class ProductController: UIViewController {
     
-    
     private let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
@@ -102,16 +101,14 @@ final class ProductController: UIViewController {
     
     private var productModel: ProductModelInput?
     
-    // MARK: - Constraint property -
-    var heightCnstrTableView: NSLayoutConstraint!
+    // MARK: - Constraint property
+    private var heightCnstrTableView: NSLayoutConstraint!
     
-    
-    
-    // MARK: - model property -
-    var dataSource:ProductItem
-    var arrayPin:[Places] = []
-    var shops: [Shop] = []
-    var isAddedToCard = false {
+    // MARK: - model property
+    private var dataSource:ProductItem
+    private var arrayPin:[Places] = []
+    private var shops: [Shop] = []
+    private var isAddedToCard = false {
         didSet {
             if let _ = addItemToCartBtn {
                 addItemToCartBtn.setNeedsUpdateConfiguration()
@@ -120,7 +117,6 @@ final class ProductController: UIViewController {
     }
     
     private let encoder = JSONEncoder()
-//    let managerFB = FBManager.shared
     private var isMapSelected = false
     
 //    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -147,8 +143,6 @@ final class ProductController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // refactor getCartObservser
-//        managerFB.removeObserverForCartProductsUser()
         tabBarController?.tabBar.isHidden = true
     }
     
@@ -157,24 +151,19 @@ final class ProductController: UIViewController {
         tabBarController?.tabBar.isHidden = false
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let heightTV:CGFloat = CGFloat(arrayPin.count)*50
         heightCnstrTableView.constant = heightTV
     }
     
-    func setupDataSource(shopsProduct: [Shop], pinsProduct: [Pin], isAddedToCardProduct: Bool) {
-        getMapPin(pins: pinsProduct)
-        shops = shopsProduct
-        isAddedToCard = isAddedToCardProduct
-        pageControl.numberOfPages = dataSource.refImage?.count ?? 1
-        pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
-        mapView.arrayPin = arrayPin
+    deinit {
+        print("Deinit NewProductViewController")
     }
+}
+
+// MARK: - Setting Views
+private extension ProductController {
     
     func setupView() {
         setupBtn()
@@ -188,47 +177,28 @@ final class ProductController: UIViewController {
         setupConstraints()
     }
     
-    @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
-        
-        var countFalse = 0
-        
-        for annotation in mapView.annotations {
-            
-            if let annotationView = mapView.view(for: annotation), let annotationMarker = annotationView as? MKMarkerAnnotationView {
-                
-                let point = gestureRecognizer.location(in: mapView)
-                let convertPoint = mapView.convert(point, to: annotationMarker)
-                if annotationMarker.point(inside: convertPoint, with: nil) {
-                } else {
-                    countFalse+=1
-                }
-            }
-        }
-        if countFalse == mapView.annotations.count, isMapSelected == false {
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//            let fullScreenMap = storyboard.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-//            fullScreenMap.modalPresentationStyle = .fullScreen
-//            fullScreenMap.arrayPin = arrayPin
-//            present(fullScreenMap, animated: true, completion: nil)
-        }
+    func setupDataSource(shopsProduct: [Shop], pinsProduct: [Pin], isAddedToCardProduct: Bool) {
+        getMapPin(pins: pinsProduct)
+        shops = shopsProduct
+        isAddedToCard = isAddedToCardProduct
+        pageControl.numberOfPages = dataSource.refImage?.count ?? 1
+        pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
+        mapView.arrayPin = arrayPin
     }
+}
+
+// MARK: - Setting
+private extension ProductController {
     
-    
-    private func configureToCardButton() {
+    func setupBtn() {
+        addItemToCartBtn = createButton(withTitle: R.Strings.OtherControllers.Product.addToCardButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(addItemToCartPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
+        webPageForItemtBtn = createButton(withTitle: R.Strings.OtherControllers.Product.websiteButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForItemPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         
-        addItemToCartBtn.configurationUpdateHandler = { [weak self] button in
-            
-            guard let isAddedToCard = self?.isAddedToCard else {return}
-            var config = button.configuration
-            var container = AttributeContainer()
-            container.font = UIFont.boldSystemFont(ofSize: 15)
-            container.foregroundColor = R.Colors.label
-            
-            config?.attributedTitle = isAddedToCard ? AttributedString(R.Strings.OtherControllers.Product.addedToCardButton, attributes: container) : AttributedString(R.Strings.OtherControllers.Product.addToCardButton, attributes: container)
-            config?.image = isAddedToCard ? UIImage(systemName: R.Strings.OtherControllers.Product.imageSystemNameCartFill)?.withTintColor(R.Colors.label, renderingMode: .alwaysOriginal) : UIImage(systemName: R.Strings.OtherControllers.Product.imageSystemNameCart)?.withTintColor(R.Colors.label, renderingMode: .alwaysOriginal)
-            
-            button.isEnabled = !isAddedToCard
-            button.configuration = config
+        if dataSource.model == nil {
+            addItemToCartBtn.isHidden = true
+        }
+        if dataSource.originalContent == nil {
+            webPageForItemtBtn.isHidden = true
         }
     }
     
@@ -254,16 +224,69 @@ final class ProductController: UIViewController {
         return button
     }
     
-    func setupBtn() {
-        addItemToCartBtn = createButton(withTitle: R.Strings.OtherControllers.Product.addToCardButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(addItemToCartPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
-        webPageForItemtBtn = createButton(withTitle: R.Strings.OtherControllers.Product.websiteButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForItemPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
+    func configureToCardButton() {
+        addItemToCartBtn.configurationUpdateHandler = { [weak self] button in
+            
+            guard let isAddedToCard = self?.isAddedToCard else {return}
+            var config = button.configuration
+            var container = AttributeContainer()
+            container.font = UIFont.boldSystemFont(ofSize: 15)
+            container.foregroundColor = R.Colors.label
+            
+            config?.attributedTitle = isAddedToCard ? AttributedString(R.Strings.OtherControllers.Product.addedToCardButton, attributes: container) : AttributedString(R.Strings.OtherControllers.Product.addToCardButton, attributes: container)
+            config?.image = isAddedToCard ? UIImage(systemName: R.Strings.OtherControllers.Product.imageSystemNameCartFill)?.withTintColor(R.Colors.label, renderingMode: .alwaysOriginal) : UIImage(systemName: R.Strings.OtherControllers.Product.imageSystemNameCart)?.withTintColor(R.Colors.label, renderingMode: .alwaysOriginal)
+            
+            button.isEnabled = !isAddedToCard
+            button.configuration = config
+        }
+    }
+    
+    func setupScrollView() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(containerView)
         
-        if dataSource.model == nil {
-            addItemToCartBtn.isHidden = true
-        }
-        if dataSource.originalContent == nil {
-            webPageForItemtBtn.isHidden = true
-        }
+        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        containerView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
+    }
+    
+    func setupCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        layout.scrollDirection = .horizontal
+        imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        imageCollectionView.delegate = self
+        imageCollectionView.dataSource = self
+        imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        imageCollectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.reuseID)
+
+        imageCollectionView.backgroundColor = .clear
+        imageCollectionView.isPagingEnabled = true
+        imageCollectionView.showsVerticalScrollIndicator = false
+        imageCollectionView.showsHorizontalScrollIndicator = false
+    }
+    
+    func setupStackView() {
+        /// nameStack
+        let brand = dataSource.brand ?? ""
+        let model = dataSource.model ?? ""
+        let brandModel = "\(brand) \(model)"
+        let price = dataSource.price != nil ? String(dataSource.price!) : ""
+        /// descriptionStack
+        let description = dataSource.description ?? ""
+        let nameStack = createStackViewWithLabels(firstLabelText: brandModel, firstLabelFont: UIFont.systemFont(ofSize: 20, weight: .bold), secondLabelText: price, secondLabelFont: UIFont.systemFont(ofSize: 17, weight: .medium))
+        let descriptionStack = createStackViewWithLabels(firstLabelText: R.Strings.OtherControllers.Product.descriptionTitleLabel, firstLabelFont: UIFont.systemFont(ofSize: 17, weight: .bold), secondLabelText: description, secondLabelFont: UIFont.systemFont(ofSize: 15, weight: .medium))
+        let btnStack = createStackViewWithBtns(firstButton: webPageForItemtBtn, secondButton: addItemToCartBtn)
+
+        let subviews = [nameStack, btnStack, descriptionStack]
+        subviews.forEach { compositeStackView.addArrangedSubview($0) }
     }
     
     func createStackViewWithLabels(firstLabelText: String, firstLabelFont: UIFont, secondLabelText: String, secondLabelFont: UIFont) -> UIStackView {
@@ -303,7 +326,7 @@ final class ProductController: UIViewController {
         
         return stackViewForLabel
     }
-
+    
     func createStackViewWithBtns(firstButton: UIButton, secondButton: UIButton) -> UIStackView {
         let stackViewForButton: UIStackView = {
             let stack = UIStackView(arrangedSubviews: [firstButton, secondButton])
@@ -313,108 +336,24 @@ final class ProductController: UIViewController {
             stack.spacing = 5
             return stack
         }()
-        
         return stackViewForButton
     }
-
-    private func setupMapView() {
+    
+    func setupTableView() {
+        mallTableView.delegate = self
+        mallTableView.dataSource = self
+        mallTableView.register(MallTableViewCell.self, forCellReuseIdentifier: MallTableViewCell.reuseID)
+        heightCnstrTableView = mallTableView.heightAnchor.constraint(equalToConstant: 50)
+        heightCnstrTableView.isActive = true
+    }
+    
+    func setupMapView() {
         mapView.delegateMap = self
         mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
         mapView.addGestureRecognizer(mapTapGestureRecognizer)
     }
     
-    
-//    private func saveProductFB(callBack: @escaping (StateCallback) -> Void) {
-        
-//        guard let product = productModel else { return }
-//
-//        let productEncode = AddedProduct(product: product)
-//
-//        do {
-//            let data = try encoder.encode(productEncode)
-//            let json = try JSONSerialization.jsonObject(with: data)
-//            managerFB.addProductInBaseData(nameProduct: product.model, json: json) { state in
-//                switch state {
-//
-//                case .success:
-//                    self.configureBadgeValue()
-//                    callBack(.success)
-//                case .failed:
-//                    callBack(.failed)
-//                }
-//            }
-//        } catch {
-//            print("func saveProductFB error -", error)
-//            callBack(.failed)
-//        }
-//    }
-    
-    
-    private func setupTableView() {
-        mallTableView.delegate = self
-        mallTableView.dataSource = self
-//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MyTableViewCell")
-        mallTableView.register(MallTableViewCell.self, forCellReuseIdentifier: MallTableViewCell.reuseID)
-        
-        heightCnstrTableView = mallTableView.heightAnchor.constraint(equalToConstant: 50)
-        heightCnstrTableView.isActive = true
-    }
-    
-    private func setupScrollView() {
-        
-        
-        view.addSubview(scrollView)
-        scrollView.addSubview(containerView)
-        
-        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        scrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
-        containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        containerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        containerView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        containerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-        containerView.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
-    }
-    
-    private func setupCollectionView() {
-        let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-        layout.scrollDirection = .horizontal
-        imageCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        imageCollectionView.delegate = self
-        imageCollectionView.dataSource = self
-        imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        imageCollectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.reuseID)
-
-        imageCollectionView.backgroundColor = .clear
-        imageCollectionView.isPagingEnabled = true
-        imageCollectionView.showsVerticalScrollIndicator = false
-        imageCollectionView.showsHorizontalScrollIndicator = false
-    }
-    
-    private func setupStackView() {
-       
-        /// nameStack
-        let brand = dataSource.brand ?? ""
-        let model = dataSource.model ?? ""
-        let brandModel = "\(brand) \(model)"
-        let price = dataSource.price != nil ? String(dataSource.price!) : ""
-        /// descriptionStack
-        let description = dataSource.description ?? ""
-        
-        let nameStack = createStackViewWithLabels(firstLabelText: brandModel, firstLabelFont: UIFont.systemFont(ofSize: 20, weight: .bold), secondLabelText: price, secondLabelFont: UIFont.systemFont(ofSize: 17, weight: .medium))
-        let descriptionStack = createStackViewWithLabels(firstLabelText: R.Strings.OtherControllers.Product.descriptionTitleLabel, firstLabelFont: UIFont.systemFont(ofSize: 17, weight: .bold), secondLabelText: description, secondLabelFont: UIFont.systemFont(ofSize: 15, weight: .medium))
-        let btnStack = createStackViewWithBtns(firstButton: webPageForItemtBtn, secondButton: addItemToCartBtn)
-
-        let subviews = [nameStack, btnStack, descriptionStack]
-        subviews.forEach { compositeStackView.addArrangedSubview($0) }
-    }
-    
-    private func addSubviews() {
-        
-        
+    func addSubviews() {
         containerView.addSubview(imageCollectionView)
         containerView.addSubview(pageControl)
         containerView.addSubview(compositeStackView)
@@ -425,10 +364,60 @@ final class ProductController: UIViewController {
         containerView.addSubview(pagesView)
     }
     
-    private func setupConstraints() {
-        
-        
-        
+    func getMapPin(pins:[Pin]) {
+        pins.forEach { pin in
+            if let latitude = pin.latitude, let longitude = pin.longitude {
+                let pinMap = Places(title: pin.name, locationName: pin.address, discipline: pin.typeMall, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), imageName: pin.refImage)
+                self.arrayPin.append(pinMap)
+            }
+        }
+    }
+    
+    func configureBadgeValue() {
+        if let items = self.tabBarController?.tabBar.items {
+            if let badgeValue = items[3].badgeValue {
+                let currentCount = (Int(badgeValue) ?? 0) + 1
+                items[3].badgeValue = "\(currentCount)"
+            } else {
+                items[3].badgeValue = "1"
+            }
+        }
+    }
+    
+    func setupAlertView(state: AlertType, frame: CGRect) {
+        let alert = CustomAlertView(alertType: state, frame: frame)
+        view.addSubview(alert)
+    }
+    
+    //    private func saveProductFB(callBack: @escaping (StateCallback) -> Void) {
+            
+    //        guard let product = productModel else { return }
+    //
+    //        let productEncode = AddedProduct(product: product)
+    //
+    //        do {
+    //            let data = try encoder.encode(productEncode)
+    //            let json = try JSONSerialization.jsonObject(with: data)
+    //            managerFB.addProductInBaseData(nameProduct: product.model, json: json) { state in
+    //                switch state {
+    //
+    //                case .success:
+    //                    self.configureBadgeValue()
+    //                    callBack(.success)
+    //                case .failed:
+    //                    callBack(.failed)
+    //                }
+    //            }
+    //        } catch {
+    //            print("func saveProductFB error -", error)
+    //            callBack(.failed)
+    //        }
+    //    }
+}
+
+// MARK: - Layout
+private extension ProductController {
+    func setupConstraints() {
         imageCollectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0).isActive = true
         imageCollectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 0).isActive = true
         imageCollectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 0).isActive = true
@@ -461,52 +450,39 @@ final class ProductController: UIViewController {
         mapView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20).isActive = true
         
         pagesView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 20).isActive = true
-//        pagesView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         pagesView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
     }
-    
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        
-        if scrollView == imageCollectionView {
-            let currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
-            pageControl.currentPage = currentPage
-            pagesView.configureView(currentPage: currentPage + 1, count: dataSource.refImage?.count ?? 0)
-        } else {
-            print("scrolling another view")
+}
 
-        }
-    }
+// MARK: - Selectors
+private extension ProductController {
     
-    private func configureBadgeValue() {
+    @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
         
-        if let items = self.tabBarController?.tabBar.items {
-            if let badgeValue = items[3].badgeValue {
-                let currentCount = (Int(badgeValue) ?? 0) + 1
-                items[3].badgeValue = "\(currentCount)"
-            } else {
-                items[3].badgeValue = "1"
+        var countFalse = 0
+        
+        for annotation in mapView.annotations {
+            
+            if let annotationView = mapView.view(for: annotation), let annotationMarker = annotationView as? MKMarkerAnnotationView {
+                
+                let point = gestureRecognizer.location(in: mapView)
+                let convertPoint = mapView.convert(point, to: annotationMarker)
+                if annotationMarker.point(inside: convertPoint, with: nil) {
+                } else {
+                    countFalse+=1
+                }
             }
         }
+        if countFalse == mapView.annotations.count, isMapSelected == false {
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            let fullScreenMap = storyboard.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
+//            fullScreenMap.modalPresentationStyle = .fullScreen
+//            fullScreenMap.arrayPin = arrayPin
+//            present(fullScreenMap, animated: true, completion: nil)
+        }
     }
     
-//    private func alertViewSP(present: AlertIcon) {
-//
-////        AlertKitAPI.present(
-////            title: "Added to Library",
-////            icon: present,
-////            style: .iOS17AppleMusic,
-////            haptic: .success
-////        )
-////        let alertView = SPAlertView(title: "Product added to cart", preset: present)
-////        alertView.layout.margins.top = 30
-////        alertView.layout.iconSize = .init(width: view.frame.width/4, height: view.frame.width/4)
-////        alertView.duration = 2
-////        alertView.present()
-//    }
-    
     @objc func addItemToCartPressed(_ sender: UIButton) {
-        
-        
 //        saveProductFB() { state in
 //            switch state {
 //            case .success:
@@ -520,40 +496,7 @@ final class ProductController: UIViewController {
 //        }
     }
     
-    private func setupAlertView(state: AlertType, frame: CGRect) {
-        let alert = CustomAlertView(alertType: state, frame: frame)
-        view.addSubview(alert)
-    }
-    
-//    private func configureAlertView(state: AlertType) {
-////        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
-//        let containerView = UIView(frame: self.view.frame)
-//        containerView.center = view.center
-//        containerView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
-//        view.addSubview(containerView)
-//
-//        let successAlert = TestCustomAlertView(alertType: state)
-//        containerView.addSubview(successAlert)
-//        successAlert.translatesAutoresizingMaskIntoConstraints = false
-//
-//        let centerXConstraint = successAlert.centerXAnchor.constraint(equalTo: containerView.centerXAnchor)
-//        let centerYConstraint = successAlert.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
-//        let widthConstraint = successAlert.widthAnchor.constraint(equalToConstant: 200)
-//        let heightConstraint = successAlert.heightAnchor.constraint(equalToConstant: 200)
-//        NSLayoutConstraint.activate([centerXConstraint, centerYConstraint, widthConstraint, heightConstraint])
-//
-//        successAlert.showAnimation()
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
-//            successAlert.hideAnimation {
-//                containerView.removeFromSuperview()
-//            }
-//        })
-//
-//    }
-    
     @objc func webPageForItemPressed(_ sender: UIButton) {
-
 //        let profileVC = NewProfileViewController()
 //        let nav = NavigationController(rootViewController: profileVC)
 //
@@ -564,44 +507,18 @@ final class ProductController: UIViewController {
 //        present(signInVC, animated: true, completion: nil)
     }
     
-    @objc func didTapButtonItem() {
-        print("didTapButtonItem")
-    }
-    
     @objc func didTapPageControl(_ sender: UIPageControl) {
-
         imageCollectionView.scrollToItem(at: IndexPath(item: sender.currentPage, section: 0), at: .centeredHorizontally, animated: true)
         pagesView.configureView(currentPage: sender.currentPage + 1, count: dataSource.refImage?.count ?? 0)
-//        let x = CGFloat(pageControl.currentPage) * scrollView.frame.size.width
-//                imageProductCollectionView.setContentOffset(CGPoint(x:x, y:0), animated: true)
-    
-    }
-    //            guard let latitude = pin.latitude, let longitude = pin.longitude else { return }
-    
-    func getMapPin(pins:[Pin]) {
-        pins.forEach { pin in
-            if let latitude = pin.latitude, let longitude = pin.longitude {
-                let pinMap = Places(title: pin.name, locationName: pin.address, discipline: pin.typeMall, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), imageName: pin.refImage)
-                self.arrayPin.append(pinMap)
-            }
-        }
-    }
-    
-    deinit {
-        print("Deinit NewProductViewController")
     }
 }
 
-
-
-// MARK: - UICollectionViewDelegate -
+// MARK: - UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 extension ProductController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource.refImage?.count ?? 0
     }
-    
-    
     /// as? ImageCell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.reuseID, for: indexPath) as! ImageCell
@@ -624,15 +541,14 @@ extension ProductController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
 }
 
-
-// MARK: - -
-
+// MARK: - UITableViewDelegate, UITableViewDataSource
 extension ProductController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return arrayPin.count
     }
     
+    /// as! ???
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "MyTableViewCell", for: indexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: MallTableViewCell.reuseID, for: indexPath) as! MallTableViewCell
@@ -669,17 +585,14 @@ extension ProductController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-
-// MARK: - MapViewManagerDelegate -
-
+// MARK: - MapViewManagerDelegate
 extension ProductController: MapViewManagerDelegate {
-    
     func selectAnnotationView(isSelect: Bool) {
         isMapSelected = isSelect
     }
 }
 
-
+// MARK: - ProductModelOutput
 extension ProductController: ProductModelOutput {
     func updateData(shops: [Shop], pins: [Pin], isAddedToCard: Bool) {
 //        originalContent : https://all-stars.by/store/women/shoes/krossovki/krossovki-nike-wmns-waffle-debut-dh9523-100/
@@ -687,6 +600,25 @@ extension ProductController: ProductModelOutput {
         setupView()
     }
 }
+
+// MARK: - UIScrollViewDelegate
+extension ProductController {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if scrollView == imageCollectionView {
+            let currentPage = Int(scrollView.contentOffset.x) / Int(scrollView.frame.width)
+            pageControl.currentPage = currentPage
+            pagesView.configureView(currentPage: currentPage + 1, count: dataSource.refImage?.count ?? 0)
+        } else {
+            print("scrolling another view")
+        }
+    }
+}
+
+
+
+
+
+
 
 
 
@@ -820,3 +752,45 @@ extension ProductController: ProductModelOutput {
 //        mapView.delegateMap = self
 //        mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
 //        mapView.addGestureRecognizer(mapTapGestureRecognizer)
+
+//    private func configureAlertView(state: AlertType) {
+////        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+//        let containerView = UIView(frame: self.view.frame)
+//        containerView.center = view.center
+//        containerView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+//        view.addSubview(containerView)
+//
+//        let successAlert = TestCustomAlertView(alertType: state)
+//        containerView.addSubview(successAlert)
+//        successAlert.translatesAutoresizingMaskIntoConstraints = false
+//
+//        let centerXConstraint = successAlert.centerXAnchor.constraint(equalTo: containerView.centerXAnchor)
+//        let centerYConstraint = successAlert.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+//        let widthConstraint = successAlert.widthAnchor.constraint(equalToConstant: 200)
+//        let heightConstraint = successAlert.heightAnchor.constraint(equalToConstant: 200)
+//        NSLayoutConstraint.activate([centerXConstraint, centerYConstraint, widthConstraint, heightConstraint])
+//
+//        successAlert.showAnimation()
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+//            successAlert.hideAnimation {
+//                containerView.removeFromSuperview()
+//            }
+//        })
+//
+//    }
+
+//    private func alertViewSP(present: AlertIcon) {
+//
+////        AlertKitAPI.present(
+////            title: "Added to Library",
+////            icon: present,
+////            style: .iOS17AppleMusic,
+////            haptic: .success
+////        )
+////        let alertView = SPAlertView(title: "Product added to cart", preset: present)
+////        alertView.layout.margins.top = 30
+////        alertView.layout.iconSize = .init(width: view.frame.width/4, height: view.frame.width/4)
+////        alertView.duration = 2
+////        alertView.present()
+//    }

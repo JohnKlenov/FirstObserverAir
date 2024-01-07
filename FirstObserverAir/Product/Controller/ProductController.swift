@@ -373,6 +373,17 @@ private extension ProductController {
         }
     }
     
+    func getShopForMall(indexPath:Int) -> Shop? {
+        let mall = arrayPin[indexPath].title
+        var selectedShop:[Shop] = []
+        shops.forEach { (item) in
+                        if item.mall == mall {
+                            selectedShop.append(item)
+                        }
+                    }
+        return selectedShop.first
+    }
+    
     func configureBadgeValue() {
         if let items = self.tabBarController?.tabBar.items {
             if let badgeValue = items[3].badgeValue {
@@ -548,17 +559,11 @@ extension ProductController: UITableViewDelegate, UITableViewDataSource {
         return arrayPin.count
     }
     
-    /// as! ???
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "MyTableViewCell", for: indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: MallTableViewCell.reuseID, for: indexPath) as! MallTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: MallTableViewCell.reuseID, for: indexPath) as? MallTableViewCell else {
+            return UITableViewCell()
+        }
         cell.configureCell(refImage: arrayPin[indexPath.row].imageName ?? "not ref", nameMall: arrayPin[indexPath.row].title)
-//        var contentCell = cell.defaultContentConfiguration()
-//        contentCell.text = arrayPin[indexPath.row].title
-//        contentCell.textProperties.color = R.Colors.label
-//        contentCell.textProperties.font = UIFont.systemFont(ofSize: 15, weight: .regular)
-//        contentCell.image = arrayPin[indexPath.row].image
-//        cell.contentConfiguration = contentCell
         return cell
     }
     
@@ -568,19 +573,14 @@ extension ProductController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let vc = DetailViewController()
+        
+        let vc = ShopDetailController()
         vc.modalPresentationStyle = .pageSheet
         vc.sheetPresentationController?.detents = [.medium()]
         vc.sheetPresentationController?.prefersGrabberVisible = true
-//        let mall = arrayPin[indexPath.row].title
-//        var magazine:[Shop] = []
-//                    magazinesArray.forEach { (magazine) in
-//                        if magazine.mall == mall {
-//                            magazine.append(magazine)
-//                        }
-//                    }
-//        vc.configure(magazine.first)
-        vc.nameMallLabel.text = arrayPin[indexPath.row].title
+        
+        let selectedShop = getShopForMall(indexPath: indexPath.row)
+        vc.configureViews(model: selectedShop)
         present(vc, animated: true, completion: nil)
     }
 }

@@ -32,6 +32,8 @@ enum R {
         static let separator = UIColor.separator
         static let opaqueSeparator = UIColor.opaqueSeparator
         
+        static let referenceColor = UIColor.systemBlue
+        
         static let systemFill = UIColor.systemFill
         
         static let systemGray2 = UIColor.systemGray2

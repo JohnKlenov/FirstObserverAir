@@ -508,14 +508,8 @@ private extension ProductController {
     }
     
     @objc func webPageForItemPressed(_ sender: UIButton) {
-//        let profileVC = NewProfileViewController()
-//        let nav = NavigationController(rootViewController: profileVC)
-//
-//        nav.modalPresentationStyle = .fullScreen
-//        present(nav, animated: true, completion: nil)
-        
-//        signInVC.presentationController?.delegate = self
-//        present(signInVC, animated: true, completion: nil)
+        guard let urlString = dataSource.originalContent else { return }
+        self.presentSafariViewController(withURL: urlString)
     }
     
     @objc func didTapPageControl(_ sender: UIPageControl) {

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 extension UIViewController {
     
@@ -55,4 +56,16 @@ extension UIViewController {
             setNavigationBarUserInteraction(isEnabled)
             setTabBarUserInteraction(isEnabled)
         }
+}
+
+// MARK: - SafariViewController -
+extension UIViewController {
+    func presentSafariViewController(withURL: String) {
+       
+        guard let url = URL(string: withURL) else { return }
+        
+        let vc = SFSafariViewController(url: url)
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true, completion: nil)
+    }
 }

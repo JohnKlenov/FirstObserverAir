@@ -17,6 +17,7 @@ final class FirebaseService {
     private var handle: AuthStateDidChangeListenerHandle?
     private var listeners: [String:ListenerRegistration] = [:]
     
+    /// currentUserID - может не неужен рас есть computer property currentUser
     var currentUserID:String?
     var currentUser: User? {
         return Auth.auth().currentUser
@@ -124,6 +125,22 @@ final class FirebaseService {
         }
     }
 
+    func addItemForCartProduct(item: [String : Any], modelItem:String, completion: @escaping (Error?) -> Void) {
+        
+        guard let uid = currentUser?.uid else {
+            let error = NSError(domain: "com.FirstObserverAir.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+            completion(error)
+            return
+        }
+        // Создайте ссылку на документ
+        let docRef = db.collection("users").document(uid).collection("cartProducts").document(modelItem)
+        
+        // Добавьте данные в Firestore
+        docRef.setData(item) { error in
+            print("Ошибка при добавлении документа = \(String(describing: error))")
+            completion(error)
+        }
+    }
 
     
     
@@ -210,7 +227,7 @@ final class FirebaseService {
     
     func setupCartProducts(completion: @escaping (Error?, ListenerErrorState?) -> Void) {
         guard let user = currentUser else {
-            let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+            let error = NSError(domain: "com.FirstObserverAir.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
             completion(error, .restartObserveUser)
             return
         }

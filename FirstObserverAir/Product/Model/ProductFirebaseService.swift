@@ -10,6 +10,7 @@ import Foundation
 // Протокол для модели данных
 protocol ProductModelInput: AnyObject {
     func fetchPinAndShopForProduct(shops: [String]?, model: String?)
+    func addItemForCartProduct(_ productItem: ProductItem, completion: @escaping (Error?) -> Void)
 }
 
 class ProductFirebaseService {
@@ -24,6 +25,11 @@ class ProductFirebaseService {
 }
 
 extension ProductFirebaseService: ProductModelInput {
+    func addItemForCartProduct(_ productItem: ProductItem, completion: @escaping (Error?) -> Void) {
+        
+        guard let model = productItem.model, !model.isEmpty else { return }
+    }
+    
     func fetchPinAndShopForProduct(shops: [String]?, model: String?) {
         
         var isAddedToCard = false
@@ -42,6 +48,8 @@ extension ProductFirebaseService: ProductModelInput {
         
         output?.updateData(shops: shopsForProduct, pins: pinMall, isAddedToCard: isAddedToCard)
     }
+    
+    
 }
 
 private extension ProductFirebaseService {

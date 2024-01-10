@@ -41,6 +41,10 @@ class CustomAlertView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("deinit CustomAlertView")
+    }
+    
     private func configureUI(alertType: AlertType) {
         // Configure view
         backgroundColor = UIColor.black.withAlphaComponent(0.0)

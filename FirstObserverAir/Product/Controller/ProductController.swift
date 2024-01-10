@@ -116,6 +116,14 @@ final class ProductController: UIViewController {
         }
     }
     
+    private var isActivityIndicatorBtn = false {
+        didSet {
+            if let _ = addItemToCartBtn {
+                addItemToCartBtn.setNeedsUpdateConfiguration()
+            }
+        }
+    }
+    
     private let encoder = JSONEncoder()
     private var isMapSelected = false
     
@@ -138,7 +146,7 @@ final class ProductController: UIViewController {
         tabBarController?.tabBar.isHidden = true
 //        navigationItem.largeTitleDisplayMode = .never
         productModel = ProductFirebaseService(output: self)
-        productModel?.fetchPinAndShopForProduct(shops: dataSource.shops, model: dataSource.model)
+        productModel?.fetchPinAndShopForProduct(shops: dataSource.shops, model: dataSource.model, gender: dataSource.gender)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -194,11 +202,17 @@ private extension ProductController {
         addItemToCartBtn = createButton(withTitle: R.Strings.OtherControllers.Product.addToCardButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(addItemToCartPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         webPageForItemtBtn = createButton(withTitle: R.Strings.OtherControllers.Product.websiteButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForItemPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         
-        if dataSource.model == nil {
-            addItemToCartBtn.isHidden = true
-        }
+//        if dataSource.model == nil {
+//            addItemToCartBtn.isHidden = true
+//        }
+        
         if dataSource.originalContent == nil {
             webPageForItemtBtn.isHidden = true
+        }
+        
+        guard let model = dataSource.model, !model.isEmpty else {
+            addItemToCartBtn.isHidden = true
+            return
         }
     }
     
@@ -209,7 +223,6 @@ private extension ProductController {
         configuration.baseBackgroundColor = R.Colors.systemPurple
         configuration.imagePlacement = .trailing
         configuration.preferredSymbolConfigurationForImage = image
-
         var container = AttributeContainer()
         container.font = UIFont.boldSystemFont(ofSize: fontSize)
         container.foregroundColor = textColor
@@ -218,6 +231,7 @@ private extension ProductController {
         configuration.attributedTitle = attributedTitle
 
         let button = UIButton(configuration: configuration)
+        button.tintColor = R.Colors.label
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(target, action: action, for: .touchUpInside)
 
@@ -227,7 +241,7 @@ private extension ProductController {
     func configureToCardButton() {
         addItemToCartBtn.configurationUpdateHandler = { [weak self] button in
             
-            guard let isAddedToCard = self?.isAddedToCard else {return}
+            guard let isAddedToCard = self?.isAddedToCard, let isActivityIndicatorBtn = self?.isActivityIndicatorBtn else {return}
             var config = button.configuration
             var container = AttributeContainer()
             container.font = UIFont.boldSystemFont(ofSize: 15)
@@ -235,7 +249,7 @@ private extension ProductController {
             
             config?.attributedTitle = isAddedToCard ? AttributedString(R.Strings.OtherControllers.Product.addedToCardButton, attributes: container) : AttributedString(R.Strings.OtherControllers.Product.addToCardButton, attributes: container)
             config?.image = isAddedToCard ? UIImage(systemName: R.Strings.OtherControllers.Product.imageSystemNameCartFill)?.withTintColor(R.Colors.label, renderingMode: .alwaysOriginal) : UIImage(systemName: R.Strings.OtherControllers.Product.imageSystemNameCart)?.withTintColor(R.Colors.label, renderingMode: .alwaysOriginal)
-            
+            config?.showsActivityIndicator = isActivityIndicatorBtn
             button.isEnabled = !isAddedToCard
             button.configuration = config
         }
@@ -494,6 +508,17 @@ private extension ProductController {
     }
     
     @objc func addItemToCartPressed(_ sender: UIButton) {
+        isActivityIndicatorBtn = true
+        productModel?.addItemForCartProduct(dataSource, completion: { error in
+            if let _ = error {
+                self.setupAlertView(state: .failed, frame: self.view.frame)
+            } else {
+                self.setupAlertView(state: .success, frame: self.view.frame)
+                self.configureBadgeValue()
+                self.isAddedToCard = !self.isAddedToCard
+            }
+            print("error - \(String(describing: error))")
+        })
 //        saveProductFB() { state in
 //            switch state {
 //            case .success:

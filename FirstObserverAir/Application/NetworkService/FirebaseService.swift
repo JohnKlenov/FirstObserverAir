@@ -125,7 +125,7 @@ final class FirebaseService {
         }
     }
 
-    func addItemForCartProduct(item: [String : Any], modelItem:String, completion: @escaping (Error?) -> Void) {
+    func addItemForCartProduct(item: [String : Any], nameDocument:String, completion: @escaping (Error?) -> Void) {
         
         guard let uid = currentUser?.uid else {
             let error = NSError(domain: "com.FirstObserverAir.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
@@ -133,11 +133,10 @@ final class FirebaseService {
             return
         }
         // Создайте ссылку на документ
-        let docRef = db.collection("users").document(uid).collection("cartProducts").document(modelItem)
+        let docRef = db.collection("users").document(uid).collection("cartProducts").document(nameDocument)
         
         // Добавьте данные в Firestore
         docRef.setData(item) { error in
-            print("Ошибка при добавлении документа = \(String(describing: error))")
             completion(error)
         }
     }

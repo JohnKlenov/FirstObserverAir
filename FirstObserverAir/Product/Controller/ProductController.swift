@@ -202,10 +202,6 @@ private extension ProductController {
         addItemToCartBtn = createButton(withTitle: R.Strings.OtherControllers.Product.addToCardButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(addItemToCartPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         webPageForItemtBtn = createButton(withTitle: R.Strings.OtherControllers.Product.websiteButton, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForItemPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         
-//        if dataSource.model == nil {
-//            addItemToCartBtn.isHidden = true
-//        }
-        
         if dataSource.originalContent == nil {
             webPageForItemtBtn.isHidden = true
         }
@@ -222,6 +218,7 @@ private extension ProductController {
         configuration.buttonSize = .large
         configuration.baseBackgroundColor = R.Colors.systemPurple
         configuration.imagePlacement = .trailing
+        configuration.imagePadding = 8.0
         configuration.preferredSymbolConfigurationForImage = image
         var container = AttributeContainer()
         container.font = UIFont.boldSystemFont(ofSize: fontSize)
@@ -410,7 +407,7 @@ private extension ProductController {
     }
     
     func setupAlertView(state: AlertType, frame: CGRect) {
-        let alert = CustomAlertView(alertType: state, frame: frame)
+        let alert = AddToCartAnimationView(alertType: state, frame: frame)
         view.addSubview(alert)
     }
     
@@ -509,7 +506,9 @@ private extension ProductController {
     
     @objc func addItemToCartPressed(_ sender: UIButton) {
         isActivityIndicatorBtn = true
-        productModel?.addItemForCartProduct(dataSource, completion: { error in
+        productModel?.addItemForCartProduct(dataSource, completion: { [weak self] error in
+            guard let self = self else { return }
+            self.isActivityIndicatorBtn = false
             if let _ = error {
                 self.setupAlertView(state: .failed, frame: self.view.frame)
             } else {
@@ -517,19 +516,7 @@ private extension ProductController {
                 self.configureBadgeValue()
                 self.isAddedToCard = !self.isAddedToCard
             }
-            print("error - \(String(describing: error))")
         })
-//        saveProductFB() { state in
-//            switch state {
-//            case .success:
-////                self.configureAlertView(state: .success)
-//                self.setupAlertView(state: .success, frame: self.view.frame)
-//                self.isAddedToCard = !self.isAddedToCard
-//            case .failed:
-//                self.setupAlertView(state: .failed, frame: self.view.frame)
-////                self.configureAlertView(state: .failed)
-//            }
-//        }
     }
     
     @objc func webPageForItemPressed(_ sender: UIButton) {

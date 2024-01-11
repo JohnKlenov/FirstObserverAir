@@ -27,7 +27,7 @@ final class ShopDetailController: UIViewController {
         return view
     }()
 
-    let imageShop: UIImageView = {
+    private let imageShop: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFill
@@ -36,7 +36,7 @@ final class ShopDetailController: UIViewController {
         return image
     }()
 
-    let imageIconPhone: UIImageView = {
+    private let imageIconPhone: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFill
@@ -46,7 +46,7 @@ final class ShopDetailController: UIViewController {
         return image
     }()
 
-    let titleMallLabel: UILabel = {
+    private let titleMallLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
@@ -57,7 +57,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let nameMallLabel: UILabel = {
+    private let nameMallLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
@@ -67,7 +67,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let titleShopLabel: UILabel = {
+    private let titleShopLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
@@ -78,7 +78,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let nameShopLabel: UILabel = {
+    private let nameShopLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
@@ -88,7 +88,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let titleFloorLabel: UILabel = {
+    private let titleFloorLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
@@ -99,7 +99,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let floorLabel: UILabel = {
+    private let floorLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
@@ -109,7 +109,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let titleTelefonLabel: UILabel = {
+    private let titleTelefonLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
@@ -120,7 +120,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let telefonLabel: UILabel = {
+    private let telefonLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isUserInteractionEnabled = true
@@ -134,7 +134,7 @@ final class ShopDetailController: UIViewController {
         return label
     }()
 
-    let stackMall: UIStackView = {
+    private let stackMall: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
@@ -143,7 +143,7 @@ final class ShopDetailController: UIViewController {
         return stack
     }()
 
-    let stackShop: UIStackView = {
+    private let stackShop: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
@@ -152,7 +152,7 @@ final class ShopDetailController: UIViewController {
         return stack
     }()
 
-    let stackFloor: UIStackView = {
+    private let stackFloor: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
@@ -161,7 +161,7 @@ final class ShopDetailController: UIViewController {
         return stack
     }()
 
-    let stackTelefon: UIStackView = {
+    private let stackTelefon: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
@@ -170,7 +170,7 @@ final class ShopDetailController: UIViewController {
         return stack
     }()
 
-    let stackIconAndNumberTelefon: UIStackView = {
+    private let stackIconAndNumberTelefon: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
@@ -179,7 +179,7 @@ final class ShopDetailController: UIViewController {
         return stack
     }()
 
-    let compositeStackView: UIStackView = {
+    private let compositeStackView: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical

@@ -8,12 +8,12 @@
 import UIKit
 import FirebaseStorageUI
 
-class ImageCell: UICollectionViewCell {
+final class ImageCell: UICollectionViewCell {
     
     static var reuseID: String = "ImageCell"
-    var storage: Storage!
+    private var storage: Storage!
     
-    let imageView: UIImageView = {
+    private let imageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.layer.cornerRadius = 10
@@ -22,34 +22,47 @@ class ImageCell: UICollectionViewCell {
         return image
     }()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        addSubview(imageView)
-        setupConstraints()
-        storage = Storage.storage()
-    }
-    
-    
-    
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: topAnchor),
-                                     imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-                                     imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-                                     imageView.bottomAnchor.constraint(equalTo: bottomAnchor)])
-    }
-    
-    
-    func configureCell(refImage:String) {
-        let refStorage = storage.reference(forURL: refImage)
-        imageView.sd_setImage(with: refStorage, placeholderImage: UIImage(named: "DefaultImage"))
+        setupView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+//        imageView.sd_cancelCurrentImageLoad()
+//        imageView.image = nil
+    }
+    
+    func configureCell(refImage:String) {
+        let refStorage = storage.reference(forURL: refImage)
+        imageView.sd_setImage(with: refStorage, placeholderImage: UIImage(named: "DefaultImage"))
+    }
+    
+    deinit {
+        print("deinit ImageCell")
+    }
     
 }
 
+// MARK: - Setting Views
+private extension ImageCell {
+    func setupView() {
+        storage = Storage.storage()
+        contentView.addSubview(imageView)
+        setupConstraints()
+    }
+}
+
+// MARK: - Layout
+private extension ImageCell {
+    func setupConstraints() {
+        NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                                     imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                                     imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                                     imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)])
+    }
+}

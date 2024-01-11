@@ -125,6 +125,7 @@ final class FirebaseService {
         }
     }
 
+    /// Cloud Firestore поддерживает сохранение данных в автономном режиме мы можем не обрабатывать ошибку.
     func addItemForCartProduct(item: [String : Any], nameDocument:String, completion: @escaping (Error?) -> Void) {
         
         guard let uid = currentUser?.uid else {

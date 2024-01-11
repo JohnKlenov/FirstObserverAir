@@ -22,6 +22,10 @@ class ProductFirebaseService {
     init(output: ProductModelOutput) {
         self.output = output
     }
+    
+    deinit {
+        print("deinit ProductFirebaseService")
+    }
 }
 
 extension ProductFirebaseService: ProductModelInput {

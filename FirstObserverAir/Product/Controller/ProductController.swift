@@ -237,7 +237,6 @@ private extension ProductController {
     
     func configureToCardButton() {
         addItemToCartBtn.configurationUpdateHandler = { [weak self] button in
-            
             guard let isAddedToCard = self?.isAddedToCard, let isActivityIndicatorBtn = self?.isActivityIndicatorBtn else {return}
             var config = button.configuration
             var container = AttributeContainer()
@@ -406,35 +405,10 @@ private extension ProductController {
         }
     }
     
-    func setupAlertView(state: AlertType, frame: CGRect) {
+    func showAlertView(state: AlertType, frame: CGRect) {
         let alert = AddToCartAnimationView(alertType: state, frame: frame)
         view.addSubview(alert)
     }
-    
-    //    private func saveProductFB(callBack: @escaping (StateCallback) -> Void) {
-            
-    //        guard let product = productModel else { return }
-    //
-    //        let productEncode = AddedProduct(product: product)
-    //
-    //        do {
-    //            let data = try encoder.encode(productEncode)
-    //            let json = try JSONSerialization.jsonObject(with: data)
-    //            managerFB.addProductInBaseData(nameProduct: product.model, json: json) { state in
-    //                switch state {
-    //
-    //                case .success:
-    //                    self.configureBadgeValue()
-    //                    callBack(.success)
-    //                case .failed:
-    //                    callBack(.failed)
-    //                }
-    //            }
-    //        } catch {
-    //            print("func saveProductFB error -", error)
-    //            callBack(.failed)
-    //        }
-    //    }
 }
 
 // MARK: - Layout
@@ -510,9 +484,9 @@ private extension ProductController {
             guard let self = self else { return }
             self.isActivityIndicatorBtn = false
             if let _ = error {
-                self.setupAlertView(state: .failed, frame: self.view.frame)
+                self.showAlertView(state: .failed, frame: self.view.frame)
             } else {
-                self.setupAlertView(state: .success, frame: self.view.frame)
+                self.showAlertView(state: .success, frame: self.view.frame)
                 self.configureBadgeValue()
                 self.isAddedToCard = !self.isAddedToCard
             }
@@ -538,8 +512,8 @@ extension ProductController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
     /// as? ImageCell
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.reuseID, for: indexPath) as! ImageCell
-        guard let refImage = dataSource.refImage?[indexPath.row] else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.reuseID, for: indexPath) as? ImageCell, let refImage = dataSource.refImage?[indexPath.row] else { return UICollectionViewCell() }
+//        guard let refImage = dataSource.refImage?[indexPath.row] else { return UICollectionViewCell() }
         cell.configureCell(refImage: refImage)
         return cell
     }

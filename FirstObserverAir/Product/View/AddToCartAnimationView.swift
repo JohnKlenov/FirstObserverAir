@@ -50,9 +50,7 @@ final class AddToCartAnimationView: UIView {
 // MARK: - Setting Views
 private extension AddToCartAnimationView {
     func setupView() {
-        // Configure view
         backgroundColor = UIColor.black.withAlphaComponent(0.0)
-//        backgroundColor = .clear
         containerView.addSubview(titleLabel)
         addSubview(containerView)
         setupConstraints()
@@ -83,7 +81,7 @@ private extension AddToCartAnimationView {
             self.containerView.alpha = 1.0
             self.containerView.transform = .identity
         } completion: { isFinished in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 UIView.animate(withDuration: 0.5, delay: 0.0, options: .curveEaseInOut) {
                     self.backgroundColor = UIColor.black.withAlphaComponent(0.0)
                     self.containerView.alpha = 0.0

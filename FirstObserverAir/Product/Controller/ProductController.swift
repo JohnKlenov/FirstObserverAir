@@ -524,11 +524,11 @@ extension ProductController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let fullScreenVC = FullScreenViewController()
-//        fullScreenVC.productImages = productModel?.refArray ?? []
-//        fullScreenVC.indexPath = IndexPath(item: indexPath.row, section: 0)
-//        fullScreenVC.modalPresentationStyle = .fullScreen
-//        present(fullScreenVC, animated: true, completion: nil)
+        let fullScreenVC = FullScreenImageController()
+        fullScreenVC.productImages = dataSource.refImage ?? []
+        fullScreenVC.indexPath = IndexPath(item: indexPath.row, section: 0)
+        fullScreenVC.modalPresentationStyle = .fullScreen
+        present(fullScreenVC, animated: true, completion: nil)
     }
 }
 

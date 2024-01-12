@@ -229,6 +229,10 @@ enum R {
         enum DefaultImage {
             static let forAllProducts = UIImage(named: "DefaultImage")
         }
+        
+        enum FullScreenImageController {
+            static let xmark = UIImage(systemName: "xmark")
+        }
     }
 
 //    enum Fonts {

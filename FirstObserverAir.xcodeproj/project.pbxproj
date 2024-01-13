@@ -52,6 +52,8 @@
 		5E9B52222B5121E400F907B6 /* FullScreenImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B52212B5121E400F907B6 /* FullScreenImageController.swift */; };
 		5E9B52242B51222C00F907B6 /* FullScreenImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B52232B51222C00F907B6 /* FullScreenImageCell.swift */; };
 		5E9B52262B51226000F907B6 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B52252B51226000F907B6 /* ImageScrollView.swift */; };
+		5E9B522B2B52ADDE00F907B6 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B522A2B52ADDE00F907B6 /* MapController.swift */; };
+		5E9B522D2B52AE6200F907B6 /* XMarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B522C2B52AE6200F907B6 /* XMarkView.swift */; };
 		5EC492362B303E600061C71F /* MallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492352B303E5F0061C71F /* MallCell.swift */; };
 		5EC492382B304C410061C71F /* ShopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492372B304C410061C71F /* ShopCell.swift */; };
 		5EC4923A2B3063370061C71F /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492392B3063370061C71F /* ProductCell.swift */; };
@@ -111,6 +113,8 @@
 		5E9B52212B5121E400F907B6 /* FullScreenImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageController.swift; sourceTree = "<group>"; };
 		5E9B52232B51222C00F907B6 /* FullScreenImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageCell.swift; sourceTree = "<group>"; };
 		5E9B52252B51226000F907B6 /* ImageScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
+		5E9B522A2B52ADDE00F907B6 /* MapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
+		5E9B522C2B52AE6200F907B6 /* XMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMarkView.swift; sourceTree = "<group>"; };
 		5EC492352B303E5F0061C71F /* MallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallCell.swift; sourceTree = "<group>"; };
 		5EC492372B304C410061C71F /* ShopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCell.swift; sourceTree = "<group>"; };
 		5EC492392B3063370061C71F /* ProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
@@ -172,6 +176,7 @@
 		5E0DE9082B458F7E00F3387C /* MapService */ = {
 			isa = PBXGroup;
 			children = (
+				5E9B52272B52ADA300F907B6 /* MapController */,
 				5E0DE9062B458ABA00F3387C /* MinskMapView.swift */,
 				5E0DE9092B458FFC00F3387C /* MapViewModel.swift */,
 			);
@@ -559,6 +564,31 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		5E9B52272B52ADA300F907B6 /* MapController */ = {
+			isa = PBXGroup;
+			children = (
+				5E9B52292B52ADC400F907B6 /* View */,
+				5E9B52282B52ADB400F907B6 /* Controller */,
+			);
+			path = MapController;
+			sourceTree = "<group>";
+		};
+		5E9B52282B52ADB400F907B6 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5E9B522A2B52ADDE00F907B6 /* MapController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		5E9B52292B52ADC400F907B6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5E9B522C2B52AE6200F907B6 /* XMarkView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		5EC4923B2B3076900061C71F /* Cell */ = {
 			isa = PBXGroup;
 			children = (
@@ -699,6 +729,7 @@
 				5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */,
 				5E1A35422B13E77A0076FDC1 /* CatalogController.swift in Sources */,
 				5E88134D2AF4D8110044F299 /* AppDelegate.swift in Sources */,
+				5E9B522D2B52AE6200F907B6 /* XMarkView.swift in Sources */,
 				5E9B52222B5121E400F907B6 /* FullScreenImageController.swift in Sources */,
 				5EC492362B303E600061C71F /* MallCell.swift in Sources */,
 				5E0701892B25DC3B00517EA0 /* UIModels.swift in Sources */,
@@ -726,6 +757,7 @@
 				5EC4923A2B3063370061C71F /* ProductCell.swift in Sources */,
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
 				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
+				5E9B522B2B52ADDE00F907B6 /* MapController.swift in Sources */,
 				5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */,
 				5E1A354E2B13E8700076FDC1 /* ProfileController.swift in Sources */,
 				5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */,

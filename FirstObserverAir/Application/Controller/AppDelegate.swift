@@ -34,6 +34,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        SDImageCache.shared.clearMemory()
 //        SDImageCache.shared.clearDisk(onCompletion: nil)
     }
+    
+    /// разрешить только портретную ориентацию на всех экранах
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return .portrait
+    }
 
 }
 

@@ -10,6 +10,7 @@ import MapKit
 import FirebaseStorageUI
 
 
+
 protocol MapViewManagerDelegate: AnyObject {
     func selectAnnotationView(isSelect: Bool)
 }

@@ -146,7 +146,7 @@ extension FullScreenImageController: UICollectionViewDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FullScreenImageCell", for: indexPath) as! FullScreenImageCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FullScreenImageCell", for: indexPath) as? FullScreenImageCell else { return UICollectionViewCell() }
         cell.configureCell(refImage: refImages[indexPath.row])
         return cell
     }

@@ -466,11 +466,10 @@ private extension ProductController {
             }
         }
         if countFalse == mapView.annotations.count, isMapSelected == false {
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//            let fullScreenMap = storyboard.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-//            fullScreenMap.modalPresentationStyle = .fullScreen
-//            fullScreenMap.arrayPin = arrayPin
-//            present(fullScreenMap, animated: true, completion: nil)
+            let fullScreenMap = MapController()
+            fullScreenMap.modalPresentationStyle = .fullScreen
+            fullScreenMap.arrayPin = arrayPin
+            present(fullScreenMap, animated: true, completion: nil)
         }
     }
     

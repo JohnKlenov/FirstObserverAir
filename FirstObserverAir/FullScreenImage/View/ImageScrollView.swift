@@ -9,8 +9,8 @@ import UIKit
 import FirebaseStorageUI
 
 class ImageScrollView: UIScrollView, UIScrollViewDelegate {
-
-   
+    
+    
     var imageZoomView: UIImageView!
     lazy var zoomingTap: UITapGestureRecognizer = {
         let zoomingTap = UITapGestureRecognizer(target: self, action: #selector(handleZoomingTap))
@@ -18,29 +18,30 @@ class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         return zoomingTap
     }()
     
+    
     var storage: Storage!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         storage = Storage.storage()
-        self.delegate = self
-        self.showsVerticalScrollIndicator = false
-        self.showsHorizontalScrollIndicator = false
-        self.decelerationRate = UIScrollView.DecelerationRate.normal
+        delegate = self
+        showsVerticalScrollIndicator = false
+        showsHorizontalScrollIndicator = false
+        decelerationRate = UIScrollView.DecelerationRate.normal
     }
-    
-    
-    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-   
+    
+    deinit {
+        print("deinit ImageScrollView")
+    }
     
     func set(image: UIImage) {
         imageZoomView?.removeFromSuperview()
         imageZoomView = nil
-
+        
         self.imageZoomView = UIImageView(image: image)
         self.addSubview(imageZoomView)
         configure(image: image.size)
@@ -62,9 +63,7 @@ class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         } else {
             self.centerImage()
         }
-        
     }
-    
     
     // Сдесь мы высчитываем minimumZoomScale maximumZoomScale в зависимости от величины нашего изображения
     func setCurrentMaxandMinZoomScale() {
@@ -159,3 +158,4 @@ class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         self.centerImage()
     }
 }
+

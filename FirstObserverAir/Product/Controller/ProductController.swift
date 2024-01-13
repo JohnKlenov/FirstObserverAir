@@ -364,14 +364,10 @@ private extension ProductController {
     }
     
     func addSubviews() {
-        containerView.addSubview(imageCollectionView)
-        containerView.addSubview(pageControl)
-        containerView.addSubview(compositeStackView)
-        containerView.addSubview(titleMallTableViewLabel)
-        containerView.addSubview(mallTableView)
-        containerView.addSubview(titleMapLabel)
-        containerView.addSubview(mapView)
-        containerView.addSubview(pagesView)
+        
+        [imageCollectionView, pageControl, compositeStackView, titleMallTableViewLabel, mallTableView, titleMapLabel, mapView, pagesView].forEach {
+            containerView.addSubview($0)
+        }
     }
     
     func getMapPin(pins:[Pin]) {
@@ -524,9 +520,9 @@ extension ProductController: UICollectionViewDelegate, UICollectionViewDataSourc
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let fullScreenVC = FullScreenImageController()
-        fullScreenVC.productImages = dataSource.refImage ?? []
-        fullScreenVC.indexPath = IndexPath(item: indexPath.row, section: 0)
+        
+        guard let refImages = dataSource.refImage else {return}
+        let fullScreenVC = FullScreenImageController(refImages: refImages, indexPath: IndexPath(item: indexPath.row, section: 0))
         fullScreenVC.modalPresentationStyle = .fullScreen
         present(fullScreenVC, animated: true, completion: nil)
     }

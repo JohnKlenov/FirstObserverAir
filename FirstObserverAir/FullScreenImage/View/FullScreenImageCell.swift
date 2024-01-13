@@ -23,34 +23,52 @@ final class FullScreenImageCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        storage = Storage.storage()
-        
-        scrollView = ImageScrollView(frame: contentView.bounds)
-        contentView.addSubview(scrollView)
-        setupScrollView()
+        setupView()
     }
     
-    private func setupScrollView() {
+    override func prepareForReuse() {
+        super.prepareForReuse()
+//        imageView.sd_cancelCurrentImageLoad()
+//        imageView.image = nil
+    }
+    
+    func configureCell(refImage:String) {
         
+        let refStorage = storage.reference(forURL: refImage)
+        imageView.sd_setImage(with: refStorage, placeholderImage: UIImage(named: "DefaultImage")) { (image, error, cacheType, ref) in
+            if let image = image {
+                self.scrollView.set(image:image)
+            }
+        }
+        scrollView.set(image: imageView.image ?? UIImage())
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("deinit FullScreenImageCell")
+    }
+}
+
+// MARK: - Setting Views
+private extension FullScreenImageCell {
+    func setupView() {
+        storage = Storage.storage()
+        scrollView = ImageScrollView(frame: contentView.bounds)
+        contentView.addSubview(scrollView)
+        setupConstraints()
+    }
+}
+
+// MARK: - Layout
+private extension FullScreenImageCell {
+    func setupConstraints() {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
     }
-    
-    func configureCell(refImage:String) {
-        
-        let refStorage = storage.reference(forURL: refImage)
-        imageView.sd_setImage(with: refStorage, placeholderImage:  UIImage(named: "DefaultImage")) { (image, error, cacheType, ref) in
-            self.scrollView.set(image: (image ?? UIImage(named: "DefaultImage"))!)
-        }
-        scrollView.set(image: imageView.image ?? UIImage())
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
 }

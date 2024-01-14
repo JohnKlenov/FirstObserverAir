@@ -451,21 +451,23 @@ private extension ProductController {
     
     @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
         
-        var countFalse = 0
-        
+        let point = gestureRecognizer.location(in: mapView)
+        var didTapOnAnnotationView = false
+        /// Находится ли точка нажатия внутри annotationMarker
         for annotation in mapView.annotations {
-            
-            if let annotationView = mapView.view(for: annotation), let annotationMarker = annotationView as? MKMarkerAnnotationView {
-                
-                let point = gestureRecognizer.location(in: mapView)
-                let convertPoint = mapView.convert(point, to: annotationMarker)
-                if annotationMarker.point(inside: convertPoint, with: nil) {
-                } else {
-                    countFalse+=1
-                }
+            guard let annotationView = mapView.view(for: annotation),
+                  let annotationMarker = annotationView as? MKMarkerAnnotationView,
+                  annotationMarker.point(inside: mapView.convert(point, to: annotationMarker), with: nil)
+                    /// Если условие guard не выполняется, цикл продолжается с следующей аннотацией.
+            else {
+                continue
             }
+            /// Если условие guard выполняется, то есть нажатие было на представление аннотации, переменная didTapOnAnnotationView устанавливается в true и цикл прерывается.
+            didTapOnAnnotationView = true
+            break
         }
-        if countFalse == mapView.annotations.count, isMapSelected == false {
+        
+        if !didTapOnAnnotationView && isMapSelected == false {
             let fullScreenMap = MapController()
             fullScreenMap.modalPresentationStyle = .fullScreen
             fullScreenMap.arrayPin = arrayPin

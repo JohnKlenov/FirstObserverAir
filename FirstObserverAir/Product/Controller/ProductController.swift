@@ -86,12 +86,15 @@ final class ProductController: UIViewController {
         return label
     }()
     
-    private let mapView: MinskMapView = {
-       let map = MinskMapView()
-        map.translatesAutoresizingMaskIntoConstraints = false
-        map.layer.cornerRadius = 10
-        return map
-    }()
+    private var mapView: MinskMapView!
+//    private let mapView: MinskMapView = {
+//        var regionMap: CLLocationDistance = 18000
+//        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
+//       let map = MinskMapView(places: <#T##[Places]#>, location: <#T##CLLocation#>, regionRadius: <#T##CLLocationDistance#>)
+//        map.translatesAutoresizingMaskIntoConstraints = false
+//        map.layer.cornerRadius = 10
+//        return map
+//    }()
     
     private let mapTapGestureRecognizer: UITapGestureRecognizer = {
         let tapRecognizer = UITapGestureRecognizer()
@@ -191,7 +194,7 @@ private extension ProductController {
         isAddedToCard = isAddedToCardProduct
         pageControl.numberOfPages = dataSource.refImage?.count ?? 1
         pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
-        mapView.arrayPin = arrayPin
+//        mapView.arrayPin = arrayPin
     }
 }
 
@@ -358,6 +361,15 @@ private extension ProductController {
     }
     
     func setupMapView() {
+        let regionMap: CLLocationDistance = 18000
+        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
+        mapView = MinskMapView(places: arrayPin, location: initialLocation, regionRadius: regionMap)
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.layer.cornerRadius = 10
+        mapView.isZoomEnabled = false
+        mapView.isScrollEnabled = false
+        mapView.isPitchEnabled = false
+        mapView.isRotateEnabled = false
         mapView.delegateMap = self
         mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
         mapView.addGestureRecognizer(mapTapGestureRecognizer)

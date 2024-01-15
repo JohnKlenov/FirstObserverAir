@@ -16,33 +16,17 @@ protocol MapViewManagerDelegate: AnyObject {
     func selectAnnotationView(isSelect: Bool)
 }
 
-class MinskMapView: MKMapView {
-
+final class MinskMapView: MKMapView {
     
-    var regionMap: CLLocationDistance = 18000
-    
-    var arrayPin:[Places] = [] {
-        didSet {
-            addAnnotations(arrayPin)
-        }
-    }
     weak var delegateMap: MapViewManagerDelegate?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    /// Это второстепенный инициализатор, который должен вызывать и поддерживать один из основных инициализаторов в том же классе. Convenience init позволяет вам предоставить дополнительную логику инициализации или предоставить более простой способ инициализации экземпляра класса. 
+    convenience init(places: [Places], location: CLLocation, regionRadius: CLLocationDistance) {
+        self.init()
         delegate = self
-//        calculateRegion()
-        isZoomEnabled = false
-        isScrollEnabled = false
-        isPitchEnabled = false
-        isRotateEnabled = false
-        
-        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
-        self.centerLocation(initialLocation, regionRadius: regionMap)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        addAnnotations(places)
+        // Центрирование карты
+        centerLocation(location, regionRadius: regionRadius)
     }
     
     deinit {
@@ -103,7 +87,6 @@ extension MKMapView {
     func centerLocation(_ location: CLLocation, regionRadius: CLLocationDistance) {
         let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
         setRegion(coordinateRegion, animated: true)
-    
     }
 }
 
@@ -165,3 +148,50 @@ extension MKMapView {
 //        return view
 //    }
     
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        delegate = self
+////        calculateRegion()
+//        isZoomEnabled = false
+//        isScrollEnabled = false
+//        isPitchEnabled = false
+//        isRotateEnabled = false
+//
+//        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
+//        self.centerLocation(initialLocation, regionRadius: regionMap)
+//    }
+    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+
+//extension MKMapView {
+//
+//    convenience init(places: [Places], location: CLLocation, regionRadius: CLLocationDistance) {
+//        self.init()
+//
+////        delegate = self
+////        calculateRegion()
+//        isZoomEnabled = false
+//        isScrollEnabled = false
+//        isPitchEnabled = false
+//        isRotateEnabled = false
+//        // Добавление аннотаций на карту
+//        addAnnotations(places)
+//
+//        // Центрирование карты
+//        centerLocation(location, regionRadius: regionRadius)
+//    }
+//
+//    func centerLocation(_ location: CLLocation, regionRadius: CLLocationDistance) {
+//        let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+//        setRegion(coordinateRegion, animated: true)
+//    }
+//}
+//    var regionMap: CLLocationDistance = 18000
+//
+//    var arrayPin:[Places] = [] {
+//        didSet {
+//            addAnnotations(arrayPin)
+//        }
+//    }

@@ -12,11 +12,13 @@ import FirebaseStorageUI
 class MapController: UIViewController {
 
 //    @IBOutlet weak var mapView: MKMapView!
-    var mapView: MKMapView = MKMapView()
+//    var mapView: MKMapView = MKMapView()
+    var mapView: MinskMapView!
     
     // Объект, который вы используете для мониторинга местоположения, в вашем приложении.
     let locationManager = CLLocationManager()
-    var arrayPin: [Places] = []
+//    var arrayPin: [Places] = []
+    var arrayPin: [Places]
     
     
     private let deleteImage: DeleteView = {
@@ -39,19 +41,29 @@ class MapController: UIViewController {
 //            return .lightContent
 //        }
 //    }
+    init(arrayPin: [Places]) {
+        self.arrayPin = arrayPin
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView = MinskMapView(places: arrayPin)
         view.addSubview(mapView)
         imageTapGestureRecognizer.addTarget(self, action: #selector(didTapDeleteImage(_:)))
         deleteImage.addGestureRecognizer(imageTapGestureRecognizer)
         mapView.addSubview(deleteImage)
-        mapView.delegate = self
-        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
-        mapView.centerLocationMVC(initialLocation)
+//        mapView.delegate = self
+//        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
+//        mapView.centerLocationMVC(initialLocation)
         
-        setupZoomLimit()
-        mapView.addAnnotations(arrayPin)
+//        setupZoomLimit()
+//        mapView.addAnnotations(arrayPin)
+//        mapView.showAnnotations(arrayPin, animated: true)
         setupConstraints()
         
     }
@@ -173,10 +185,11 @@ class MapController: UIViewController {
     
     func setupZoomLimit() {
         
-        let cameraCentre =  CLLocation(latitude: 53.903318, longitude: 27.560448)
-        let region = MKCoordinateRegion(center: cameraCentre.coordinate, latitudinalMeters: 22000, longitudinalMeters: 22000)
-        mapView.setCameraBoundary(MKMapView.CameraBoundary(coordinateRegion: region), animated: true)
-        
+//        let cameraCentre =  CLLocation(latitude: 53.903318, longitude: 27.560448)
+//        let region = MKCoordinateRegion(center: cameraCentre.coordinate, latitudinalMeters: 22000, longitudinalMeters: 22000)
+//        mapView.setRegion(region, animated: true)
+//        mapView.setCameraBoundary(MKMapView.CameraBoundary(coordinateRegion: region), animated: true)
+//
         let zoomLimit = MKMapView.CameraZoomRange(minCenterCoordinateDistance: 1000, maxCenterCoordinateDistance: 100000)
         mapView.setCameraZoomRange(zoomLimit, animated: true)
     }
@@ -187,44 +200,44 @@ class MapController: UIViewController {
 
 extension MapController: CLLocationManagerDelegate, MKMapViewDelegate {
     
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
-        guard let annotation = annotation as? Places else { return nil }
-        let identifier = "places"
-        let view: MKMarkerAnnotationView
-        
-        if let dequeueView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView {
-            dequeueView.annotation = annotation
-            view = dequeueView
-        } else {
-            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            view.canShowCallout = true
-            view.glyphTintColor = .black
-            view.markerTintColor = .red
-            
-            if let refImage = annotation.imageName {
-                let refStorage = Storage.storage().reference(forURL: refImage)
-                let imageView = UIImageView()
-                imageView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-                imageView.contentMode = .scaleAspectFit
-                imageView.sd_setImage(with: refStorage, placeholderImage: UIImage(named: "DefaultImage")) { image, error, cacheType, storageRef in
-                    if let error = error {
-                        print("error - \(error)")
-                    } else {
-                        if let image = image {
-                            print("image for leftCalloutAccessoryView - \(image)")
-                            DispatchQueue.main.async {
-                                view.leftCalloutAccessoryView = imageView
-                            }
-                        }
-                    }
-                }
-            } else {
-                view.leftCalloutAccessoryView = UIView()
-            }
-        }
-        return view
-    }
+//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+//
+//        guard let annotation = annotation as? Places else { return nil }
+//        let identifier = "places"
+//        let view: MKMarkerAnnotationView
+//
+//        if let dequeueView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView {
+//            dequeueView.annotation = annotation
+//            view = dequeueView
+//        } else {
+//            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+//            view.canShowCallout = true
+//            view.glyphTintColor = .black
+//            view.markerTintColor = .red
+//
+//            if let refImage = annotation.imageName {
+//                let refStorage = Storage.storage().reference(forURL: refImage)
+//                let imageView = UIImageView()
+//                imageView.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+//                imageView.contentMode = .scaleAspectFit
+//                imageView.sd_setImage(with: refStorage, placeholderImage: UIImage(named: "DefaultImage")) { image, error, cacheType, storageRef in
+//                    if let error = error {
+//                        print("error - \(error)")
+//                    } else {
+//                        if let image = image {
+//                            print("image for leftCalloutAccessoryView - \(image)")
+//                            DispatchQueue.main.async {
+//                                view.leftCalloutAccessoryView = imageView
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
+//                view.leftCalloutAccessoryView = UIView()
+//            }
+//        }
+//        return view
+//    }
     
     
     // если user поменял авторизацию у нас опять все сломается и нам нужно вызвать checkAuthorization()

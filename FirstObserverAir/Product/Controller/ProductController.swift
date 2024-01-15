@@ -87,14 +87,6 @@ final class ProductController: UIViewController {
     }()
     
     private var mapView: MinskMapView!
-//    private let mapView: MinskMapView = {
-//        var regionMap: CLLocationDistance = 18000
-//        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
-//       let map = MinskMapView(places: <#T##[Places]#>, location: <#T##CLLocation#>, regionRadius: <#T##CLLocationDistance#>)
-//        map.translatesAutoresizingMaskIntoConstraints = false
-//        map.layer.cornerRadius = 10
-//        return map
-//    }()
     
     private let mapTapGestureRecognizer: UITapGestureRecognizer = {
         let tapRecognizer = UITapGestureRecognizer()
@@ -194,7 +186,6 @@ private extension ProductController {
         isAddedToCard = isAddedToCardProduct
         pageControl.numberOfPages = dataSource.refImage?.count ?? 1
         pagesView.configureView(currentPage: 1, count: dataSource.refImage?.count ?? 0)
-//        mapView.arrayPin = arrayPin
     }
 }
 
@@ -361,9 +352,7 @@ private extension ProductController {
     }
     
     func setupMapView() {
-        let regionMap: CLLocationDistance = 18000
-        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
-        mapView = MinskMapView(places: arrayPin, location: initialLocation, regionRadius: regionMap)
+        mapView = MinskMapView(places: arrayPin)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.layer.cornerRadius = 10
         mapView.isZoomEnabled = false
@@ -480,9 +469,8 @@ private extension ProductController {
         }
         
         if !didTapOnAnnotationView && isMapSelected == false {
-            let fullScreenMap = MapController()
+            let fullScreenMap = MapController(arrayPin: arrayPin)
             fullScreenMap.modalPresentationStyle = .fullScreen
-            fullScreenMap.arrayPin = arrayPin
             present(fullScreenMap, animated: true, completion: nil)
         }
     }
@@ -584,7 +572,6 @@ extension ProductController: MapViewManagerDelegate {
 // MARK: - ProductModelOutput
 extension ProductController: ProductModelOutput {
     func updateData(shops: [Shop], pins: [Pin], isAddedToCard: Bool) {
-//        originalContent : https://all-stars.by/store/women/shoes/krossovki/krossovki-nike-wmns-waffle-debut-dh9523-100/
         setupDataSource(shopsProduct: shops, pinsProduct: pins, isAddedToCardProduct: isAddedToCard)
         setupView()
     }
@@ -783,3 +770,11 @@ extension ProductController {
 ////        alertView.duration = 2
 ////        alertView.present()
 //    }
+//    private let mapView: MinskMapView = {
+//        var regionMap: CLLocationDistance = 18000
+//        let initialLocation = CLLocation(latitude: 53.903318, longitude: 27.560448)
+//       let map = MinskMapView(places: <#T##[Places]#>, location: <#T##CLLocation#>, regionRadius: <#T##CLLocationDistance#>)
+//        map.translatesAutoresizingMaskIntoConstraints = false
+//        map.layer.cornerRadius = 10
+//        return map
+//    }()

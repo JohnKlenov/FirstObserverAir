@@ -9,9 +9,6 @@ import UIKit
 import MapKit
 import FirebaseStorageUI
 
-
-// мы можем передавать в конструктор arrayPin( в init сразу addAnnotations(arrayPin)), let initialLocation = CLLocation(...), regionMap: CLLocationDistance, и флаг isOnlyHandlerTapGesture
-
 protocol MapViewManagerDelegate: AnyObject {
     func selectAnnotationView(isSelect: Bool)
 }
@@ -21,12 +18,12 @@ final class MinskMapView: MKMapView {
     weak var delegateMap: MapViewManagerDelegate?
     
     /// Это второстепенный инициализатор, который должен вызывать и поддерживать один из основных инициализаторов в том же классе. Convenience init позволяет вам предоставить дополнительную логику инициализации или предоставить более простой способ инициализации экземпляра класса. 
-    convenience init(places: [Places], location: CLLocation, regionRadius: CLLocationDistance) {
+    convenience init(places: [Places]) {
         self.init()
         delegate = self
         addAnnotations(places)
-        // Центрирование карты
-        centerLocation(location, regionRadius: regionRadius)
+        showAnnotations(places, animated: true)
+        setupZoomLimit()
     }
     
     deinit {
@@ -83,10 +80,10 @@ extension MinskMapView: MKMapViewDelegate {
     }
 }
 
-extension MKMapView {
-    func centerLocation(_ location: CLLocation, regionRadius: CLLocationDistance) {
-        let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
-        setRegion(coordinateRegion, animated: true)
+private extension MKMapView {
+    func setupZoomLimit() {
+        let zoomLimit = MKMapView.CameraZoomRange(minCenterCoordinateDistance: 1000, maxCenterCoordinateDistance: 100000)
+        setCameraZoomRange(zoomLimit, animated: true)
     }
 }
 
@@ -95,6 +92,10 @@ extension MKMapView {
 
 // MARK: - Trash
 
+    //    func centerLocation(_ location: CLLocation, regionRadius: CLLocationDistance) {
+    //        let coordinateRegion = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+    //        setRegion(coordinateRegion, animated: true)
+    //    }
 
 //    private func calculateRegion() {
 //        let onePercent = frame.size.width/100

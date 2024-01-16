@@ -30,6 +30,22 @@ extension UIViewController {
         self.present(alert, animated: true)
     }
     
+    func showSettingAlert(title: String, message: String?, url: URL?, cancelActionHandler: (() -> Void)? = nil) {
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let settingAction = UIAlertAction(title: "Setting", style: .default) { (alert) in
+            if let url = url {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            cancelActionHandler?()
+        }
+        alertController.addAction(settingAction)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
     
     // MARK: NavigationController
     func setBackButtonWithoutTitle(_ title: String) {

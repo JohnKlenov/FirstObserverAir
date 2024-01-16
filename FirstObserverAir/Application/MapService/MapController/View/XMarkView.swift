@@ -5,12 +5,11 @@
 //  Created by Evgenyi on 13.01.24.
 //
 
-import Foundation
 import UIKit
 
-class DeleteView: UIView {
+final class XMarkView: UIView {
     
-    private let deleteImage: UIImageView = {
+    private let closeImage: UIImageView = {
         let view = UIImageView(image: R.Images.FullScreenImageController.xmark?.withTintColor(.black, renderingMode: .alwaysOriginal))
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = true
@@ -20,21 +19,33 @@ class DeleteView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .darkGray.withAlphaComponent(0.5)
-        addSubview(deleteImage)
-        setupConstraints()
-    }
-    
-    private func setupConstraints() {
-        deleteImage.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
-        deleteImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
-        deleteImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5).isActive = true
-        deleteImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5).isActive = true
-        
+        setupView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("deinit XMarkView")
+    }
+}
+
+// MARK: - Setting Views
+private extension XMarkView {
+    func setupView() {
+        backgroundColor = .darkGray.withAlphaComponent(0.5)
+        addSubview(closeImage)
+        setupConstraints()
+    }
+}
+
+// MARK: - Layout
+private extension XMarkView {
+    func setupConstraints() {
+        closeImage.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+        closeImage.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
+        closeImage.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5).isActive = true
+        closeImage.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5).isActive = true
+    }
 }

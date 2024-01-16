@@ -10,9 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    static var flag = false
-    // ARC static weak var?
-    static var mapVC: MapController?
+    var isOffLocationService = false
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -42,8 +40,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        // Попытка получить MapController
+        if let mapController = window?.rootViewController as? MapController, isOffLocationService == true {
+            // Вызов методов
+            mapController.setupLocationManager()
+            mapController.checkLocationEnabled()
+            isOffLocationService = false
+        }
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -61,10 +64,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
-    
 }
-
 
 // MARK: - PresentationDelegate
 extension SceneDelegate: PresentationDelegate {
@@ -73,7 +73,6 @@ extension SceneDelegate: PresentationDelegate {
         rootTabBarController()
     }
 }
-
 
 // MARK: - Setting rootViewController
 private extension SceneDelegate {

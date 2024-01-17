@@ -33,7 +33,6 @@ final class MallTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        print(" init MallTableViewCell ")
         setupView()
     }
     
@@ -45,10 +44,6 @@ final class MallTableViewCell: UITableViewCell {
         super.prepareForReuse()
         //        imageView.sd_cancelCurrentImageLoad()
         //        imageView.image = nil
-    }
-    
-    deinit {
-        print("deinit MallTableViewCell")
     }
     
     func configureCell(refImage:String, nameMall:String?) {

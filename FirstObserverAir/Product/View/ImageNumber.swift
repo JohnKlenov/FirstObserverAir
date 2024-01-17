@@ -32,10 +32,6 @@ final class NumberPagesView: UIView {
         numberOfPagesLabel.text = "\(currentPage)/\(count)"
         numberOfPagesLabel.sizeToFit()
     }
-    
-    deinit {
-        print("deinit NumberPagesView")
-    }
 }
 
 // MARK: - Setting Views

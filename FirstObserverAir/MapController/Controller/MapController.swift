@@ -9,9 +9,9 @@ import UIKit
 import MapKit
 import FirebaseStorageUI
 
-class MapController: UIViewController {
+final class MapController: UIViewController {
 
-    private var mapView: MinskMapView!
+    private var mapView: MapView!
     // Объект, который вы используете для мониторинга местоположения, в вашем приложении.
     private let locationManager = CLLocationManager()
     private var arrayPin: [Places]
@@ -29,6 +29,10 @@ class MapController: UIViewController {
         recognizer.numberOfTapsRequired = 1
         return recognizer
     }()
+    
+        override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+            return .all // Разрешить все ориентации для этого контроллера
+        }
     
 //    override var preferredStatusBarStyle: UIStatusBarStyle {
 //        get {
@@ -52,24 +56,23 @@ class MapController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         checkLocationEnabled()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        AppUtility.lockOrientation(.all)
+        SettingScreenOrientation.lockOrientation(.all)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        AppUtility.lockOrientation(.portrait)
+        SettingScreenOrientation.lockOrientation(.portrait)
     }
 }
 
 // MARK: - Setting Views
 private extension MapController {
     func setupView() {
-        mapView = MinskMapView(places: arrayPin)
+        mapView = MapView(places: arrayPin)
         view.addSubview(mapView)
         closeViewTapGestureRecognizer.addTarget(self, action: #selector(didTapCloseView(_:)))
         closeView.addGestureRecognizer(closeViewTapGestureRecognizer)
@@ -103,18 +106,12 @@ private extension MapController {
 
 // MARK: - Seeting CLLocationManager
 extension MapController {
-    
     // включена ли у нас служба геолокации на устройстве если true то включена.
     func checkLocationEnabled() {
         
         if CLLocationManager.locationServicesEnabled() {
-            
             setupLocationManager()
             checkAuthorization()
-            
-            // включили geolocation, вернулись в App сработал func sceneDidBecomeActive(_ scene: UIScene)
-            // если мы отменили Alert и не пошли в Settings - SceneDelegate.flag = true
-            // И если мы перейдем в другую App а затем вернемся в эту сработает func sceneDidBecomeActive(_ scene: UIScene) ????
         } else {
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.isOffLocationService = true
@@ -132,52 +129,36 @@ extension MapController {
     
     // получить разрешение пользователя на использование его место положения в Application
     func checkAuthorization() {
-        
-        let autorizationStatus: CLAuthorizationStatus
-        
-        if #available(iOS 14, *) {
-            print("curent iOS >= iOS 14")
-            autorizationStatus = locationManager.authorizationStatus
-        } else {
-            autorizationStatus = CLLocationManager.authorizationStatus()
-        }
+        let autorizationStatus: CLAuthorizationStatus = locationManager.authorizationStatus
         
         switch autorizationStatus {
-            
+            /// Если пользователь еще не предоставил разрешение на использование службы геолокации, код запрашивает разрешение с помощью метода requestWhenInUseAuthorization()
         case .notDetermined:
-            print(".notDetermined")
-            // вызываем запрос на разрешение использовать место положения user в Application
             locationManager.requestWhenInUseAuthorization()
+            /// Если приложению запрещено использовать службы геолокации из-за активных ограничений, например, родительского контроля, код ничего не делает
         case .restricted:
             break
+            /// Если пользователь отказал в доступе к службам геолокации, код показывает предупреждающее сообщение с предложением изменить настройки
         case .denied:
             showSettingAlert(title: "You have prohibited the use of location in the application!", message: "Want to change this?", url: URL(string: UIApplication.openSettingsURLString))
+            /// Если пользователь разрешил приложению использовать службы геолокации в любое время, код ничего не делает
         case .authorizedAlways:
-            // ????
-            break
-        case .authorizedWhenInUse:
-            print(".authorizedWhenInUse - разрешить в момент использования")
             mapView.showsUserLocation = true
-            //            locationManager.requestLocation()
-            //  .requestLocation() это метод который один раз запрашивает геопозицию пользователя.
-            //            locationManager.startUpdatingLocation()
+            /// Если пользователь разрешил приложению использовать службы геолокации только при использовании приложения, код включает отображение местоположения пользователя на карте
+        case .authorizedWhenInUse:
+            mapView.showsUserLocation = true
+            /// Это обрабатывает любые будущие значения, которые могут быть добавлены в CLAuthorizationStatus, но которые в настоящее время не известны
         @unknown default:
-            print("@unknown default")
             break
         }
     }
 }
 
-// MARK: -
-extension MapController {
-    
-}
-
 // MARK: - CLLocationManagerDelegate
 extension MapController: CLLocationManagerDelegate {
-    // если user поменял авторизацию у нас опять все сломается и нам нужно вызвать checkAuthorization()
-    // если ты в момент использования App зашёл в settings и нажал запретить использовать геолокацию в этом App
-    // сработает метод didChangeAuthorization и мы опять вызовем  checkAutorization()
+    ///  реагировать на изменения статуса авторизации службы геолокации и выполнять необходимые действия в ответ на эти изменения
+    ///  вызывается, когда статус авторизации службы геолокации изменяется
+    ///  зашёл в settings и нажал запретить использовать геолокацию в этом App сработает метод didChangeAuthorization
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         checkAuthorization()
     }

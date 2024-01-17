@@ -12,7 +12,7 @@ import FirebaseStorageUI
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    var orientationLock = UIInterfaceOrientationMask.portrait
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         NetworkMonitor.shared.startMonitoring()
@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     /// разрешить только портретную ориентацию на всех экранах
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        return .portrait
+        return orientationLock
     }
 
 }

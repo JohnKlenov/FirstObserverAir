@@ -13,7 +13,7 @@ protocol MapViewManagerDelegate: AnyObject {
     func selectAnnotationView(isSelect: Bool)
 }
 
-final class MinskMapView: MKMapView {
+final class MapView: MKMapView {
     
     weak var delegateMap: MapViewManagerDelegate?
     
@@ -25,14 +25,10 @@ final class MinskMapView: MKMapView {
         showAnnotations(places, animated: true)
         setupZoomLimit()
     }
-    
-    deinit {
-        print("deinit MinskMapView")
-    }
 }
 
 // MARK: - Setting
-private extension MinskMapView {
+private extension MapView {
     func setupZoomLimit() {
         let zoomLimit = MKMapView.CameraZoomRange(minCenterCoordinateDistance: 1000, maxCenterCoordinateDistance: 100000)
         setCameraZoomRange(zoomLimit, animated: true)
@@ -40,7 +36,7 @@ private extension MinskMapView {
 }
 
 // MARK: - MKMapViewDelegate
-extension MinskMapView: MKMapViewDelegate {
+extension MapView: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let annotation = annotation as? Places else { return nil }

@@ -41,11 +41,6 @@ final class ImageCell: UICollectionViewCell {
         let refStorage = storage.reference(forURL: refImage)
         imageView.sd_setImage(with: refStorage, placeholderImage: UIImage(named: "DefaultImage"))
     }
-    
-    deinit {
-        print("deinit ImageCell")
-    }
-    
 }
 
 // MARK: - Setting Views

@@ -13,9 +13,10 @@
 		5E07018F2B27252700517EA0 /* CloudFirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */; };
 		5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */; };
 		5E0DE9052B45479700F3387C /* AddToCartAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9042B45479700F3387C /* AddToCartAnimationView.swift */; };
-		5E0DE9072B458ABA00F3387C /* MinskMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9062B458ABA00F3387C /* MinskMapView.swift */; };
+		5E0DE9072B458ABA00F3387C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9062B458ABA00F3387C /* MapView.swift */; };
 		5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9092B458FFC00F3387C /* MapViewModel.swift */; };
 		5E0DE90C2B459B9000F3387C /* ProductFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */; };
+		5E1148E32B57D8C10073B2E8 /* SettingScreenOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */; };
 		5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35302B13DE8A0076FDC1 /* Resources.swift */; };
 		5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */; };
 		5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35362B13E1770076FDC1 /* TabBarController.swift */; };
@@ -72,9 +73,10 @@
 		5E07018E2B27252700517EA0 /* CloudFirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudFirestoreService.swift; sourceTree = "<group>"; };
 		5E0701912B2733DE00517EA0 /* UIViewController + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + ext.swift"; sourceTree = "<group>"; };
 		5E0DE9042B45479700F3387C /* AddToCartAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToCartAnimationView.swift; sourceTree = "<group>"; };
-		5E0DE9062B458ABA00F3387C /* MinskMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinskMapView.swift; sourceTree = "<group>"; };
+		5E0DE9062B458ABA00F3387C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		5E0DE9092B458FFC00F3387C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFirebaseService.swift; sourceTree = "<group>"; };
+		5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingScreenOrientation.swift; sourceTree = "<group>"; };
 		5E1A35302B13DE8A0076FDC1 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + ext.swift"; sourceTree = "<group>"; };
 		5E1A35362B13E1770076FDC1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -173,14 +175,15 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		5E0DE9082B458F7E00F3387C /* MapService */ = {
+		5E0DE9082B458F7E00F3387C /* MapController */ = {
 			isa = PBXGroup;
 			children = (
-				5E9B52272B52ADA300F907B6 /* MapController */,
-				5E0DE9062B458ABA00F3387C /* MinskMapView.swift */,
+				5E9B52282B52ADB400F907B6 /* Controller */,
+				5E9B52292B52ADC400F907B6 /* View */,
+				5E9B52272B52ADA300F907B6 /* Model */,
 				5E0DE9092B458FFC00F3387C /* MapViewModel.swift */,
 			);
-			path = MapService;
+			path = MapController;
 			sourceTree = "<group>";
 		};
 		5E1A352E2B13DCAA0076FDC1 /* TabBarController */ = {
@@ -205,6 +208,7 @@
 			children = (
 				5E1A35332B13DF770076FDC1 /* Extensions */,
 				5E1A35302B13DE8A0076FDC1 /* Resources.swift */,
+				5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -454,6 +458,7 @@
 		5E88134B2AF4D8110044F299 /* FirstObserverAir */ = {
 			isa = PBXGroup;
 			children = (
+				5E0DE9082B458F7E00F3387C /* MapController */,
 				5E9B521D2B51218600F907B6 /* FullScreenImage */,
 				5E7D7E652B44A0920009B8E8 /* Product */,
 				5E8813652AF4D91E0044F299 /* Supporting files */,
@@ -477,7 +482,6 @@
 		5E8813602AF4D87F0044F299 /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				5E0DE9082B458F7E00F3387C /* MapService */,
 				5E8813612AF4D88B0044F299 /* Model */,
 				5E8813622AF4D8920044F299 /* View */,
 				5E8813632AF4D89E0044F299 /* Controller */,
@@ -564,13 +568,11 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		5E9B52272B52ADA300F907B6 /* MapController */ = {
+		5E9B52272B52ADA300F907B6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				5E9B52292B52ADC400F907B6 /* View */,
-				5E9B52282B52ADB400F907B6 /* Controller */,
 			);
-			path = MapController;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		5E9B52282B52ADB400F907B6 /* Controller */ = {
@@ -584,6 +586,7 @@
 		5E9B52292B52ADC400F907B6 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				5E0DE9062B458ABA00F3387C /* MapView.swift */,
 				5E9B522C2B52AE6200F907B6 /* XMarkView.swift */,
 			);
 			path = View;
@@ -763,8 +766,9 @@
 				5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */,
 				5EC492382B304C410061C71F /* ShopCell.swift in Sources */,
 				5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */,
+				5E1148E32B57D8C10073B2E8 /* SettingScreenOrientation.swift in Sources */,
 				5E1A35612B161CF60076FDC1 /* AppSettings.swift in Sources */,
-				5E0DE9072B458ABA00F3387C /* MinskMapView.swift in Sources */,
+				5E0DE9072B458ABA00F3387C /* MapView.swift in Sources */,
 				5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */,
 				5E9B52242B51222C00F907B6 /* FullScreenImageCell.swift in Sources */,
 				5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */,

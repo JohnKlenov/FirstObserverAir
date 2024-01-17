@@ -13,7 +13,7 @@ protocol ProductModelInput: AnyObject {
     func addItemForCartProduct(_ productItem: ProductItem, completion: @escaping (Error?) -> Void)
 }
 
-class ProductFirebaseService {
+final class ProductFirebaseService {
     
     weak var output: ProductModelOutput?
     
@@ -22,12 +22,9 @@ class ProductFirebaseService {
     init(output: ProductModelOutput) {
         self.output = output
     }
-    
-    deinit {
-        print("deinit ProductFirebaseService")
-    }
 }
 
+// MARK: - ProductModelInput
 extension ProductFirebaseService: ProductModelInput {
     func addItemForCartProduct(_ productItem: ProductItem, completion: @escaping (Error?) -> Void) {
         
@@ -81,6 +78,7 @@ extension ProductFirebaseService: ProductModelInput {
     
 }
 
+// MARK: - Seeting
 private extension ProductFirebaseService {
     
     func addItemToCart(currentModel:String, gender: String) -> Bool {
@@ -139,29 +137,3 @@ private extension ProductFirebaseService {
         return pinList
     }
 }
-
-
-//    func fetchPinMall(shopsProduct: [String]) -> [Pin]? {
-//
-//        let gender = serviceFB.currentGender
-//        var pinList: [Pin] = []
-//        var shopsList: [Shop] = []
-//
-//        guard let allShops = serviceFB.shops[gender], let pinMall = serviceFB.pinMall else {return nil}
-//        // тут мы создаем список malls в котором есть данный Shop (мы заложили возможность что один товар может быть в разных Shop, то есть продукт может быть в двух shop в одном mall?) (но у нас правило один уникальный продукт для mall)?
-//        allShops.forEach { shop in
-//            if shopsProduct.contains(shop.name ?? "") {
-//                shopsList.append(shop)
-//            }
-//        }
-//
-//        let mallList = createUniqueMallArray(from: shopsList)
-//
-//        pinMall.forEach { pin in
-//            if mallList.contains(pin.name ?? "") {
-//                pinList.append(pin)
-//            }
-//        }
-//        return pinList
-//    }
-    

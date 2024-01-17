@@ -86,7 +86,7 @@ final class ProductController: UIViewController {
         return label
     }()
     
-    private var mapView: MinskMapView!
+    private var mapView: MapView!
     
     private let mapTapGestureRecognizer: UITapGestureRecognizer = {
         let tapRecognizer = UITapGestureRecognizer()
@@ -352,7 +352,7 @@ private extension ProductController {
     }
     
     func setupMapView() {
-        mapView = MinskMapView(places: arrayPin)
+        mapView = MapView(places: arrayPin)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.layer.cornerRadius = 10
         mapView.isZoomEnabled = false

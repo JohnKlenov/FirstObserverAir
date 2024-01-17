@@ -31,7 +31,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -40,13 +39,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Попытка получить MapController
-        if let mapController = window?.rootViewController as? MapController, isOffLocationService == true {
-            // Вызов методов
-            mapController.setupLocationManager()
-            mapController.checkLocationEnabled()
-            isOffLocationService = false
-        }
+        setupLocationManager()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -93,4 +86,19 @@ private extension SceneDelegate {
         window?.rootViewController = launchScreen
     }
 }
+
+// MARK: - Seeting CLLocationManager
+private extension SceneDelegate {
+    func setupLocationManager() {
+        // Попытка получить MapController
+        if let tabBarController = window?.rootViewController as? UITabBarController,
+           let navigationController = tabBarController.selectedViewController as? UINavigationController,
+           let mapController = navigationController.presentedViewController as? MapController, isOffLocationService == true {
+            mapController.setupLocationManager()
+            mapController.checkLocationEnabled()
+            isOffLocationService = false
+        }
+    }
+}
+
 

@@ -118,9 +118,12 @@ private extension ListProductController {
 // MARK: ListProductCollectionDelegate
 extension ListProductController: ListProductCollectionDelegate {
     func didSelectCell(_ index: Int) {
-        print("didSelectCell - \(index)")
+        let product = dataSource[index]
+        let productVC = ProductController(product: product)
+        navigationController?.pushViewController(productVC, animated: true)
     }
 }
+
 
 // MARK: - Layout
 private extension ListProductController {

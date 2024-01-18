@@ -17,6 +17,12 @@
 		5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9092B458FFC00F3387C /* MapViewModel.swift */; };
 		5E0DE90C2B459B9000F3387C /* ProductFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */; };
 		5E1148E32B57D8C10073B2E8 /* SettingScreenOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */; };
+		5E1148E92B5907680073B2E8 /* MallController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148E82B5907680073B2E8 /* MallController.swift */; };
+		5E1148EB2B5908590073B2E8 /* PageFooterMallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148EA2B5908590073B2E8 /* PageFooterMallView.swift */; };
+		5E1148ED2B5908D20073B2E8 /* TitleHeaderShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148EC2B5908D20073B2E8 /* TitleHeaderShopView.swift */; };
+		5E1148EF2B59091D0073B2E8 /* MallImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148EE2B59091D0073B2E8 /* MallImageCell.swift */; };
+		5E1148F12B5909AF0073B2E8 /* ShopForMallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148F02B5909AF0073B2E8 /* ShopForMallCell.swift */; };
+		5E1148F32B593ACE0073B2E8 /* MallCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148F22B593ACE0073B2E8 /* MallCollectionView.swift */; };
 		5E1A35312B13DE8A0076FDC1 /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35302B13DE8A0076FDC1 /* Resources.swift */; };
 		5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */; };
 		5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35362B13E1770076FDC1 /* TabBarController.swift */; };
@@ -77,6 +83,12 @@
 		5E0DE9092B458FFC00F3387C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFirebaseService.swift; sourceTree = "<group>"; };
 		5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingScreenOrientation.swift; sourceTree = "<group>"; };
+		5E1148E82B5907680073B2E8 /* MallController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallController.swift; sourceTree = "<group>"; };
+		5E1148EA2B5908590073B2E8 /* PageFooterMallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageFooterMallView.swift; sourceTree = "<group>"; };
+		5E1148EC2B5908D20073B2E8 /* TitleHeaderShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleHeaderShopView.swift; sourceTree = "<group>"; };
+		5E1148EE2B59091D0073B2E8 /* MallImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallImageCell.swift; sourceTree = "<group>"; };
+		5E1148F02B5909AF0073B2E8 /* ShopForMallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopForMallCell.swift; sourceTree = "<group>"; };
+		5E1148F22B593ACE0073B2E8 /* MallCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallCollectionView.swift; sourceTree = "<group>"; };
 		5E1A35302B13DE8A0076FDC1 /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + ext.swift"; sourceTree = "<group>"; };
 		5E1A35362B13E1770076FDC1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
@@ -181,9 +193,45 @@
 				5E9B52282B52ADB400F907B6 /* Controller */,
 				5E9B52292B52ADC400F907B6 /* View */,
 				5E9B52272B52ADA300F907B6 /* Model */,
-				5E0DE9092B458FFC00F3387C /* MapViewModel.swift */,
 			);
 			path = MapController;
+			sourceTree = "<group>";
+		};
+		5E1148E42B5907180073B2E8 /* MallController */ = {
+			isa = PBXGroup;
+			children = (
+				5E1148E72B5907410073B2E8 /* Model */,
+				5E1148E62B5907390073B2E8 /* View */,
+				5E1148E52B5907310073B2E8 /* Controller */,
+			);
+			path = MallController;
+			sourceTree = "<group>";
+		};
+		5E1148E52B5907310073B2E8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5E1148E82B5907680073B2E8 /* MallController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		5E1148E62B5907390073B2E8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5E1148EA2B5908590073B2E8 /* PageFooterMallView.swift */,
+				5E1148EC2B5908D20073B2E8 /* TitleHeaderShopView.swift */,
+				5E1148EE2B59091D0073B2E8 /* MallImageCell.swift */,
+				5E1148F02B5909AF0073B2E8 /* ShopForMallCell.swift */,
+				5E1148F22B593ACE0073B2E8 /* MallCollectionView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5E1148E72B5907410073B2E8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		5E1A352E2B13DCAA0076FDC1 /* TabBarController */ = {
@@ -458,6 +506,7 @@
 		5E88134B2AF4D8110044F299 /* FirstObserverAir */ = {
 			isa = PBXGroup;
 			children = (
+				5E1148E42B5907180073B2E8 /* MallController */,
 				5E0DE9082B458F7E00F3387C /* MapController */,
 				5E9B521D2B51218600F907B6 /* FullScreenImage */,
 				5E7D7E652B44A0920009B8E8 /* Product */,
@@ -571,6 +620,7 @@
 		5E9B52272B52ADA300F907B6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5E0DE9092B458FFC00F3387C /* MapViewModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -749,6 +799,7 @@
 				5E9B52262B51226000F907B6 /* ImageScrollView.swift in Sources */,
 				5E22B1372B3AE59300CDD18A /* AllShops.swift in Sources */,
 				5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */,
+				5E1148EF2B59091D0073B2E8 /* MallImageCell.swift in Sources */,
 				5E0DE9052B45479700F3387C /* AddToCartAnimationView.swift in Sources */,
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
 				5E99AB5C2B358B7C00FA9FD4 /* HomeCollectionView.swift in Sources */,
@@ -761,9 +812,13 @@
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
 				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
 				5E9B522B2B52ADDE00F907B6 /* MapController.swift in Sources */,
+				5E1148F32B593ACE0073B2E8 /* MallCollectionView.swift in Sources */,
 				5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */,
+				5E1148EB2B5908590073B2E8 /* PageFooterMallView.swift in Sources */,
 				5E1A354E2B13E8700076FDC1 /* ProfileController.swift in Sources */,
+				5E1148ED2B5908D20073B2E8 /* TitleHeaderShopView.swift in Sources */,
 				5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */,
+				5E1148F12B5909AF0073B2E8 /* ShopForMallCell.swift in Sources */,
 				5EC492382B304C410061C71F /* ShopCell.swift in Sources */,
 				5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */,
 				5E1148E32B57D8C10073B2E8 /* SettingScreenOrientation.swift in Sources */,
@@ -780,6 +835,7 @@
 				5E1A35462B13E7CC0076FDC1 /* MallsController.swift in Sources */,
 				5E1A35672B1734A90076FDC1 /* PlaceholderView.swift in Sources */,
 				5E22B1432B3C443500CDD18A /* ListProductCollectionView.swift in Sources */,
+				5E1148E92B5907680073B2E8 /* MallController.swift in Sources */,
 				5E88134F2AF4D8110044F299 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

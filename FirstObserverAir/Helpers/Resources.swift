@@ -186,10 +186,10 @@ enum R {
             }
             enum CategoryProducts {}
             enum Mall {
-                static let floorPlanButton = "Flor plan"
-                static let websiteMallButton = "Website mall"
-                static let titleButtonsStackLabel = "Mall navigator"
-                static let titleMapViewLabel = "Location mall"
+                static let floorPlanBtn = "Flor plan"
+                static let webPageForMallBtn = "Website mall"
+                static let titleBtnStack = "Mall navigator"
+                static let titleMapView = "Location mall"
             }
             enum Map {}
             enum FullScreen {

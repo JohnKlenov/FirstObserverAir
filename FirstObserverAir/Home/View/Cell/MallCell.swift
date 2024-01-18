@@ -6,13 +6,13 @@
 //
 
 import UIKit
-//import FirebaseStorage
 import FirebaseStorageUI
 
 class MallCell: UICollectionViewCell {
     
     static var reuseID: String = "MallCell"
     var storage: Storage!
+    
     
     let imageView: UIImageView = {
         let image = UIImageView()
@@ -63,7 +63,8 @@ private extension MallCell {
 
 // MARK: - Setting
 extension MallCell {
-    func configureCell(model:Item) {
+    func configureCell(model:Item, isHiddenTitle:Bool) {
+        nameMall.isHidden = isHiddenTitle
         let placeholderImage = UIImage(systemName: "photo")
         placeholderImage?.withRenderingMode(.alwaysTemplate)
         if let firstRef = model.mall?.refImage {

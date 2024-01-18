@@ -190,24 +190,24 @@ extension HomeController: UICollectionViewDelegate {
         print("indexPath - \(indexPath.section)")
         switch indexPath.section {
         case 0:
+//            let gender = homeModel?.returnGender() ?? ""
+//            let path = "Malls\(gender)"
+            
             print("0")
         case 1:
-            print("1")
             let gender = homeModel?.returnGender() ?? ""
             let path = "products\(gender)"
             let valueField = dataSource[indexPath.section].items[indexPath.row].shop?.name ?? ""
             let modelListController: ListProductModelInput = ListProductService(path: path, keyField: "shops", valueField: valueField, isArrayField: true)
             let shopProductVC = ListProductController(modelInput: modelListController, title: valueField)
-//            let shopProductVC = ListProductController(path: "", keyField: "", valueField: "", isArrayField: true, title: "")
             navigationController?.pushViewController(shopProductVC, animated: true)
         case 2:
-            print("2")
             if let product = dataSource[indexPath.section].items[indexPath.row].popularProduct {
                 let productVC = ProductController(product: product)
                 navigationController?.pushViewController(productVC, animated: true)
             }
         default:
-            print("default")
+            break
         }
     }
 }

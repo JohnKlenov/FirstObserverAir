@@ -49,19 +49,19 @@ private extension HomeCollectionView {
     
     func createLayout() -> UICollectionViewLayout {
         
-        let layout = UICollectionViewCompositionalLayout { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
-            let section = self.data[sectionIndex]
+        let layout = UICollectionViewCompositionalLayout { [weak self] (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+            let section = self?.data[sectionIndex]
             
-            switch section.section {
+            switch section?.section {
             case "Malls":
-                return self.mallSection()
+                return self?.mallSection()
             case "Shops":
-                return self.shopSection()
+                return self?.shopSection()
             case "PopularProducts":
-                return self.popProductSection()
+                return self?.popProductSection()
             default:
                 print("default createLayout")
-                return self.mallSection()
+                return self?.mallSection()
             }
         }
         layout.register(BackgroundViewCollectionReusableView.self, forDecorationViewOfKind: "background")
@@ -133,7 +133,7 @@ private extension HomeCollectionView {
             switch self.data[indexPath.section].section {
             case "Malls":
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell
-                cell?.configureCell(model: cellData)
+                cell?.configureCell(model: cellData, isHiddenTitle: false)
                 return cell
             case "Shops":
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShopCell.reuseID, for: indexPath) as? ShopCell

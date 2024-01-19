@@ -26,12 +26,14 @@ class MallController: UIViewController {
         return view
     }()
     
-    private let mapView: MapView = {
-       let map = MapView()
-        map.translatesAutoresizingMaskIntoConstraints = false
-        map.layer.cornerRadius = 10
-        return map
-    }()
+//    private let mapView: MapView = {
+//       let map = MapView()
+//        map.translatesAutoresizingMaskIntoConstraints = false
+//        map.layer.cornerRadius = 10
+//        return map
+//    }()
+    
+    private var mapView: MapView!
     
     private let mapTapGestureRecognizer: UITapGestureRecognizer = {
         let tapRecognizer = UITapGestureRecognizer()
@@ -46,7 +48,7 @@ class MallController: UIViewController {
     private var floorPlanBtn: UIButton!
     private var webPageForMallBtn: UIButton!
     
-    private let compositeStackView: UIStackView = {
+    private let compositeNavigationStck: UIStackView = {
         let stack = UIStackView()
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
@@ -54,40 +56,6 @@ class MallController: UIViewController {
         stack.spacing = 20
         return stack
     }()
-    
-    
-    // Depricated property
-    
-//    let titleButtonsStackLabel: UILabel = {
-//        let label = UILabel()
-//        label.translatesAutoresizingMaskIntoConstraints = false
-//        label.text = R.Strings.OtherControllers.Mall.titleButtonsStackLabel
-//        label.textAlignment = .left
-//        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-//        label.textColor = R.Colors.label
-//        return label
-//    }()
-//
-//    let titleMapViewLabel: UILabel = {
-//        let label = UILabel()
-//        label.translatesAutoresizingMaskIntoConstraints = false
-//        label.text =  R.Strings.OtherControllers.Mall.titleMapViewLabel
-//        label.textAlignment = .left
-//        label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-//        label.textColor = R.Colors.label
-//        return label
-//    }()
-    
-    let stackViewForButton: UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.spacing = 5
-        return stack
-    }()
-    
-    
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,14 +65,10 @@ class MallController: UIViewController {
         
         setupScrollView()
         setupCollectionView()
-        addButtonsForStackViewButton()
         setupSubviews()
+        setupMapView()
         setupConstraints()
         
-        
-        mapView.delegateMap = self
-        mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
-        mapView.addGestureRecognizer(mapTapGestureRecognizer)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -124,31 +88,7 @@ class MallController: UIViewController {
         }
     }
     
-    @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
-        
-        var countFalse = 0
-        
-        for annotation in mapView.annotations {
-            
-            if let annotationView = mapView.view(for: annotation), let annotationMarker = annotationView as? MKMarkerAnnotationView {
-                
-                let point = gestureRecognizer.location(in: mapView)
-                let convertPoint = mapView.convert(point, to: annotationMarker)
-                if annotationMarker.point(inside: convertPoint, with: nil) {
-                } else {
-                    countFalse+=1
-                }
-            }
-        }
-        if countFalse == mapView.annotations.count, isMapSelected == false {
-        
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//            let fullScreenMap = storyboard.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-//            fullScreenMap.arrayPin = currentPin
-//            fullScreenMap.modalPresentationStyle = .fullScreen
-//            present(fullScreenMap, animated: true, completion: nil)
-        }
-    }
+
     
     private func configureViews(mallModel:Int)  {
         
@@ -187,18 +127,8 @@ class MallController: UIViewController {
     
     private func setupSubviews() {
         containerView.addSubview(collectionView)
-//        containerView.addSubview(titleButtonsStackLabel)
-        containerView.addSubview(stackViewForButton)
-//        containerView.addSubview(titleMapViewLabel)
+        containerView.addSubview(compositeNavigationStck)
         containerView.addSubview(mapView)
-    }
-    
-    private func addButtonsForStackViewButton() {
-        
-//        let arrayButton = [floorPlanButton, webPageForMallBtn]
-//        arrayButton.forEach { view in
-//            stackViewForButton.addArrangedSubview(view)
-//        }
     }
 }
 
@@ -312,7 +242,21 @@ private extension MallController {
         let btnStack = createStackViewWithBtns(firstButton: webPageForMallBtn, secondButton: floorPlanBtn)
 
         let subviews = [titleBtnStack, btnStack, titleMapView]
-        subviews.forEach { compositeStackView.addArrangedSubview($0) }
+        subviews.forEach { compositeNavigationStck.addArrangedSubview($0) }
+    }
+    
+    func setupMapView() {
+        
+        mapView = MapView(places: [Places]())
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.layer.cornerRadius = 10
+        mapView.isZoomEnabled = false
+        mapView.isScrollEnabled = false
+        mapView.isPitchEnabled = false
+        mapView.isRotateEnabled = false
+        mapView.delegateMap = self
+        mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
+        mapView.addGestureRecognizer(mapTapGestureRecognizer)
     }
 }
 
@@ -323,6 +267,32 @@ private extension MallController {
     
     @objc func floorPlanBtnPressed(_ sender: UIButton) {
     }
+    
+    @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
+        
+        var countFalse = 0
+        
+        for annotation in mapView.annotations {
+            
+            if let annotationView = mapView.view(for: annotation), let annotationMarker = annotationView as? MKMarkerAnnotationView {
+                
+                let point = gestureRecognizer.location(in: mapView)
+                let convertPoint = mapView.convert(point, to: annotationMarker)
+                if annotationMarker.point(inside: convertPoint, with: nil) {
+                } else {
+                    countFalse+=1
+                }
+            }
+        }
+        if countFalse == mapView.annotations.count, isMapSelected == false {
+        
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            let fullScreenMap = storyboard.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
+//            fullScreenMap.arrayPin = currentPin
+//            fullScreenMap.modalPresentationStyle = .fullScreen
+//            present(fullScreenMap, animated: true, completion: nil)
+        }
+    }
 }
 
 // MARK: - Layout
@@ -331,16 +301,10 @@ private extension MallController {
         collectionView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 0).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 0).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 0).isActive = true
-//        collectionView.bottomAnchor.constraint(equalTo: titleButtonsStackLabel.topAnchor, constant: -20).isActive = true
-//        titleButtonsStackLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10).isActive = true
-//        titleButtonsStackLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10).isActive = true
-//        titleButtonsStackLabel.bottomAnchor.constraint(equalTo: stackViewForButton.topAnchor, constant: -20).isActive = true
-        stackViewForButton.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
-        stackViewForButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
-        stackViewForButton.bottomAnchor.constraint(equalTo: mapView.topAnchor, constant: -20).isActive = true
-//        titleMapViewLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10).isActive = true
-//        titleMapViewLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10).isActive = true
-//        titleMapViewLabel.bottomAnchor.constraint(equalTo: mapView.topAnchor, constant: -20).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: compositeNavigationStck.topAnchor, constant: -20).isActive = true
+        compositeNavigationStck.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20).isActive = true
+        compositeNavigationStck.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20).isActive = true
+        compositeNavigationStck.bottomAnchor.constraint(equalTo: mapView.topAnchor, constant: -20).isActive = true
         mapView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10).isActive = true
         mapView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10).isActive = true
         mapView.heightAnchor.constraint(equalTo: mapView.widthAnchor, multiplier: 1).isActive = true

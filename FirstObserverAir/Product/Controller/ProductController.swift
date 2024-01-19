@@ -173,7 +173,7 @@ private extension ProductController {
         configureToCardButton()
         setupScrollView()
         setupCollectionView()
-        setupCompositeStck()
+        setupStackView()
         setupTableView()
         setupMapView()
         addSubviews()
@@ -277,7 +277,7 @@ private extension ProductController {
         imageCollectionView.showsHorizontalScrollIndicator = false
     }
     
-    func setupCompositeStck() {
+    func setupStackView() {
         /// nameStack
         let brand = dataSource.brand ?? ""
         let model = dataSource.model ?? ""

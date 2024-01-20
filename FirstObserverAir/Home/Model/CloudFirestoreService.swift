@@ -188,3 +188,26 @@ struct FetchPinDataResponse {
         self.items = items
     }
 }
+
+struct FetchMallDataResponse {
+    typealias JSON = [String : Any]
+    let items:[Mall]
+    
+    // мы можем сделать init не просто Failable а сделаем его throws
+    // throws что бы он выдавал какие то ошибки если что то не получается
+    init(documents: Any) throws {
+        // если мы не сможем получить array то мы выплюним ошибку throw
+        guard let array = documents as? [JSON] else { throw NetworkError.failParsingJSON("Failed to parse JSON")
+        }
+//        HomeScreenCloudFirestoreService.
+        var items = [Mall]()
+        for dictionary in array {
+            // если у нас не получился comment то просто продолжаем - continue
+            // потому что тут целый массив и малали один не получился остальные получаться
+            let item = Mall(dict: dictionary)
+            items.append(item)
+        }
+        self.items = items
+    }
+}
+

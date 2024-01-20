@@ -32,6 +32,7 @@ final class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+//         navigationItem.setHidesBackButton(true, animated: true) но во viewWillAppear???
         setBackButtonWithoutTitle("")
     }
     

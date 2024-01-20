@@ -120,6 +120,24 @@ struct Pin {
     }
 }
 
+struct Mall {
+    
+    let name: String?
+    let description: String?
+    let floorPlan: String?
+    let webSite: String?
+    let priorityIndex: Int?
+    let refImage: [String]?
+    init(dict: [String: Any]) {
+        self.name = dict["name"] as? String
+        self.description = dict["description"] as? String
+        self.floorPlan = dict["floorPlan"] as? String
+        self.webSite = dict["webSite"] as? String
+        self.priorityIndex = dict["priorityIndex"] as? Int
+        self.refImage = dict["refImage"] as? [String]
+    }
+}
+
 
 
 

@@ -1,19 +1,19 @@
 //
-//  ListProductService.swift
+//  MallService.swift
 //  FirstObserverAir
 //
-//  Created by Evgenyi on 27.12.23.
+//  Created by Evgenyi on 20.01.24.
 //
-
 
 import Foundation
 
 // Протокол для модели данных
-protocol ListProductModelInput: AnyObject {
-    func fetchProduct(completion: @escaping ([ProductItem]?, Error?) -> Void)
+protocol MallModelInput: AnyObject {
+    func fetchMall(completion: @escaping ([Mall]?, Error?) -> Void)
 }
 
-final class ListProductService {
+
+final class MallService {
     
     let serviceFB = FirebaseService.shared
     
@@ -35,23 +35,22 @@ final class ListProductService {
     }
 }
 
-extension ListProductService: ListProductModelInput {
-    func fetchProduct(completion: @escaping ([ProductItem]?, Error?) -> Void) {
-        
+extension MallService: MallModelInput {
+    func fetchMall(completion: @escaping ([Mall]?, Error?) -> Void) {
         serviceFB.fetchCollectionFiltered(for: path, isArrayField: isArrayField, keyField: keyField, valueField: valueField) { documents, error in
             guard let documents = documents, error == nil else {
                 completion(nil, error)
                 return
             }
-            
+
             do {
-                let response = try FetchProductsDataResponse(documents: documents)
+                let response = try FetchMallDataResponse(documents: documents)
                 completion(response.items, nil)
             } catch {
                 print("Returned message for analytic FB Crashlytics error FirebaseService")
-                //                ManagerFB.shared.CrashlyticsMethod
                 completion(nil, error)
             }
         }
     }
 }
+

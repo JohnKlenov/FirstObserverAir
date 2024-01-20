@@ -21,6 +21,7 @@ final class ListProductController: UIViewController {
             return self.navigationController as? NavigationController
         }
     private var collectionView:ListProductCollectionView!
+    
     init(modelInput: ListProductModelInput, title:String) {
         self.listProductModel = modelInput
         super.init(nibName: nil, bundle: nil)

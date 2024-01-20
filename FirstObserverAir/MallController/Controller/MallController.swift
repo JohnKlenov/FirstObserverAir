@@ -26,13 +26,6 @@ class MallController: UIViewController {
         return view
     }()
     
-//    private let mapView: MapView = {
-//       let map = MapView()
-//        map.translatesAutoresizingMaskIntoConstraints = false
-//        map.layer.cornerRadius = 10
-//        return map
-//    }()
-    
     private var mapView: MapView!
     
     private let mapTapGestureRecognizer: UITapGestureRecognizer = {
@@ -56,7 +49,19 @@ class MallController: UIViewController {
         stack.spacing = 20
         return stack
     }()
- 
+    
+    private var mallModel: MallModelInput?
+    
+    init(modelInput: MallModelInput, title:String) {
+        self.mallModel = modelInput
+        super.init(nibName: nil, bundle: nil)
+        self.title = title
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -65,8 +70,8 @@ class MallController: UIViewController {
         
         setupScrollView()
         setupCollectionView()
-        setupSubviews()
         setupMapView()
+        setupSubviews()
         setupConstraints()
         
     }
@@ -268,29 +273,29 @@ private extension MallController {
     @objc func floorPlanBtnPressed(_ sender: UIButton) {
     }
     
+    /// Duplicate the code
     @objc func didTapRecognizer(_ gestureRecognizer: UITapGestureRecognizer) {
         
-        var countFalse = 0
-        
+        let point = gestureRecognizer.location(in: mapView)
+        var didTapOnAnnotationView = false
+        /// Находится ли точка нажатия внутри annotationMarker
         for annotation in mapView.annotations {
-            
-            if let annotationView = mapView.view(for: annotation), let annotationMarker = annotationView as? MKMarkerAnnotationView {
-                
-                let point = gestureRecognizer.location(in: mapView)
-                let convertPoint = mapView.convert(point, to: annotationMarker)
-                if annotationMarker.point(inside: convertPoint, with: nil) {
-                } else {
-                    countFalse+=1
-                }
+            guard let annotationView = mapView.view(for: annotation),
+                  let annotationMarker = annotationView as? MKMarkerAnnotationView,
+                  annotationMarker.point(inside: mapView.convert(point, to: annotationMarker), with: nil)
+                    /// Если условие guard не выполняется, цикл продолжается с следующей аннотацией.
+            else {
+                continue
             }
+            /// Если условие guard выполняется, то есть нажатие было на представление аннотации, переменная didTapOnAnnotationView устанавливается в true и цикл прерывается.
+            didTapOnAnnotationView = true
+            break
         }
-        if countFalse == mapView.annotations.count, isMapSelected == false {
         
-//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//            let fullScreenMap = storyboard.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-//            fullScreenMap.arrayPin = currentPin
-//            fullScreenMap.modalPresentationStyle = .fullScreen
-//            present(fullScreenMap, animated: true, completion: nil)
+        if !didTapOnAnnotationView && isMapSelected == false {
+            let fullScreenMap = MapController(arrayPin: [Places]())
+            fullScreenMap.modalPresentationStyle = .fullScreen
+            present(fullScreenMap, animated: true, completion: nil)
         }
     }
 }

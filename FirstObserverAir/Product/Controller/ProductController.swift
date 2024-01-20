@@ -371,6 +371,8 @@ private extension ProductController {
         }
     }
     
+    ///  Duplicate the code
+    ///  можно перенести в Application Model как static method in da class
     func getMapPin(pins:[Pin]) {
         pins.forEach { pin in
             if let latitude = pin.latitude, let longitude = pin.longitude {
@@ -380,6 +382,8 @@ private extension ProductController {
         }
     }
     
+    /// Duplicate the code
+    /// можно перенести в Application Model как static method in da class
     func getShopForMall(indexPath:Int) -> Shop? {
         let mall = arrayPin[indexPath].title
         var selectedShop:[Shop] = []

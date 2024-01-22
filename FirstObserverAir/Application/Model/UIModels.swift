@@ -42,12 +42,13 @@ struct PreviewSection: Hashable {
     let name: String?
     let refImage: String?
     /// floor должен быть String для previewMall
-    let floor: Int?
+//    let floor: Int?
+    let floor: String?
     let priorityIndex:Int?
     init(dict: [String: Any]) {
         name = dict["name"] as? String
         refImage = dict["refImage"] as? String
-        floor = dict["refImage"] as? Int
+        floor = dict["floor"] as? String
         priorityIndex = dict["priorityIndex"] as? Int
     }
 }

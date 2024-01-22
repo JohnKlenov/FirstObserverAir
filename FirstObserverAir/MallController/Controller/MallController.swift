@@ -34,7 +34,7 @@ class MallController: UIViewController {
         return tapRecognizer
     }()
     
-    private var collectionView:UICollectionView!
+    private var collectionView:MallCollectionView!
     
     private var isMapSelected = false
     
@@ -52,6 +52,12 @@ class MallController: UIViewController {
     
     private var mallModel: MallModelInput?
     private var dataMall: Mall?
+    private var arrayPin:[Places] = []
+    private var dataCollectionView:[SectionModel] = []
+    
+    private var navController: NavigationController? {
+            return self.navigationController as? NavigationController
+        }
     
     init(modelInput: MallModelInput, title:String) {
         self.mallModel = modelInput
@@ -73,7 +79,6 @@ class MallController: UIViewController {
         setupCollectionView()
         setupMapView()
         setupBtn()
-        setupCompositeStck()
         setupSubviews()
         setupConstraints()
         
@@ -184,6 +189,7 @@ private extension MallController {
         if dataMall?.floorPlan == nil {
             floorPlanBtn.isHidden = true
         }
+        setupCompositeStck()
     }
     
     func createButton(withTitle title: String, textColor: UIColor, fontSize: CGFloat, target: Any?, action: Selector, image: UIImage.SymbolConfiguration?) -> UIButton {
@@ -265,6 +271,33 @@ private extension MallController {
         mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
         mapView.addGestureRecognizer(mapTapGestureRecognizer)
     }
+    
+    ///  Duplicate the code
+    ///  можно перенести в Application Model как static method in da class
+    func getMapPin(pins:[Pin]) {
+        pins.forEach { pin in
+            if let latitude = pin.latitude, let longitude = pin.longitude {
+                let pinMap = Places(title: pin.name, locationName: pin.address, discipline: pin.typeMall, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), imageName: pin.refImage)
+                self.arrayPin.append(pinMap)
+            }
+        }
+    }
+    
+    func startLoad() {
+        startSpiner()
+    }
+    
+    func stopLoad() {
+        stopSpiner()
+    }
+    
+    func startSpiner() {
+        navController?.startSpinnerForView()
+    }
+    
+    func stopSpiner() {
+        navController?.stopSpinner()
+    }
 }
 
 // MARK: - Selectors
@@ -341,6 +374,41 @@ extension MallController: UICollectionViewDelegate {
         }
     }
 }
+
+// MARK: - Setting DataSource
+private extension MallController {
+    func fetchProduct() {
+        startLoad()
+        mallModel?.fetchMall(completion: { [weak self] (mallModel, dataCollectionView, pins, error) in
+            guard let self = self else { return }
+            self.stopLoad()
+            guard let mallModel = mallModel, error == nil, let pins = pins, let dataCollectionView = dataCollectionView else {
+                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
+                    self.fetchProduct()
+                } cancelActionHandler: {
+                    self.navigationController?.popViewController(animated: true)
+                }
+                return
+            }
+            self.getMapPin(pins: pins)
+            self.dataMall = mallModel
+
+//            let itemsShop: [Item] = shops.map { shop in
+//                let previewSection = PreviewSection(dict: ["name": shop.name ?? "", "refImage": shop.refImage ?? "", "floor": shop.floor ?? ""])
+//                return Item(mall: nil, shop: previewSection, popularProduct: nil)
+//            }
+//            let shopSection = SectionModel(section: "Shop", items: itemsShop)
+//
+//            let itemsMall: [Item] = mallModel.refImage?.map { refImage in
+//                let previewSection = PreviewSection(dict: ["refImage": refImage])
+//                return Item(mall: previewSection, shop: nil, popularProduct: nil)
+//            } ?? []
+//            let mallSection = SectionModel(section: "Mall", items: itemsMall)
+            
+        })
+    }
+}
+
 
 // MARK: - SafariViewController -
 extension UIViewController {

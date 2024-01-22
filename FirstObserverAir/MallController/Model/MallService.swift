@@ -10,7 +10,7 @@ import Foundation
 
 // Протокол для модели данных
 protocol MallModelInput: AnyObject {
-    func fetchMall(completion: @escaping ([Mall]?, Error?) -> Void)
+    func fetchMall(completion: @escaping (Mall?,[SectionModel]?,[Pin]?, Error?) -> Void)
 }
 
 
@@ -57,19 +57,40 @@ extension MallService {
 }
 
 extension MallService: MallModelInput {
-    func fetchMall(completion: @escaping ([Mall]?, Error?) -> Void) {
+    func fetchMall(completion: @escaping (Mall?, [SectionModel]?, [Pin]?, Error?) -> Void) {
         serviceFB.fetchCollectionFiltered(for: path, isArrayField: isArrayField, keyField: keyField, valueField: valueField) { documents, error in
             guard let documents = documents, error == nil else {
-                completion(nil, error)
+                completion(nil,nil,nil,error)
                 return
             }
-
+            
             do {
                 let response = try FetchMallDataResponse(documents: documents)
-                completion(response.items, nil)
+                let mall = response.items.first
+                let pins = self.fetchPinMall(mallName: mall?.name ?? "")
+                
+                let shops = self.fetchShops(mallName: mall?.name ?? "")
+                
+                var dataCollectionView :[SectionModel] = []
+                
+                let itemsShop: [Item] = shops.map { shop in
+                    let previewSection = PreviewSection(dict: ["name": shop.name ?? "", "refImage": shop.refImage ?? "", "floor": shop.floor ?? ""])
+                    return Item(mall: nil, shop: previewSection, popularProduct: nil)
+                }
+                let shopSection = SectionModel(section: "Shop", items: itemsShop)
+                dataCollectionView.append(shopSection)
+
+                let itemsMall: [Item] = mall?.refImage?.map { refImage in
+                    let previewSection = PreviewSection(dict: ["refImage": refImage])
+                    return Item(mall: previewSection, shop: nil, popularProduct: nil)
+                } ?? []
+                let mallSection = SectionModel(section: "Mall", items: itemsMall)
+                dataCollectionView.append(mallSection)
+                
+                completion(mall,dataCollectionView,pins,nil)
             } catch {
                 print("Returned message for analytic FB Crashlytics error FirebaseService")
-                completion(nil, error)
+                completion(nil,nil,nil,error)
             }
         }
     }

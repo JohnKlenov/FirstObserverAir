@@ -5,6 +5,7 @@
 //  Created by Evgenyi on 20.01.24.
 //
 
+/// Places, MallModel, Shop
 import Foundation
 
 // Протокол для модели данных
@@ -32,6 +33,26 @@ final class MallService {
     
     deinit {
         print("deinit ListProductService")
+    }
+}
+
+extension MallService {
+    
+    func fetchShops(mallName: String) -> [Shop] {
+        let gender = serviceFB.currentGender
+        guard let allShops = serviceFB.shops[gender] else {
+            print("Returned message for analytic FB Crashlytics error MallFirebaseService func fetchShops(shopsProduct: [String]) -> [Shop]")
+            return []
+        }
+        return allShops.filter{ $0.mall == mallName }
+    }
+    
+    func fetchPinMall(mallName: String) -> [Pin] {
+        guard let pinMall = serviceFB.pinMall else {
+            print("Returned message for analytic FB Crashlytics error MallFirebaseService func fetchPinMall(shopsForProduct: [Shop]) -> [Pin]")
+            return []
+        }
+        return pinMall.filter { $0.name == mallName }
     }
 }
 

@@ -51,6 +51,7 @@ class MallController: UIViewController {
     }()
     
     private var mallModel: MallModelInput?
+    private var dataMall: Mall?
     
     init(modelInput: MallModelInput, title:String) {
         self.mallModel = modelInput
@@ -71,6 +72,8 @@ class MallController: UIViewController {
         setupScrollView()
         setupCollectionView()
         setupMapView()
+        setupBtn()
+        setupCompositeStck()
         setupSubviews()
         setupConstraints()
         
@@ -174,14 +177,13 @@ private extension MallController {
         webPageForMallBtn = createButton(withTitle: R.Strings.OtherControllers.Mall.webPageForMallBtn, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForMallPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         floorPlanBtn = createButton(withTitle: R.Strings.OtherControllers.Mall.floorPlanBtn, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(floorPlanBtnPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
         
-//        if dataSource.originalContent == nil {
-//            webPageForItemtBtn.isHidden = true
-//        }
-//
-//        guard let model = dataSource.model, !model.isEmpty else {
-//            addItemToCartBtn.isHidden = true
-//            return
-//        }
+        if dataMall?.webSite == nil {
+            webPageForMallBtn.isHidden = true
+        }
+        
+        if dataMall?.floorPlan == nil {
+            floorPlanBtn.isHidden = true
+        }
     }
     
     func createButton(withTitle title: String, textColor: UIColor, fontSize: CGFloat, target: Any?, action: Selector, image: UIImage.SymbolConfiguration?) -> UIButton {

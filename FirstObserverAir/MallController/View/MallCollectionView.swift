@@ -15,14 +15,15 @@ final class MallCollectionView: UICollectionView {
         }
     }
     weak var footerMallDelegate: PageFooterMallDelegate?
+    var currentPage: Int?
 
     private var collectionViewDataSource: UICollectionViewDiffableDataSource<SectionModel, Item>?
     
     init() {
         super.init(frame: .zero, collectionViewLayout: UICollectionViewLayout())
-                let layout = self.createLayout()
-                self.collectionViewLayout = layout
-                self.setupView()
+        let layout = self.createLayout()
+        self.collectionViewLayout = layout
+        self.setupView()
     }
 
         required init?(coder: NSCoder) {
@@ -70,8 +71,8 @@ private extension MallCollectionView {
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
-//        groupPagingCentered
-//        section.orthogonalScrollingBehavior = .paging
+        //        groupPagingCentered
+        //        section.orthogonalScrollingBehavior = .paging
         section.orthogonalScrollingBehavior = .groupPagingCentered
         
         let sizeFooter = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(20))
@@ -80,10 +81,12 @@ private extension MallCollectionView {
         
         section.visibleItemsInvalidationHandler = { [weak self] (visibleItems, offset, env) -> Void in
             guard let self = self else {return}
-            let currentPage = visibleItems.last?.indexPath.row ?? 0
-            self.footerMallDelegate?.currentPage(index: currentPage)
+            let newPage = visibleItems.last?.indexPath.row ?? 0
+            if newPage != self.currentPage {
+                self.currentPage = newPage
+                self.footerMallDelegate?.currentPage(index: newPage)
+            }
         }
-        
         return section
     }
     
@@ -127,7 +130,6 @@ private extension MallCollectionView {
                 cell?.configureCell(model: cellData)
                 return cell
             default:
-                print("default createDataSource")
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrandCellMallVC.reuseID, for: indexPath) as? BrandCellMallVC
                 cell?.configureCell(model: cellData)
                 return cell

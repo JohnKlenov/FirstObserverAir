@@ -8,7 +8,7 @@
 import UIKit
 import MapKit
 
-class MallController: UIViewController {
+final class MallController: UIViewController {
 
     var heightCnstrCollectionView: NSLayoutConstraint!
     
@@ -173,6 +173,17 @@ private extension MallController {
         return button
     }
     
+//    func createStackViewWithBtns(buttons: [UIButton]) -> UIStackView {
+//        let stackViewForButton: UIStackView = {
+//            let stack = UIStackView(arrangedSubviews: buttons)
+//            stack.translatesAutoresizingMaskIntoConstraints = false
+//            stack.axis = .vertical
+//            stack.distribution = .fill
+//            stack.spacing = 5
+//            return stack
+//        }()
+//        return stackViewForButton
+//    }
     func createStackViewWithBtns(firstButton: UIButton, secondButton: UIButton) -> UIStackView {
         let stackViewForButton: UIStackView = {
             let stack = UIStackView(arrangedSubviews: [firstButton, secondButton])
@@ -209,7 +220,14 @@ private extension MallController {
             label.textColor = R.Colors.label
             return label
         }()
-        
+//        var buttons = [UIButton]()
+//        if dataMall?.webSite != nil {
+//            buttons.append(webPageForMallBtn)
+//        }
+//        if dataMall?.floorPlan != nil {
+//            buttons.append(floorPlanBtn)
+//        }
+//        let btnStack = createStackViewWithBtns(buttons: buttons)
         let btnStack = createStackViewWithBtns(firstButton: webPageForMallBtn, secondButton: floorPlanBtn)
 
         let subviews = [titleBtnStack, btnStack, titleMapView]
@@ -362,7 +380,6 @@ private extension MallController {
             self.dataMall = mallModel
             self.dataCollectionView = dataCollectionView
             self.setupView()
-            print("before setNeedsLayout")
         })
     }
 }

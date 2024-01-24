@@ -32,11 +32,11 @@ final class MallService {
     }
     
     deinit {
-        print("deinit ListProductService")
+        print("deinit MallService")
     }
 }
 
-extension MallService {
+private extension MallService {
     
     func fetchShops(mallName: String) -> [Shop] {
         let gender = serviceFB.currentGender
@@ -54,11 +54,34 @@ extension MallService {
         }
         return pinMall.filter { $0.name == mallName }
     }
+    
+    func fetchDataCollectionView(_ mall :Mall?) -> [SectionModel] {
+        let shops = self.fetchShops(mallName: mall?.name ?? "")
+        
+        var dataCollectionView :[SectionModel] = []
+        
+        let itemsMall: [Item] = mall?.refImage?.map { refImage in
+            let previewSection = PreviewSection(dict: ["refImage": refImage])
+            return Item(mall: previewSection, shop: nil, popularProduct: nil)
+        } ?? []
+        let mallSection = SectionModel(section: "Mall", items: itemsMall)
+        dataCollectionView.append(mallSection)
+        
+        let itemsShop: [Item] = shops.map { shop in
+            let previewSection = PreviewSection(dict: ["name": shop.name ?? "", "refImage": shop.refImage ?? "", "floor": shop.floor ?? ""])
+            return Item(mall: nil, shop: previewSection, popularProduct: nil)
+        }
+        let shopSection = SectionModel(section: "Shop", items: itemsShop)
+        dataCollectionView.append(shopSection)
+        
+        return dataCollectionView
+    }
 }
 
 extension MallService: MallModelInput {
     func fetchMall(completion: @escaping (Mall?, [SectionModel]?, [Pin]?, Error?) -> Void) {
-        serviceFB.fetchCollectionFiltered(for: path, isArrayField: isArrayField, keyField: keyField, valueField: valueField) { documents, error in
+        serviceFB.fetchCollectionFiltered(for: path, isArrayField: isArrayField, keyField: keyField, valueField: valueField) {[weak self] (documents, error) in
+            guard let self = self else { return }
             guard let documents = documents, error == nil else {
                 completion(nil,nil,nil,error)
                 return
@@ -68,25 +91,7 @@ extension MallService: MallModelInput {
                 let response = try FetchMallDataResponse(documents: documents)
                 let mall = response.items.first
                 let pins = self.fetchPinMall(mallName: mall?.name ?? "")
-                
-                let shops = self.fetchShops(mallName: mall?.name ?? "")
-                
-                var dataCollectionView :[SectionModel] = []
-                
-                let itemsShop: [Item] = shops.map { shop in
-                    let previewSection = PreviewSection(dict: ["name": shop.name ?? "", "refImage": shop.refImage ?? "", "floor": shop.floor ?? ""])
-                    return Item(mall: nil, shop: previewSection, popularProduct: nil)
-                }
-                let shopSection = SectionModel(section: "Shop", items: itemsShop)
-                dataCollectionView.append(shopSection)
-
-                let itemsMall: [Item] = mall?.refImage?.map { refImage in
-                    let previewSection = PreviewSection(dict: ["refImage": refImage])
-                    return Item(mall: previewSection, shop: nil, popularProduct: nil)
-                } ?? []
-                let mallSection = SectionModel(section: "Mall", items: itemsMall)
-                dataCollectionView.append(mallSection)
-                
+                let dataCollectionView = self.fetchDataCollectionView(mall)
                 completion(mall,dataCollectionView,pins,nil)
             } catch {
                 print("Returned message for analytic FB Crashlytics error FirebaseService")

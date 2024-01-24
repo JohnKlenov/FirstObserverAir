@@ -53,8 +53,7 @@ private extension MallCollectionView {
             case "Shop":
                 return self?.shopSection()
             default:
-                print("default createLayout")
-                return self?.mallSections()
+                return self?.defaultSection()
             }
         }
     return layout
@@ -107,6 +106,14 @@ private extension MallCollectionView {
         return section
     }
     
+    func defaultSection() -> NSCollectionLayoutSection {
+        let layoutSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: layoutSize)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: layoutSize, subitem: item, count: 0)
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
+    
     func createDataSource() {
 
         collectionViewDataSource = UICollectionViewDiffableDataSource<SectionModel, Item>(collectionView: self, cellProvider: { collectionView, indexPath, cellData in
@@ -115,7 +122,7 @@ private extension MallCollectionView {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell
                 cell?.configureCell(model: cellData, isHiddenTitle: true)
                 return cell
-            case "Brands":
+            case "Shop":
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrandCellMallVC.reuseID, for: indexPath) as? BrandCellMallVC
                 cell?.configureCell(model: cellData)
                 return cell

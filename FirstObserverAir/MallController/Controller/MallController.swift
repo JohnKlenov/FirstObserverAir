@@ -7,7 +7,6 @@
 
 import UIKit
 import MapKit
-import SafariServices
 
 class MallController: UIViewController {
 
@@ -71,17 +70,8 @@ class MallController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        navigationItem.largeTitleDisplayMode = .never
         view.backgroundColor = R.Colors.systemBackground
-        
-        setupScrollView()
-        setupCollectionView()
-        setupMapView()
-        setupBtn()
-        setupSubviews()
-        setupConstraints()
-        
+        fetchProduct()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -92,62 +82,29 @@ class MallController: UIViewController {
         super.viewWillDisappear(animated)
     }
     
+    /// Метод viewDidLayoutSubviews() вызывается после того, как система завершает автоматическую настройку размеров и позиций подвидов для UIViewController.
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if Int(collectionView.collectionViewLayout.collectionViewContentSize.height) == 0 {
-            heightCnstrCollectionView.constant = collectionView.frame.height
-        } else {
-            heightCnstrCollectionView.constant = collectionView.collectionViewLayout.collectionViewContentSize.height
-        }
-    }
-    
-
-    
-    private func configureViews(mallModel:Int)  {
-        
-//        var brandSection = SectionHVC(section: "Brands", items: [])
-//        brandsMall.forEach { (previewBrands) in
-//            if mallModel.brands.contains(previewBrands.brand ?? "") {
-//                let item = ItemCell(malls: nil, brands: previewBrands, popularProduct: nil, mallImage: nil)
-//                brandSection.items.append(item)
-//            }
-//        }
-//
-//        var mallSection = SectionHVC(section: "Mall", items: [])
-//        mallModel.refImage.forEach { ref in
-//            let item = ItemCell(malls: nil, brands: nil, popularProduct: nil, mallImage: ref)
-//            mallSection.items.append(item)
-//        }
-//
-//        self.title = mallModel.name
-//
-//        if let plan = mallModel.floorPlan {
-//            floorPlanMall = plan
-//        } else {
-//            floorPlanButton.isHidden = true
-//        }
-//
-//        if let web = mallModel.webSite {
-//            webSite = web
-//        } else {
-//            websiteMallButton.isHidden = true
-//        }
-//
-//        if brandSection.items.count == mallModel.brands.count && mallSection.items.count == mallModel.refImage.count {
-//            section = [mallSection, brandSection]
-//        }
-    }
-    
-    private func setupSubviews() {
-        containerView.addSubview(collectionView)
-        containerView.addSubview(compositeNavigationStck)
-        containerView.addSubview(mapView)
+        guard let collectionView = collectionView else { return }
+        /// layoutIfNeeded в UIKit немедленно применяет любые отложенные обновления макета. Если вы вызываете layoutIfNeeded, система проверяет, есть ли какие-либо отложенные изменения в макете, и если они есть, система немедленно обновляет макет.
+        /// Отложенные изменения в макете обычно происходят, когда вы вносите изменения в данные, которые используются для создания макета вашего UICollectionView(Добавляете, удаляете или перемещаете ячейки, Изменяете размер или положение ячеек, Изменяете макет UICollectionView)
+        ///  layoutIfNeeded может потенциально привести к дополнительным вычислениям макета. Это может повлиять на производительность.
+        /// Однако важно отметить, что layoutIfNeeded будет выполнять работу только в том случае, если есть отложенные изменения макета. Если нет отложенных изменений, layoutIfNeeded не будет делать ничего, и его влияние на производительность будет минимальным.
+        collectionView.layoutIfNeeded()
+        heightCnstrCollectionView.constant = collectionView.collectionViewLayout.collectionViewContentSize.height
     }
 }
 
 // MARK: - Setting Views
 private extension MallController {
     func setupView() {
+        //        navigationItem.largeTitleDisplayMode = .never
+        setupScrollView()
+        setupCollectionView()
+        setupMapView()
+        setupBtn()
+        setupSubviews()
+        setupConstraints()
     }
 }
 
@@ -176,6 +133,7 @@ private extension MallController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         heightCnstrCollectionView = collectionView.heightAnchor.constraint(equalToConstant: 300)
         heightCnstrCollectionView.isActive = true
+        collectionView.reloadData(data: dataCollectionView)
     }
     
     func setupBtn() {
@@ -185,7 +143,7 @@ private extension MallController {
         if dataMall?.webSite == nil {
             webPageForMallBtn.isHidden = true
         }
-        
+
         if dataMall?.floorPlan == nil {
             floorPlanBtn.isHidden = true
         }
@@ -260,7 +218,7 @@ private extension MallController {
     
     func setupMapView() {
         
-        mapView = MapView(places: [Places]())
+        mapView = MapView(places:arrayPin)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.layer.cornerRadius = 10
         mapView.isZoomEnabled = false
@@ -270,6 +228,12 @@ private extension MallController {
         mapView.delegateMap = self
         mapTapGestureRecognizer.addTarget(self, action: #selector(didTapRecognizer(_:)))
         mapView.addGestureRecognizer(mapTapGestureRecognizer)
+    }
+    
+    func setupSubviews() {
+        containerView.addSubview(collectionView)
+        containerView.addSubview(compositeNavigationStck)
+        containerView.addSubview(mapView)
     }
     
     ///  Duplicate the code
@@ -303,9 +267,13 @@ private extension MallController {
 // MARK: - Selectors
 private extension MallController {
     @objc func webPageForMallPressed(_ sender: UIButton) {
+        guard let urlString = dataMall?.webSite else { return }
+        self.presentSafariViewController(withURL: urlString)
     }
     
     @objc func floorPlanBtnPressed(_ sender: UIButton) {
+        guard let urlString = dataMall?.floorPlan else { return }
+        self.presentSafariViewController(withURL: urlString)
     }
     
     /// Duplicate the code
@@ -368,7 +336,7 @@ extension MallController: UICollectionViewDelegate {
 //            brandVC.title = refPath
 //            brandVC.arrayPin = arrayPin
 //            self.navigationController?.pushViewController(brandVC, animated: true)
-            print("DidTap Default Section")
+            print("DidTap Shop Section")
         default:
             print("DidTap Default Section")
         }
@@ -392,36 +360,12 @@ private extension MallController {
             }
             self.getMapPin(pins: pins)
             self.dataMall = mallModel
-
-//            let itemsShop: [Item] = shops.map { shop in
-//                let previewSection = PreviewSection(dict: ["name": shop.name ?? "", "refImage": shop.refImage ?? "", "floor": shop.floor ?? ""])
-//                return Item(mall: nil, shop: previewSection, popularProduct: nil)
-//            }
-//            let shopSection = SectionModel(section: "Shop", items: itemsShop)
-//
-//            let itemsMall: [Item] = mallModel.refImage?.map { refImage in
-//                let previewSection = PreviewSection(dict: ["refImage": refImage])
-//                return Item(mall: previewSection, shop: nil, popularProduct: nil)
-//            } ?? []
-//            let mallSection = SectionModel(section: "Mall", items: itemsMall)
-            
+            self.dataCollectionView = dataCollectionView
+            self.setupView()
+            print("before setNeedsLayout")
         })
     }
 }
-
-
-// MARK: - SafariViewController -
-extension UIViewController {
-    func showWebView(_ urlString: String) {
-       
-        guard let url = URL(string: urlString) else { return }
-        
-        let vc = SFSafariViewController(url: url)
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true, completion: nil)
-    }
-}
-
 
 // MARK: - MapViewManagerDelegate
 extension MallController: MapViewManagerDelegate {
@@ -430,60 +374,3 @@ extension MallController: MapViewManagerDelegate {
     }
 }
 
-
-    
-
-// MARK: - Trash
-
-//    let floorPlanButton: UIButton = {
-//
-//        var configuration = UIButton.Configuration.gray()
-//
-//        var container = AttributeContainer()
-//        container.font = UIFont.boldSystemFont(ofSize: 15)
-//        container.foregroundColor = R.Colors.label
-//
-//        configuration.attributedTitle = AttributedString(R.Strings.OtherControllers.Mall.floorPlanButton, attributes: container)
-//        configuration.titleAlignment = .center
-//        configuration.buttonSize = .large
-//        configuration.baseBackgroundColor = R.Colors.systemPurple
-//        var grayButton = UIButton(configuration: configuration)
-//        grayButton.translatesAutoresizingMaskIntoConstraints = false
-//
-//        grayButton.addTarget(self, action: #selector(floorPlanButtonPressed(_:)), for: .touchUpInside)
-//
-//        return grayButton
-//    }()
-    
-//    let webPageForMallBtn: UIButton = {
-//
-//        var configuration = UIButton.Configuration.gray()
-//
-//        var container = AttributeContainer()
-//        container.font = UIFont.boldSystemFont(ofSize: 15)
-//        container.foregroundColor = R.Colors.label
-//
-//        configuration.attributedTitle = AttributedString(R.Strings.OtherControllers.Mall.websiteMallButton, attributes: container)
-//        configuration.titleAlignment = .center
-//        configuration.buttonSize = .large
-//        configuration.baseBackgroundColor = R.Colors.systemPurple
-//        var grayButton = UIButton(configuration: configuration)
-//        grayButton.translatesAutoresizingMaskIntoConstraints = false
-//
-//        grayButton.addTarget(self, action: #selector(websiteMallButtonPressed(_:)), for: .touchUpInside)
-//        return grayButton
-//    }()
-
-
-//    @objc func floorPlanButtonPressed(_ sender: UIButton) {
-//        self.showWebView(floorPlanMall)
-//    }
-    
-//    @objc func websiteMallButtonPressed(_ sender: UIButton) {
-//        let productVC = NewProductViewController()
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let productVC = storyboard.instantiateViewController(withIdentifier: "NewProductViewController") as! NewProductViewController
-//        productVC.modalPresentationStyle = .fullScreen
-//        present(productVC, animated: true, completion: nil)
-//        self.showWebView(webSite)
-//    }

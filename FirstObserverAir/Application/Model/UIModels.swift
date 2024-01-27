@@ -94,6 +94,7 @@ struct Shop {
     var refImage:String?
     var telefon:String?
     var webSite:String?
+    var logo:String?
     init(dict: [String: Any]) {
         name = dict["name"] as? String
         mall = dict["mall"] as? String
@@ -101,6 +102,7 @@ struct Shop {
         refImage = dict["refImage"] as? String
         telefon = dict["telefon"] as? String
         webSite = dict["webSite"] as? String
+        logo = dict["logo"] as? String
     }
 }
 

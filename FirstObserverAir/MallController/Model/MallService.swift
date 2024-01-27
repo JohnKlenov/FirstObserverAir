@@ -68,7 +68,7 @@ private extension MallService {
         dataCollectionView.append(mallSection)
         
         let itemsShop: [Item] = shops.map { shop in
-            let previewSection = PreviewSection(dict: ["name": shop.name ?? "", "refImage": shop.refImage ?? "", "floor": shop.floor ?? ""])
+            let previewSection = PreviewSection(dict: ["name": shop.name ?? "", "logo": shop.logo as Any, "floor": shop.floor ?? ""])
             return Item(mall: nil, shop: previewSection, popularProduct: nil)
         }
         let shopSection = SectionModel(section: "Shop", items: itemsShop)

@@ -86,12 +86,17 @@ final class MallController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         guard let collectionView = collectionView else { return }
+        print("viewDidLayoutSubviews() - \(collectionView.collectionViewLayout.collectionViewContentSize.height)")
+        if Int(collectionView.collectionViewLayout.collectionViewContentSize.height) == 0 {
+            heightCnstrCollectionView.constant = 200
+        } else {
+            heightCnstrCollectionView.constant = collectionView.collectionViewLayout.collectionViewContentSize.height
+        }
+    
         /// layoutIfNeeded в UIKit немедленно применяет любые отложенные обновления макета. Если вы вызываете layoutIfNeeded, система проверяет, есть ли какие-либо отложенные изменения в макете, и если они есть, система немедленно обновляет макет.
         /// Отложенные изменения в макете обычно происходят, когда вы вносите изменения в данные, которые используются для создания макета вашего UICollectionView(Добавляете, удаляете или перемещаете ячейки, Изменяете размер или положение ячеек, Изменяете макет UICollectionView)
         ///  layoutIfNeeded может потенциально привести к дополнительным вычислениям макета. Это может повлиять на производительность.
         /// Однако важно отметить, что layoutIfNeeded будет выполнять работу только в том случае, если есть отложенные изменения макета. Если нет отложенных изменений, layoutIfNeeded не будет делать ничего, и его влияние на производительность будет минимальным.
-        collectionView.layoutIfNeeded()
-        heightCnstrCollectionView.constant = collectionView.collectionViewLayout.collectionViewContentSize.height
     }
 }
 
@@ -117,7 +122,7 @@ private extension MallController {
         
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        scrollView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         containerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
@@ -131,23 +136,16 @@ private extension MallController {
         collectionView = MallCollectionView()
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        heightCnstrCollectionView = collectionView.heightAnchor.constraint(equalToConstant: 300)
-        heightCnstrCollectionView.isActive = true
-        collectionView.reloadData(data: dataCollectionView)
-    }
-    
-    func setupBtn() {
-        webPageForMallBtn = createButton(withTitle: R.Strings.OtherControllers.Mall.webPageForMallBtn, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForMallPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
-        floorPlanBtn = createButton(withTitle: R.Strings.OtherControllers.Mall.floorPlanBtn, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(floorPlanBtnPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
+       
         
-        if dataMall?.webSite == nil {
-            webPageForMallBtn.isHidden = true
-        }
-
-        if dataMall?.floorPlan == nil {
-            floorPlanBtn.isHidden = true
-        }
-        setupCompositeStck()
+print("setupCollectionView - \(collectionView.collectionViewLayout.collectionViewContentSize.height)")
+        collectionView.reloadData(data: dataCollectionView)
+        heightCnstrCollectionView = collectionView.heightAnchor.constraint(equalToConstant: 10)
+        heightCnstrCollectionView.isActive = true
+        
+//        collectionView.sizeToFit()
+//        collectionView.setNeedsLayout()
+        
     }
     
     func createButton(withTitle title: String, textColor: UIColor, fontSize: CGFloat, target: Any?, action: Selector, image: UIImage.SymbolConfiguration?) -> UIButton {
@@ -173,17 +171,17 @@ private extension MallController {
         return button
     }
     
-//    func createStackViewWithBtns(buttons: [UIButton]) -> UIStackView {
-//        let stackViewForButton: UIStackView = {
-//            let stack = UIStackView(arrangedSubviews: buttons)
-//            stack.translatesAutoresizingMaskIntoConstraints = false
-//            stack.axis = .vertical
-//            stack.distribution = .fill
-//            stack.spacing = 5
-//            return stack
-//        }()
-//        return stackViewForButton
-//    }
+    func createStackViewWithBtns(buttons: [UIButton]) -> UIStackView {
+        let stackViewForButton: UIStackView = {
+            let stack = UIStackView(arrangedSubviews: buttons)
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            stack.axis = .vertical
+            stack.distribution = .fill
+            stack.spacing = 5
+            return stack
+        }()
+        return stackViewForButton
+    }
     func createStackViewWithBtns(firstButton: UIButton, secondButton: UIButton) -> UIStackView {
         let stackViewForButton: UIStackView = {
             let stack = UIStackView(arrangedSubviews: [firstButton, secondButton])
@@ -196,7 +194,7 @@ private extension MallController {
         return stackViewForButton
     }
     
-    func setupCompositeStck() {
+    func setupBtn() {
         
         let titleBtnStack: UILabel = {
             let label = UILabel()
@@ -220,16 +218,20 @@ private extension MallController {
             label.textColor = R.Colors.label
             return label
         }()
-//        var buttons = [UIButton]()
-//        if dataMall?.webSite != nil {
-//            buttons.append(webPageForMallBtn)
-//        }
-//        if dataMall?.floorPlan != nil {
-//            buttons.append(floorPlanBtn)
-//        }
-//        let btnStack = createStackViewWithBtns(buttons: buttons)
-        let btnStack = createStackViewWithBtns(firstButton: webPageForMallBtn, secondButton: floorPlanBtn)
-
+        
+        var buttons = [UIButton]()
+        
+        if dataMall?.webSite != nil {
+            webPageForMallBtn = createButton(withTitle: R.Strings.OtherControllers.Mall.webPageForMallBtn, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(webPageForMallPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
+            buttons.append(webPageForMallBtn)
+        }
+        
+        if dataMall?.floorPlan != nil {
+            floorPlanBtn = createButton(withTitle: R.Strings.OtherControllers.Mall.floorPlanBtn, textColor: R.Colors.label, fontSize: 15, target: self, action: #selector(floorPlanBtnPressed(_:)), image: UIImage.SymbolConfiguration(scale: .large))
+            
+            buttons.append(floorPlanBtn)
+        }
+        let btnStack = createStackViewWithBtns(buttons: buttons)
         let subviews = [titleBtnStack, btnStack, titleMapView]
         subviews.forEach { compositeNavigationStck.addArrangedSubview($0) }
     }

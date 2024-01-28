@@ -266,10 +266,6 @@ extension HomeFirebaseService: HomeModelInput {
         shopsService.fetchShops(path: "shopsMan") { shopsMan, error in
             guard let _ = self.serviceFB.shops["Man"] else {
                 if let shopsMan = shopsMan, error == nil {
-                    shopsMan.forEach { shop in
-                        print("logo - \(shop.logo)")
-                    }
-                    
                     self.serviceFB.shops["Man"] = shopsMan
                     self.serviceFB.shops["Woman"] = shopsMan
                 }

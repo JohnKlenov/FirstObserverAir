@@ -85,6 +85,7 @@ final class MallController: UIViewController {
     /// Метод viewDidLayoutSubviews() вызывается после того, как система завершает автоматическую настройку размеров и позиций подвидов для UIViewController.
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        /// collectionView.collectionViewLayout.collectionViewContentSize.height - не сразу высчитывается на это нужно время
         guard let collectionView = collectionView else { return }
         print("viewDidLayoutSubviews() - \(collectionView.collectionViewLayout.collectionViewContentSize.height)")
         if Int(collectionView.collectionViewLayout.collectionViewContentSize.height) == 0 {
@@ -136,16 +137,9 @@ private extension MallController {
         collectionView = MallCollectionView()
         collectionView.delegate = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-       
-        
-print("setupCollectionView - \(collectionView.collectionViewLayout.collectionViewContentSize.height)")
         collectionView.reloadData(data: dataCollectionView)
         heightCnstrCollectionView = collectionView.heightAnchor.constraint(equalToConstant: 10)
         heightCnstrCollectionView.isActive = true
-        
-//        collectionView.sizeToFit()
-//        collectionView.setNeedsLayout()
-        
     }
     
     func createButton(withTitle title: String, textColor: UIColor, fontSize: CGFloat, target: Any?, action: Selector, image: UIImage.SymbolConfiguration?) -> UIButton {

@@ -42,7 +42,6 @@ class BrandCellMallVC: UICollectionViewCell {
         label.backgroundColor = R.Colors.secondarySystemBackground
         label.layer.cornerRadius = 10
         label.clipsToBounds = true
-//        label.backgroundColor = .clear
         label.isHidden = true
         return label
     }()
@@ -60,20 +59,12 @@ class BrandCellMallVC: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        contentView.backgroundColor = R.Colors.secondarySystemBackground
         contentView.backgroundColor = .clear
         storage = Storage.storage()
-//        backgroundColor = .clear
-        
-//        containerView.addSubview(imageView)
-//        containerView.addSubview(nameShopLabel)
-//        contentView.addSubview(containerView)
         contentView.addSubview(imageView)
         contentView.addSubview(nameShopLabel)
         contentView.addSubview(floorLabel)
         setupConstraints()
-//        contentView.layer.cornerRadius = 10
-//        contentView.clipsToBounds = true
     }
     
     override func prepareForReuse() {
@@ -87,8 +78,9 @@ class BrandCellMallVC: UICollectionViewCell {
     
     private func setupConstraints() {
         
+       
+        // Определение ограничений для imageView, floorLabel и nameShopLabel
         NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
@@ -96,55 +88,33 @@ class BrandCellMallVC: UICollectionViewCell {
             floorLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor),
             floorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             floorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            floorLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             nameShopLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             nameShopLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             nameShopLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             nameShopLabel.heightAnchor.constraint(equalTo: nameShopLabel.widthAnchor)
         ])
+
+        // Определение ограничения для верхнего края imageView
+        let imageViewTopConstraint = imageView.topAnchor.constraint(equalTo: contentView.topAnchor)
+        imageViewTopConstraint.priority = UILayoutPriority(999)
+        imageViewTopConstraint.isActive = true
+
+        // Определение ограничения для верхнего края nameShopLabel
+        let nameShopTopConstraint = nameShopLabel.topAnchor.constraint(equalTo: contentView.topAnchor)
+        nameShopTopConstraint.priority = UILayoutPriority(999)
+        nameShopTopConstraint.isActive = true
         
-        
-//        let topContainerCnstr = containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10)
-//                topContainerCnstr.priority = UILayoutPriority(999)
-//                topContainerCnstr.isActive = true
-//
-//        let trailingContainerCnstr = containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
-//                trailingContainerCnstr.isActive = true
-//
-//                let leadingContainerCnstr = containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
-//                leadingContainerCnstr.isActive = true
-//
-////                let heightContainerCnstr = containerView.heightAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 1)
-//        let heightContainerCnstr = containerView.heightAnchor.constraint(equalToConstant: 30)
-//                heightContainerCnstr.isActive = true
-//
-//                let topFloorCnstr = floorLabel.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 5)
-//                topFloorCnstr.isActive = true
-//
-//        let trailingFloorCnstr = floorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
-//                trailingFloorCnstr.isActive = true
-//
-//        let leadingFloorCnstr = floorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10)
-//                leadingFloorCnstr.isActive = true
-//
-//        let bottomFloorCnstr = floorLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0)
-//                bottomFloorCnstr.priority = UILayoutPriority(999)
-//                bottomFloorCnstr.isActive = true
-//
-        
-        
-//        NSLayoutConstraint.activate([imageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 4), imageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -4), imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 4), imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 1), imageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -4)])
-//
-//        NSLayoutConstraint.activate([nameShopLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor), nameShopLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -5), nameShopLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 5)])
+        // Определение ограничения для нижнего края floorLabel
+        let floorLabelBottomConstraint = floorLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        floorLabelBottomConstraint.priority = UILayoutPriority(999)
+        floorLabelBottomConstraint.isActive = true
     }
     
     func configureCell(model: Item) {
         
         let placeholderImage = UIImage(systemName: "photo")
-        print("model - \(String(describing: model.shop?.logo))")
         if let urlString = model.shop?.logo {
-            print("urlString - \(urlString)")
             let urlRef = storage.reference(forURL: urlString)
             imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { (image, error, cacheType, url) in
                 guard let image = image, error == nil else {

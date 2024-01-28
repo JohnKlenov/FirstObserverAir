@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 final class MallCollectionView: UICollectionView {
     
     private var data:[SectionModel] = [] {

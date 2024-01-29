@@ -191,13 +191,13 @@ extension HomeController: UICollectionViewDelegate {
         print("indexPath - \(indexPath.section)")
         switch indexPath.section {
         case 0:
-//            let gender = homeModel?.returnGender() ?? ""
-//            let path = "malls\(gender)"
-//            let valueField = dataSource[indexPath.section].items[indexPath.row].mall?.name ?? ""
-//            print("valueField - \(valueField)")
-//            let mallService:MallService = MallService(path: path, keyField: "name", valueField: valueField, isArrayField: false)
-//            let mallController = MallController(modelInput: mallService, title: valueField)
-//            navigationController?.pushViewController(mallController, animated: true)
+            let gender = homeModel?.returnGender() ?? ""
+            let path = "malls\(gender)"
+            let valueField = dataSource[indexPath.section].items[indexPath.row].mall?.name ?? ""
+            print("valueField - \(valueField)")
+            let mallService:MallService = MallService(path: path, keyField: "name", valueField: valueField, isArrayField: false)
+            let mallController = MallController(modelInput: mallService, title: valueField)
+            navigationController?.pushViewController(mallController, animated: true)
             print("0")
         case 1:
             let gender = homeModel?.returnGender() ?? ""

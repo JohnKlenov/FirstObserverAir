@@ -18,7 +18,7 @@ final class MallController: UIViewController {
     private var dataCollectionView:[SectionModel] = []
 
     lazy var collectionView: UICollectionView = {
-            $0.backgroundColor = .none
+        $0.backgroundColor = .clear
             $0.contentInset = UIEdgeInsets(top: 80, left: 0, bottom: 100, right: 0)
             $0.dataSource = self
             $0.delegate = self
@@ -47,6 +47,12 @@ final class MallController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.title = title
     }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = R.Colors.systemBackground
+        fetchProduct()
+    }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -58,6 +64,7 @@ private extension MallController {
     func setupView() {
         //        navigationItem.largeTitleDisplayMode = .never
         view.addSubview(collectionView)
+        collectionView.reloadData()
         
     }
 }
@@ -198,7 +205,9 @@ private extension MallController {
 
 // MARK: - UICollectionViewDelegate
 extension MallController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("indexPath.section - \(indexPath.section), indexPath.row - \(indexPath.row)")
+    }
 }
 
 
@@ -221,7 +230,29 @@ extension MallController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        switch indexPath.section {
+        case 0:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell else { return UICollectionViewCell() }
+            let item = dataCollectionView[indexPath.section].items[indexPath.row]
+            cell.configureCell(model: item, isHiddenTitle: true)
+            return cell
+        case 1:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrandCellMallVC.reuseID, for: indexPath) as? BrandCellMallVC else { return UICollectionViewCell() }
+            let item = dataCollectionView[indexPath.section].items[indexPath.row]
+            cell.configureCell(model: item)
+            return cell
+        case 2:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NavigationMallCell.reuseID, for: indexPath) as? NavigationMallCell else { return UICollectionViewCell() }
+            cell.configureCell(webAction: dataMall?.webSite != nil ? webAction : nil,
+                               floorPlanAction: dataMall?.floorPlan != nil ? floorPlanAction : nil)
+            return cell
+        case 3:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MapCell.reuseID, for: indexPath) as? MapCell else { return UICollectionViewCell() }
+            cell.configureCell(with: arrayPin)
+            return cell
+        default:
+            return UICollectionViewCell()
+        }
     }
     
     

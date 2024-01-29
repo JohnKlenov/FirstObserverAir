@@ -89,7 +89,6 @@ class BrandCellMallVC: UICollectionViewCell {
             floorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             floorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            nameShopLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             nameShopLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             nameShopLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             nameShopLabel.heightAnchor.constraint(equalTo: nameShopLabel.widthAnchor)
@@ -112,7 +111,6 @@ class BrandCellMallVC: UICollectionViewCell {
     }
     
     func configureCell(model: Item) {
-        
         let placeholderImage = UIImage(systemName: "photo")
         if let urlString = model.shop?.logo {
             let urlRef = storage.reference(forURL: urlString)

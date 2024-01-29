@@ -19,15 +19,18 @@ final class MallController: UIViewController {
 
     lazy var collectionView: UICollectionView = {
         $0.backgroundColor = .clear
-            $0.contentInset = UIEdgeInsets(top: 80, left: 0, bottom: 100, right: 0)
-            $0.dataSource = self
-            $0.delegate = self
-            $0.register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
-            $0.register(BrandCellMallVC.self, forCellWithReuseIdentifier: BrandCellMallVC.reuseID)
-            $0.register(NavigationMallCell.self, forCellWithReuseIdentifier: NavigationMallCell.reuseID)
-            $0.register(MapCell.self, forCellWithReuseIdentifier: MapCell.reuseID)
-            return $0
-        }(UICollectionView(frame: view.bounds, collectionViewLayout: getCompositionLayout()))
+        $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.dataSource = self
+        $0.delegate = self
+        $0.register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
+        $0.register(BrandCellMallVC.self, forCellWithReuseIdentifier: BrandCellMallVC.reuseID)
+        $0.register(NavigationMallCell.self, forCellWithReuseIdentifier: NavigationMallCell.reuseID)
+        $0.register(MapCell.self, forCellWithReuseIdentifier: MapCell.reuseID)
+        
+        $0.register(HeaderPopProductSection.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderPopProductSection.headerIdentifier)
+        return $0
+    }(UICollectionView(frame: .zero, collectionViewLayout: getCompositionLayout()))
     
     private var navController: NavigationController? {
             return self.navigationController as? NavigationController
@@ -64,7 +67,8 @@ private extension MallController {
     func setupView() {
         //        navigationItem.largeTitleDisplayMode = .never
         view.addSubview(collectionView)
-        collectionView.reloadData()
+        setupConstraints()
+//        collectionView.reloadData()
         
     }
 }
@@ -79,9 +83,11 @@ private extension MallController {
             case 0:
                 return self?.mallSections()
             case 1:
-                return self?.shopSection()
-            case 2:
                 return self?.buttonSection()
+//                return self?.shopSection()
+            case 2:
+                return self?.shopSection()
+//                return self?.buttonSection()
             case 3:
                 return self?.mapSection()
             default:
@@ -95,12 +101,12 @@ private extension MallController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.55))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.6))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 5, trailing: 0)
         //        groupPagingCentered
         //        section.orthogonalScrollingBehavior = .paging
         section.orthogonalScrollingBehavior = .groupPagingCentered
@@ -132,10 +138,10 @@ private extension MallController {
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
  
-//        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
-//        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderBrands", alignment: .top)
-//        header.pinToVisibleBounds = true
-//        section.boundarySupplementaryItems = [header]
+        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        header.pinToVisibleBounds = true
+        section.boundarySupplementaryItems = [header]
         return section
     }
     
@@ -148,7 +154,7 @@ private extension MallController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10)
 
         return section
     }
@@ -161,7 +167,7 @@ private extension MallController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
 
         return section
     }
@@ -202,6 +208,13 @@ private extension MallController {
     }
 }
 
+// MARK: - Layout
+private extension MallController {
+    func setupConstraints() {
+        NSLayoutConstraint.activate([collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
+    }
+}
+
 
 // MARK: - UICollectionViewDelegate
 extension MallController: UICollectionViewDelegate {
@@ -222,8 +235,8 @@ extension MallController: UICollectionViewDataSource {
         switch section {
         case 0:
             return dataCollectionView[section].items.count
-        case 1:
-            return dataCollectionView[section].items.count
+        case 2:
+            return dataCollectionView[1].items.count
         default:
             return 1
         }
@@ -237,14 +250,15 @@ extension MallController: UICollectionViewDataSource {
             cell.configureCell(model: item, isHiddenTitle: true)
             return cell
         case 1:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrandCellMallVC.reuseID, for: indexPath) as? BrandCellMallVC else { return UICollectionViewCell() }
-            let item = dataCollectionView[indexPath.section].items[indexPath.row]
-            cell.configureCell(model: item)
-            return cell
-        case 2:
+            
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NavigationMallCell.reuseID, for: indexPath) as? NavigationMallCell else { return UICollectionViewCell() }
             cell.configureCell(webAction: dataMall?.webSite != nil ? webAction : nil,
                                floorPlanAction: dataMall?.floorPlan != nil ? floorPlanAction : nil)
+            return cell
+        case 2:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BrandCellMallVC.reuseID, for: indexPath) as? BrandCellMallVC else { return UICollectionViewCell() }
+            let item = dataCollectionView[1].items[indexPath.row]
+            cell.configureCell(model: item)
             return cell
         case 3:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MapCell.reuseID, for: indexPath) as? MapCell else { return UICollectionViewCell() }
@@ -255,8 +269,58 @@ extension MallController: UICollectionViewDataSource {
         }
     }
     
+//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//
+//        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as? HeaderPopProductSection else {
+//            return UICollectionReusableView()
+//        }
+//
+//        let title: String
+//        switch indexPath.section {
+//        case 1:
+//            title = R.Strings.OtherControllers.Mall.titleBtnStack
+//        case 2:
+//            title = R.Strings.OtherControllers.Mall.shopsForMall
+//        case 3:
+//            title = R.Strings.OtherControllers.Mall.titleMapView
+//        default:
+//            return UICollectionReusableView()
+//        }
+//
+//        headerView.configureCell(title: title)
+//        return headerView
+//    }
+
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+
+        switch indexPath.section {
+        case 1:
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as! HeaderPopProductSection
+            headerView.configureCell(title: R.Strings.OtherControllers.Mall.titleBtnStack)
+            return headerView
+        case 2:
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as! HeaderPopProductSection
+            headerView.configureCell(title: R.Strings.OtherControllers.Mall.shopsForMall)
+            return headerView
+        case 3:
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as! HeaderPopProductSection
+            headerView.configureCell(title: R.Strings.OtherControllers.Mall.titleMapView)
+            return headerView
+        default:
+            return UICollectionReusableView()
+        }
+    }
     
 }
+
+
+//// MARK: - UICollectionViewDelegateFlowLayout
+//extension MallController: UICollectionViewDelegateFlowLayout {
+//    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//        return CGSize(width: collectionView.frame.width - 20, height: 30)
+//    }
+//}
 
 // MARK: - Setting DataSource
 private extension MallController {

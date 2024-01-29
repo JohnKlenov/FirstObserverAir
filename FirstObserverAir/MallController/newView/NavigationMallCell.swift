@@ -17,7 +17,7 @@ class NavigationMallCell: UICollectionViewCell {
         stack.axis = .vertical
         /// .fillProportionally
         stack.distribution = .fill
-        stack.spacing = 20
+        stack.spacing = 8
         return stack
     }()
     
@@ -32,7 +32,6 @@ class NavigationMallCell: UICollectionViewCell {
             compositeNavigationStck.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             compositeNavigationStck.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
-        
     }
     
     func createButton(withTitle title: String, textColor: UIColor, fontSize: CGFloat, action: UIAction, image: UIImage.SymbolConfiguration?) -> UIButton {
@@ -59,11 +58,11 @@ class NavigationMallCell: UICollectionViewCell {
     
     func configureCell(webAction:UIAction?, floorPlanAction:UIAction?) {
         
-        /// Очистка стека перед добавлением новых кнопок
-//           compositeNavigationStck.arrangedSubviews.forEach {
-//               compositeNavigationStck.removeArrangedSubview($0)
-//               $0.removeFromSuperview()
-//           }
+        //        // Очистка стека перед добавлением новых кнопок
+        compositeNavigationStck.arrangedSubviews.forEach {
+            compositeNavigationStck.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
         
         var buttons = [UIButton]()
         

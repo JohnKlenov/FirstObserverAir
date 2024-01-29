@@ -21,6 +21,7 @@ class MapCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupMapView(with: [])
     }
     
     func setupMapView(with arrayPin: [Places]) {
@@ -72,7 +73,7 @@ class MapCell: UICollectionViewCell {
     }
     
     func configureCell(with arrayPin: [Places]) {
-        setupMapView(with: arrayPin)
+        mapView.places = arrayPin
     }
     
     required init?(coder: NSCoder) {

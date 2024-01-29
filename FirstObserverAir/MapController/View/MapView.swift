@@ -17,13 +17,24 @@ final class MapView: MKMapView {
     
     weak var delegateMap: MapViewManagerDelegate?
     
+    var places: [Places] = [] {
+        didSet {
+            removeAnnotations(oldValue)
+            addAnnotations(places)
+            showAnnotations(places, animated: true)
+        }
+    }
+    
     /// Это второстепенный инициализатор, который должен вызывать и поддерживать один из основных инициализаторов в том же классе. Convenience init позволяет вам предоставить дополнительную логику инициализации или предоставить более простой способ инициализации экземпляра класса. 
     convenience init(places: [Places]) {
         self.init()
+        self.places = places
         delegate = self
-        addAnnotations(places)
-        showAnnotations(places, animated: true)
         setupZoomLimit()
+//        delegate = self
+//        addAnnotations(places)
+//        showAnnotations(places, animated: true)
+//        setupZoomLimit()
     }
 }
 

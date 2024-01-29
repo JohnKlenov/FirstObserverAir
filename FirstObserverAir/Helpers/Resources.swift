@@ -189,6 +189,7 @@ enum R {
                 static let floorPlanBtn = "Flor plan"
                 static let webPageForMallBtn = "Website mall"
                 static let titleBtnStack = "Mall navigator"
+                static let shopsForMall = "Shops"
                 static let titleMapView = "Location mall"
             }
             enum Map {}

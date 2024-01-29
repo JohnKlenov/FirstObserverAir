@@ -220,6 +220,8 @@ private extension MallController {
 extension MallController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("indexPath.section - \(indexPath.section), indexPath.row - \(indexPath.row)")
+        print("didSelectItemAt")
+        
     }
 }
 
@@ -316,7 +318,7 @@ extension MallController: UICollectionViewDataSource {
 
 //// MARK: - UICollectionViewDelegateFlowLayout
 //extension MallController: UICollectionViewDelegateFlowLayout {
-//    
+//
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
 //        return CGSize(width: collectionView.frame.width - 20, height: 30)
 //    }

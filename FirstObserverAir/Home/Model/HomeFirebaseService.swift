@@ -184,7 +184,8 @@ extension HomeFirebaseService: HomeModelInput {
             self.dataHome?["A"] = mallSection
         }
         semaphoreGender.wait()
-        
+        ///  мы можем не делать запрос на PreviewShop они приходят в ShopGender
+        ///  Нужно будет лишь сгенерировать новый массив моделей PreviewSection!
         pathsGenderListener.append("previewShops\(gender)")
         previewService.fetchPreviewSection(path: "previewShops\(gender)") { shops, error in
             

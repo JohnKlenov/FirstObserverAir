@@ -75,6 +75,7 @@
 		5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */; };
 		5EFAC9992B665F7F00B8A824 /* NavigationMallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */; };
 		5EFAC99B2B666C8100B8A824 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99A2B666C8100B8A824 /* MapCell.swift */; };
+		5EFAC99D2B69313300B8A824 /* BuilderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99C2B69313300B8A824 /* BuilderViewController.swift */; };
 		E1DD2CCA647A52952EE5B773 /* Pods_FirstObserverAir.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9782C997E00BA48649C30F1F /* Pods_FirstObserverAir.framework */; };
 /* End PBXBuildFile section */
 
@@ -150,6 +151,7 @@
 		5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeLayoutCollectionAsMallVC.swift; sourceTree = "<group>"; };
 		5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMallCell.swift; sourceTree = "<group>"; };
 		5EFAC99A2B666C8100B8A824 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
+		5EFAC99C2B69313300B8A824 /* BuilderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderViewController.swift; sourceTree = "<group>"; };
 		6AA0408173C8FC1180172F7B /* Pods-FirstObserverAir.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.release.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.release.xcconfig"; sourceTree = "<group>"; };
 		9782C997E00BA48649C30F1F /* Pods_FirstObserverAir.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirstObserverAir.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -299,6 +301,7 @@
 				5E1A35332B13DF770076FDC1 /* Extensions */,
 				5E1A35302B13DE8A0076FDC1 /* Resources.swift */,
 				5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */,
+				5EFAC99C2B69313300B8A824 /* BuilderViewController.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -851,6 +854,7 @@
 				5E1148FE2B5BCDB60073B2E8 /* MallService.swift in Sources */,
 				5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */,
 				5E1A35592B14D2E70076FDC1 /* ChildContentController.swift in Sources */,
+				5EFAC99D2B69313300B8A824 /* BuilderViewController.swift in Sources */,
 				5E9B52262B51226000F907B6 /* ImageScrollView.swift in Sources */,
 				5E22B1372B3AE59300CDD18A /* AllShops.swift in Sources */,
 				5E1148FC2B5BC6EA0073B2E8 /* UIApplication + ext.swift in Sources */,

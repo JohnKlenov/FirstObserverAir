@@ -16,6 +16,7 @@ final class MallController: UIViewController {
     private var dataMall: Mall?
     private var arrayPin:[Places] = []
     private var dataCollectionView:[SectionModel] = []
+    private var gender:String
 
     lazy var collectionView: UICollectionView = {
         $0.backgroundColor = .clear
@@ -32,24 +33,26 @@ final class MallController: UIViewController {
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: getCompositionLayout()))
     
-    weak var footerMallDelegate: PageFooterMallDelegate?
-    var currentPage: Int?
-    
     private var navController: NavigationController? {
             return self.navigationController as? NavigationController
         }
     
     lazy var webAction = UIAction { [weak self] _ in
-            print("webAction")
-        }
-        
-        lazy var floorPlanAction = UIAction { [weak self] _ in
-            print("floorPlanAction")
-        }
+        guard let self = self else { return }
+        guard let urlString = self.dataMall?.webSite else { return }
+        self.presentSafariViewController(withURL: urlString)
+    }
+    
+    lazy var floorPlanAction = UIAction { [weak self] _ in
+        guard let self = self else { return }
+        guard let urlString = self.dataMall?.floorPlan else { return }
+        self.presentSafariViewController(withURL: urlString)
+    }
 
     
-    init(modelInput: MallModelInput, title:String) {
+    init(modelInput: MallModelInput, title:String, gender:String) {
         self.mallModel = modelInput
+        self.gender = gender
         super.init(nibName: nil, bundle: nil)
         self.title = title
     }
@@ -71,8 +74,6 @@ private extension MallController {
         //        navigationItem.largeTitleDisplayMode = .never
         view.addSubview(collectionView)
         setupConstraints()
-//        collectionView.reloadData()
-        
     }
 }
 
@@ -87,10 +88,8 @@ private extension MallController {
                 return self?.mallSections()
             case 1:
                 return self?.buttonSection()
-//                return self?.shopSection()
             case 2:
                 return self?.shopSection()
-//                return self?.buttonSection()
             case 3:
                 return self?.mapSection()
             default:
@@ -110,10 +109,7 @@ private extension MallController {
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 5, trailing: 0)
-        //        groupPagingCentered
-        //        section.orthogonalScrollingBehavior = .paging
         section.orthogonalScrollingBehavior = .groupPagingCentered
-//        section.orthogonalScrollingBehavior = .continuous
         return section
     }
     
@@ -215,8 +211,14 @@ private extension MallController {
 // MARK: - UICollectionViewDelegate
 extension MallController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("indexPath.section - \(indexPath.section), indexPath.row - \(indexPath.row)")
-        print("didSelectItemAt")
+        switch indexPath.section {
+        case 2:
+            let valueField = dataCollectionView[1].items[indexPath.row].shop?.name ?? ""
+            let shopProductVC = BuilderViewController.buildListProductController(gender: gender, shopName: valueField)
+            navigationController?.pushViewController(shopProductVC, animated: true)
+        default:
+            break
+        }
     }
 }
 

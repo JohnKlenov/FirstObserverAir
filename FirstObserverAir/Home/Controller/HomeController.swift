@@ -188,27 +188,19 @@ private extension HomeController {
 
 extension HomeController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("indexPath - \(indexPath.section)")
+        let gender = homeModel?.returnGender() ?? ""
         switch indexPath.section {
         case 0:
-            let gender = homeModel?.returnGender() ?? ""
-            let path = "malls\(gender)"
             let valueField = dataSource[indexPath.section].items[indexPath.row].mall?.name ?? ""
-            print("valueField - \(valueField)")
-            let mallService:MallService = MallService(path: path, keyField: "name", valueField: valueField, isArrayField: false)
-            let mallController = MallController(modelInput: mallService, title: valueField)
+            let mallController = BuilderViewController.buildMallController(gender: gender, name: valueField)
             navigationController?.pushViewController(mallController, animated: true)
-            print("0")
         case 1:
-            let gender = homeModel?.returnGender() ?? ""
-            let path = "products\(gender)"
             let valueField = dataSource[indexPath.section].items[indexPath.row].shop?.name ?? ""
-            let modelListController: ListProductModelInput = ListProductService(path: path, keyField: "shops", valueField: valueField, isArrayField: true)
-            let shopProductVC = ListProductController(modelInput: modelListController, title: valueField)
+            let shopProductVC = BuilderViewController.buildListProductController(gender: gender, shopName: valueField)
             navigationController?.pushViewController(shopProductVC, animated: true)
         case 2:
             if let product = dataSource[indexPath.section].items[indexPath.row].popularProduct {
-                let productVC = ProductController(product: product)
+                let productVC = BuilderViewController.buildProductController(product: product)
                 navigationController?.pushViewController(productVC, animated: true)
             }
         default:

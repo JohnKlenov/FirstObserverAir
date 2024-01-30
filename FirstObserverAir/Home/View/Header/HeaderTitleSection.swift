@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class HeaderPopProductSection: UICollectionReusableView {
+final class HeaderTitleSection: UICollectionReusableView {
     
-    static let headerIdentifier = "HeaderPopProduct"
+    static let headerIdentifier = "HeaderTitle"
     let label:UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -23,6 +23,7 @@ final class HeaderPopProductSection: UICollectionReusableView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+//        backgroundColor = .blue
         setupView()
     }
     
@@ -34,7 +35,7 @@ final class HeaderPopProductSection: UICollectionReusableView {
 
 
 // MARK: - Setting Views
-private extension HeaderPopProductSection {
+private extension HeaderTitleSection {
     func setupView() {
         addSubview(label)
         setupConstraints()
@@ -43,14 +44,14 @@ private extension HeaderPopProductSection {
 }
 
 // MARK: - Setting
-extension HeaderPopProductSection {
+extension HeaderTitleSection {
     func configureCell(title: String) {
         label.text = title
     }
 }
 
 // MARK: - Layout
-private extension HeaderPopProductSection {
+private extension HeaderTitleSection {
     func setupConstraints() {
         NSLayoutConstraint.activate([label.topAnchor.constraint(equalTo: topAnchor, constant: 5), label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5), label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5), label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5)])
     }

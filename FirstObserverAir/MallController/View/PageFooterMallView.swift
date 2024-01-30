@@ -25,27 +25,24 @@ class PagingSectionFooterView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
+        backgroundColor = .clear
+    }
+    func configure(with numberOfPages: Int) {
+        pageControl.numberOfPages = numberOfPages
     }
     
-    func configure(with numberOfPages: Int) {
-            pageControl.numberOfPages = numberOfPages
-        }
-    
     private func setupView() {
-            backgroundColor = .clear
-            
-            addSubview(pageControl)
-            
-            NSLayoutConstraint.activate([
-                pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
-                pageControl.centerYAnchor.constraint(equalTo: centerYAnchor)
-            ])
+        addSubview(pageControl)
+        NSLayoutConstraint.activate([
+            pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
+            pageControl.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+        ])
         }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupView()
-//        fatalError("init(coder:) has not been implemented")
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -54,7 +51,5 @@ extension PagingSectionFooterView: PageFooterMallDelegate {
         pageControl.currentPage = index
         print("PagingSectionDelegate")
     }
-    
-    
 }
 

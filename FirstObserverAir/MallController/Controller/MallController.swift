@@ -28,9 +28,12 @@ final class MallController: UIViewController {
         $0.register(NavigationMallCell.self, forCellWithReuseIdentifier: NavigationMallCell.reuseID)
         $0.register(MapCell.self, forCellWithReuseIdentifier: MapCell.reuseID)
         
-        $0.register(HeaderPopProductSection.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderPopProductSection.headerIdentifier)
+        $0.register(HeaderTitleSection.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderTitleSection.headerIdentifier)
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: getCompositionLayout()))
+    
+    weak var footerMallDelegate: PageFooterMallDelegate?
+    var currentPage: Int?
     
     private var navController: NavigationController? {
             return self.navigationController as? NavigationController
@@ -100,8 +103,8 @@ private extension MallController {
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.6))
+        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.97), heightDimension: .fractionalWidth(0.6))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         
@@ -110,19 +113,7 @@ private extension MallController {
         //        groupPagingCentered
         //        section.orthogonalScrollingBehavior = .paging
         section.orthogonalScrollingBehavior = .groupPagingCentered
-        
-//        let sizeFooter = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(20))
-//        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeFooter, elementKind: "FooterMall", alignment: .bottom)
-//        section.boundarySupplementaryItems = [footer]
-        
-//        section.visibleItemsInvalidationHandler = { [weak self] (visibleItems, offset, env) -> Void in
-//            guard let self = self else {return}
-//            let newPage = visibleItems.last?.indexPath.row ?? 0
-//            if newPage != self.currentPage {
-//                self.currentPage = newPage
-//                self.footerMallDelegate?.currentPage(index: newPage)
-//            }
-//        }
+//        section.orthogonalScrollingBehavior = .continuous
         return section
     }
     
@@ -155,6 +146,9 @@ private extension MallController {
 
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 0, trailing: 10)
+        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        section.boundarySupplementaryItems = [header]
 
         return section
     }
@@ -168,7 +162,9 @@ private extension MallController {
 
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
-
+        let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        section.boundarySupplementaryItems = [header]
         return section
     }
     
@@ -221,7 +217,6 @@ extension MallController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("indexPath.section - \(indexPath.section), indexPath.row - \(indexPath.row)")
         print("didSelectItemAt")
-        
     }
 }
 
@@ -271,58 +266,29 @@ extension MallController: UICollectionViewDataSource {
         }
     }
     
-//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-//
-//        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as? HeaderPopProductSection else {
-//            return UICollectionReusableView()
-//        }
-//
-//        let title: String
-//        switch indexPath.section {
-//        case 1:
-//            title = R.Strings.OtherControllers.Mall.titleBtnStack
-//        case 2:
-//            title = R.Strings.OtherControllers.Mall.shopsForMall
-//        case 3:
-//            title = R.Strings.OtherControllers.Mall.titleMapView
-//        default:
-//            return UICollectionReusableView()
-//        }
-//
-//        headerView.configureCell(title: title)
-//        return headerView
-//    }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderTitleSection.headerIdentifier, for: indexPath) as? HeaderTitleSection else {
+            return UICollectionReusableView()
+        }
+
+        let title: String
         switch indexPath.section {
         case 1:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as! HeaderPopProductSection
-            headerView.configureCell(title: R.Strings.OtherControllers.Mall.titleBtnStack)
-            return headerView
+            title = R.Strings.OtherControllers.Mall.titleBtnStack
         case 2:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as! HeaderPopProductSection
-            headerView.configureCell(title: R.Strings.OtherControllers.Mall.shopsForMall)
-            return headerView
+            title = R.Strings.OtherControllers.Mall.shopsForMall
         case 3:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: indexPath) as! HeaderPopProductSection
-            headerView.configureCell(title: R.Strings.OtherControllers.Mall.titleMapView)
-            return headerView
+            title = R.Strings.OtherControllers.Mall.titleMapView
         default:
             return UICollectionReusableView()
         }
+
+        headerView.configureCell(title: title)
+        return headerView
     }
-    
 }
-
-
-//// MARK: - UICollectionViewDelegateFlowLayout
-//extension MallController: UICollectionViewDelegateFlowLayout {
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-//        return CGSize(width: collectionView.frame.width - 20, height: 30)
-//    }
-//}
 
 // MARK: - Setting DataSource
 private extension MallController {
@@ -346,6 +312,7 @@ private extension MallController {
         })
     }
 }
+
 
 
 

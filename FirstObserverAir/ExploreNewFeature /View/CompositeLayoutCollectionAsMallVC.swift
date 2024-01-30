@@ -450,3 +450,172 @@
 //    }
 //
 //}
+
+
+
+
+// MARK: - how to communicate with HeaderView
+
+// ....
+
+//lazy var collectionView: UICollectionView = {
+//    $0.backgroundColor = .clear
+//    $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//    $0.translatesAutoresizingMaskIntoConstraints = false
+//    $0.dataSource = self
+//    $0.delegate = self
+//    $0.register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
+//    $0.register(BrandCellMallVC.self, forCellWithReuseIdentifier: BrandCellMallVC.reuseID)
+//    $0.register(NavigationMallCell.self, forCellWithReuseIdentifier: NavigationMallCell.reuseID)
+//    $0.register(MapCell.self, forCellWithReuseIdentifier: MapCell.reuseID)
+//
+//    $0.register(HeaderTitleSection.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderTitleSection.headerIdentifier)
+//    $0.register(PagingSectionFooterView.self, forSupplementaryViewOfKind: "FooterMall", withReuseIdentifier: PagingSectionFooterView.footerIdentifier)
+//    return $0
+//}(UICollectionView(frame: .zero, collectionViewLayout: getCompositionLayout()))
+//
+//weak var footerMallDelegate: PageFooterMallDelegate?
+//var currentPage: Int?
+
+// ....
+
+//func mallSections() -> NSCollectionLayoutSection {
+//
+//    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+//    let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//    item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+//    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalWidth(0.6))
+//    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//    group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+//
+//    let section = NSCollectionLayoutSection(group: group)
+//    section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 5, trailing: 0)
+//    //        groupPagingCentered
+//    //        section.orthogonalScrollingBehavior = .paging
+//    section.orthogonalScrollingBehavior = .groupPagingCentered
+////        section.orthogonalScrollingBehavior = .continuous
+//
+////        let sizeFooter = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(20))
+//    let sizeFooter = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(10))
+//    let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeFooter, elementKind: "FooterMall", alignment: .bottom)
+////        footer.pinToVisibleBounds = true
+//    section.boundarySupplementaryItems = [footer]
+//
+//    section.visibleItemsInvalidationHandler = { [weak self] (visibleItems, offset, env) -> Void in
+//        guard let self = self else {return}
+//        let newPage = visibleItems.last?.indexPath.row ?? 0
+//        if newPage != self.currentPage {
+//            print("visibleItemsInvalidationHandler")
+//            self.currentPage = newPage
+//            self.footerMallDelegate?.currentPage(index: newPage)
+//        }
+//    }
+//    return section
+//}
+
+// ....
+
+//func buttonSection() -> NSCollectionLayoutSection {
+//    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
+//    let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//
+//    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
+//    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+//
+//    let section = NSCollectionLayoutSection(group: group)
+//    section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+//    let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
+//    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+//    section.boundarySupplementaryItems = [header]
+//    return section
+//}
+
+// ....
+
+//func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//    if kind == UICollectionView.elementKindSectionHeader {
+//        switch indexPath.section {
+//        case 1:
+//            let title = R.Strings.OtherControllers.Mall.titleBtnStack
+//            return createHeaderView(collectionView, title: title, kind: kind, indexPath: indexPath)
+//        case 2:
+//            let title = R.Strings.OtherControllers.Mall.shopsForMall
+//            return createHeaderView(collectionView, title: title, kind: kind, indexPath: indexPath)
+//        case 3:
+//            let title = R.Strings.OtherControllers.Mall.titleMapView
+//            return createHeaderView(collectionView, title: title, kind: kind, indexPath: indexPath)
+//        default:
+//            return UICollectionReusableView()
+//        }
+//    } else if kind == "FooterMall" {
+//        guard let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: PagingSectionFooterView.footerIdentifier, for: indexPath) as? PagingSectionFooterView else {
+//            return UICollectionReusableView()
+//        }
+//        self.footerMallDelegate = footerView
+//        let itemCount =  dataCollectionView[indexPath.section].items.count
+//        footerView.configure(with: itemCount)
+//        return footerView
+//    } else {
+//        return UICollectionReusableView()
+//    }
+//}
+
+//private func createHeaderView(_ collectionView: UICollectionView, title: String, kind: String, indexPath: IndexPath) -> UICollectionReusableView {
+//    guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderTitleSection.headerIdentifier, for: indexPath) as? HeaderTitleSection else {
+//        return UICollectionReusableView()
+//    }
+//    headerView.configureCell(title: title)
+//    return headerView
+//}
+
+// ....
+
+//import UIKit
+//
+//protocol PageFooterMallDelegate: AnyObject {
+//    func currentPage(index: Int)
+//}
+//class PagingSectionFooterView: UICollectionReusableView {
+//    static let footerIdentifier = "FooterMall"
+//    lazy var pageControl: UIPageControl = {
+//        let control = UIPageControl()
+//        control.currentPage = 0
+//        control.translatesAutoresizingMaskIntoConstraints = false
+//        control.isUserInteractionEnabled = false
+//        control.currentPageIndicatorTintColor = R.Colors.label
+//        control.pageIndicatorTintColor = R.Colors.systemGray
+//        return control
+//    }()
+//
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        setupView()
+//        backgroundColor = .clear
+//    }
+//    func configure(with numberOfPages: Int) {
+//        pageControl.numberOfPages = numberOfPages
+//    }
+//
+//    private func setupView() {
+//        addSubview(pageControl)
+//        NSLayoutConstraint.activate([
+//            pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
+//            pageControl.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+//            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+//        ])
+//        }
+//
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//}
+//
+//extension PagingSectionFooterView: PageFooterMallDelegate {
+//    func currentPage(index: Int) {
+//        pageControl.currentPage = index
+//        print("PagingSectionDelegate")
+//    }
+//}
+//
+//

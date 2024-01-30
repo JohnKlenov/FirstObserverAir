@@ -71,13 +71,14 @@ private extension HomeCollectionView {
     func mallSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .fractionalWidth(0.55))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.95), heightDimension: .fractionalWidth(0.55))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 15)
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-        section.orthogonalScrollingBehavior = .continuous
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 10)
+//        section.orthogonalScrollingBehavior = .continuous
+        section.orthogonalScrollingBehavior = .groupPagingCentered
 
         let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(200))
         let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderMall", alignment: .top)
@@ -94,7 +95,7 @@ private extension HomeCollectionView {
         group.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 10)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 20, bottom: 5, trailing: 20)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
         section.orthogonalScrollingBehavior = .continuous
         
         let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(200))
@@ -114,14 +115,14 @@ private extension HomeCollectionView {
         group.interItemSpacing = .fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 10, trailing: 15)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10)
         
         let background = NSCollectionLayoutDecorationItem.background(elementKind: "background")
         background.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
         section.decorationItems = [background]
         
         let sizeHeader = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20))
-        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderPopProduct", alignment: .top)
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: sizeHeader, elementKind: "HeaderTitle", alignment: .top)
         header.pinToVisibleBounds = true
         section.boundarySupplementaryItems = [header]
         return section
@@ -162,8 +163,8 @@ private extension HomeCollectionView {
                 cell?.delegate = self.headerShopDelegate
                 cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerShopView)
                 return cell
-            } else if kind == "HeaderPopProduct" {
-                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderPopProductSection.headerIdentifier, withReuseIdentifier: HeaderPopProductSection.headerIdentifier, for: IndexPath) as? HeaderPopProductSection
+            } else if kind == "HeaderTitle" {
+                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: HeaderTitleSection.headerIdentifier, withReuseIdentifier: HeaderTitleSection.headerIdentifier, for: IndexPath) as? HeaderTitleSection
                 cell?.configureCell(title: R.Strings.TabBarController.Home.ViewsHome.headerProductView)
                 return cell
             } else {
@@ -178,7 +179,7 @@ private extension HomeCollectionView {
         register(ProductCell.self, forCellWithReuseIdentifier: ProductCell.reuseID)
         register(HeaderMallSection.self, forSupplementaryViewOfKind: "HeaderMall", withReuseIdentifier: HeaderMallSection.headerIdentifier)
         register(HeaderShopSection.self, forSupplementaryViewOfKind: "HeaderShop", withReuseIdentifier: HeaderShopSection.headerIdentifier)
-        register(HeaderPopProductSection.self, forSupplementaryViewOfKind: "HeaderPopProduct", withReuseIdentifier: HeaderPopProductSection.headerIdentifier)
+        register(HeaderTitleSection.self, forSupplementaryViewOfKind: "HeaderTitle", withReuseIdentifier: HeaderTitleSection.headerIdentifier)
     }
     
     func reload() {

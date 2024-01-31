@@ -23,4 +23,10 @@ class BuilderViewController {
     static func buildProductController(product: ProductItem) -> ProductController {
         return ProductController(product: product)
     }
+    
+    static func buildMapController(arrayPin: [Places]) -> MapController {
+        let fullScreenMap = MapController(arrayPin: arrayPin)
+        fullScreenMap.modalPresentationStyle = .fullScreen
+        return fullScreenMap
+    }
 }

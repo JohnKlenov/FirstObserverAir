@@ -13,7 +13,6 @@ protocol MallModelInput: AnyObject {
     func fetchMall(completion: @escaping (Mall?,[SectionModel]?,[Pin]?, Error?) -> Void)
 }
 
-
 final class MallService {
     
     let serviceFB = FirebaseService.shared

@@ -181,7 +181,7 @@ private extension ProductController {
     }
     
     func setupDataSource(shopsProduct: [Shop], pinsProduct: [Pin], isAddedToCardProduct: Bool) {
-        getMapPin(pins: pinsProduct)
+        arrayPin = MapHelper.convertFromPinInPlaces(pins: pinsProduct)
         shops = shopsProduct
         isAddedToCard = isAddedToCardProduct
         pageControl.numberOfPages = dataSource.refImage?.count ?? 1
@@ -371,19 +371,7 @@ private extension ProductController {
         }
     }
     
-    ///  Duplicate the code
-    ///  можно перенести в Application Model как static method in da class
-    func getMapPin(pins:[Pin]) {
-        pins.forEach { pin in
-            if let latitude = pin.latitude, let longitude = pin.longitude {
-                let pinMap = Places(title: pin.name, locationName: pin.address, discipline: pin.typeMall, coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), imageName: pin.refImage)
-                self.arrayPin.append(pinMap)
-            }
-        }
-    }
-    
-    /// Duplicate the code
-    /// можно перенести в Application Model как static method in da class
+    /// Duplicate the code?
     func getShopForMall(indexPath:Int) -> Shop? {
         let mall = arrayPin[indexPath].title
         var selectedShop:[Shop] = []

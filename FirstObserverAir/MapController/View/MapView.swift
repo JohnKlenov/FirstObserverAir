@@ -30,11 +30,9 @@ final class MapView: MKMapView {
         self.init()
         self.places = places
         delegate = self
+        addAnnotations(places)
+        showAnnotations(places, animated: true)
         setupZoomLimit()
-//        delegate = self
-//        addAnnotations(places)
-//        showAnnotations(places, animated: true)
-//        setupZoomLimit()
     }
 }
 

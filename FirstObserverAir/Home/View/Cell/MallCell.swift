@@ -49,6 +49,9 @@ class MallCell: UICollectionViewCell {
 //        imageView.sd_cancelCurrentImageLoad()
 //        imageView.image = nil
     }
+    deinit {
+        print("deinit MallCell")
+    }
 }
 
 // MARK: - Setting Views

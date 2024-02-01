@@ -73,6 +73,7 @@
 		5EFAC99D2B69313300B8A824 /* BuilderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99C2B69313300B8A824 /* BuilderViewController.swift */; };
 		5EFAC99F2B6A5D6800B8A824 /* ShopCellIntoMall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99E2B6A5D6800B8A824 /* ShopCellIntoMall.swift */; };
 		5EFAC9A12B6A602E00B8A824 /* MapHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9A02B6A602E00B8A824 /* MapHelper.swift */; };
+		5EFAC9A62B6BD29400B8A824 /* MallsFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9A52B6BD29400B8A824 /* MallsFirebaseService.swift */; };
 		E1DD2CCA647A52952EE5B773 /* Pods_FirstObserverAir.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9782C997E00BA48649C30F1F /* Pods_FirstObserverAir.framework */; };
 /* End PBXBuildFile section */
 
@@ -146,6 +147,7 @@
 		5EFAC99C2B69313300B8A824 /* BuilderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderViewController.swift; sourceTree = "<group>"; };
 		5EFAC99E2B6A5D6800B8A824 /* ShopCellIntoMall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCellIntoMall.swift; sourceTree = "<group>"; };
 		5EFAC9A02B6A602E00B8A824 /* MapHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapHelper.swift; sourceTree = "<group>"; };
+		5EFAC9A52B6BD29400B8A824 /* MallsFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallsFirebaseService.swift; sourceTree = "<group>"; };
 		6AA0408173C8FC1180172F7B /* Pods-FirstObserverAir.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FirstObserverAir.release.xcconfig"; path = "Target Support Files/Pods-FirstObserverAir/Pods-FirstObserverAir.release.xcconfig"; sourceTree = "<group>"; };
 		9782C997E00BA48649C30F1F /* Pods_FirstObserverAir.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FirstObserverAir.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -345,6 +347,8 @@
 		5E1A35432B13E7980076FDC1 /* Malls */ = {
 			isa = PBXGroup;
 			children = (
+				5EFAC9A42B6BCF2A00B8A824 /* Model */,
+				5EFAC9A32B6BCF2200B8A824 /* View */,
 				5E1A35442B13E7A40076FDC1 /* Controller */,
 			);
 			path = Malls;
@@ -703,6 +707,21 @@
 			path = Header;
 			sourceTree = "<group>";
 		};
+		5EFAC9A32B6BCF2200B8A824 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5EFAC9A42B6BCF2A00B8A824 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5EFAC9A52B6BD29400B8A824 /* MallsFirebaseService.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -836,6 +855,7 @@
 				5E07018F2B27252700517EA0 /* CloudFirestoreService.swift in Sources */,
 				5E1148FE2B5BCDB60073B2E8 /* MallService.swift in Sources */,
 				5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */,
+				5EFAC9A62B6BD29400B8A824 /* MallsFirebaseService.swift in Sources */,
 				5E1A35592B14D2E70076FDC1 /* ChildContentController.swift in Sources */,
 				5EFAC99F2B6A5D6800B8A824 /* ShopCellIntoMall.swift in Sources */,
 				5EFAC99D2B69313300B8A824 /* BuilderViewController.swift in Sources */,

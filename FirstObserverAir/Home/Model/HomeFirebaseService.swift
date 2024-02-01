@@ -9,7 +9,6 @@ import Foundation
 
 // Протокол для модели данных
 protocol HomeModelInput: AnyObject {
-//    func returnePathsGenderListener() -> [String]
     func isEmptyPathsGenderListener() -> Bool
     func toggleLocalGender()
     func toggleGlobalAndLocalGender()

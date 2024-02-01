@@ -32,7 +32,6 @@ final class HomeController: UIViewController {
             collectionView.reloadData(data: dataSource, gender: homeModel?.returnLocalGender() ?? "Woman")
         }
     }
-//    var isFailedSegmentControl:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()

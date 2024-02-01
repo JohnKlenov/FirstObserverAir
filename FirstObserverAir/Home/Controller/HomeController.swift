@@ -5,6 +5,8 @@
 //  Created by Evgenyi on 26.11.23.
 //
 
+
+
 import UIKit
 
 // Протокол для обработки полученных данных
@@ -23,11 +25,14 @@ final class HomeController: UIViewController {
     private var collectionView:HomeCollectionView!
     
     var stateDataSource: StateDataSource = .firstDataUpdate
+    var stateCancelAlert: StateCancelShowErrorAlert = .switchGenderFailed
+    
     var dataSource:[SectionModel] = [] {
         didSet {
-            collectionView.reloadData(data: dataSource, gender: homeModel?.returnGender() ?? "Woman")
+            collectionView.reloadData(data: dataSource, gender: homeModel?.returnLocalGender() ?? "Woman")
         }
     }
+//    var isFailedSegmentControl:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +47,14 @@ final class HomeController: UIViewController {
             print("spiner animating")
 //            stopLoad()
         }
-        switchGender()
+        
+        if let isEmpty = homeModel?.isEmptyPathsGenderListener(), isEmpty, stateDataSource == .followingDataUpdate {
+            stateCancelAlert = .forcedUpdateDataFailed
+            forceFetchGenderData()
+        } else {
+            switchGender()
+        }
+        
         /// можно переместить его во viewDidLoad
         NotificationCenter.default.addObserver(self, selector: #selector(handleFailedFetchPersonalDataNotification(_:)), name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil)
     }
@@ -116,7 +128,7 @@ private extension HomeController {
     
     func switchGender() {
         homeModel?.isSwitchGender(completion: {
-            self.homeModel?.updateModelGender()
+            self.homeModel?.updateLocalGender()
             self.forceFetchGenderData()
         })
     }
@@ -169,7 +181,7 @@ private extension HomeController {
 // MARK: - Setting CollectionView
 private extension HomeController {
     func setupCollectionView() {
-        collectionView = HomeCollectionView(gender: homeModel?.returnGender() ?? "Woman")
+        collectionView = HomeCollectionView(gender: homeModel?.returnLocalGender() ?? "Woman")
         collectionView.delegate = self
         collectionView.headerMallDelegate = self
         collectionView.headerShopDelegate = self
@@ -188,7 +200,7 @@ private extension HomeController {
 
 extension HomeController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let gender = homeModel?.returnGender() ?? ""
+        let gender = homeModel?.returnLocalGender() ?? ""
         switch indexPath.section {
         case 0:
             let valueField = dataSource[indexPath.section].items[indexPath.row].mall?.name ?? ""
@@ -234,13 +246,27 @@ extension HomeController:HomeModelOutput {
             guard let data = data, error == nil else {
                 self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: stateDataSource) {
                     self.forceFetchGenderData()
+                    /// в этом блоке мы проверяем откуда мы пришли с ошибкой и откатываемся назад
                 } cancelActionHandler: {
-                    /// when we pressed cancel switchGender not work and not observer
-                    self.homeModel?.toggleGender()
-                    NotificationCenter.default.post(name: NSNotification.Name("SwitchSegmentControlNotification"), object: nil)
+                    /// При нажатии на cancel мы всегда теряем observer
+                    /// Мы должны проверять в viewWillAppeare есть ли наблюдатель активный в массиве
+                    /// Если да то мы выпоняем switchGender() иначе forceFetchGenderData()
+                    
+                    switch self.stateCancelAlert {
+                        
+                    case .segmentControlFailed:
+                        self.homeModel?.toggleGlobalAndLocalGender()
+                        NotificationCenter.default.post(name: NSNotification.Name("SwitchSegmentControlNotification"), object: nil)
+                        self.stateCancelAlert = .switchGenderFailed
+                    case .switchGenderFailed:
+                        self.homeModel?.toggleLocalGender()
+                    case .forcedUpdateDataFailed:
+                        break
+                    }
                 }
                 return
             }
+            stateCancelAlert = .switchGenderFailed
             dataSource = convertDictionaryToArray(data: data)
         }
     }
@@ -250,10 +276,12 @@ extension HomeController:HomeModelOutput {
 // MARK: - HeaderMallSectionDelegate
 extension HomeController:HeaderMallSectionDelegate {
     func didSelectSegmentControl(gender: String) {
-        homeModel?.setGender(gender: gender)
+        stateCancelAlert = .segmentControlFailed
+        homeModel?.setGlobalGender(gender: gender)
         switchGender()
     }
 }
+
 
 // Home if pressed cancel -> togle gender for modal and root property(возвращаем все как было) + segment(switch)
 // Mall -> Если мы уже init Mall in viewWillAppear switchGender() + homeModel?.isSwitchGender(completion) не срабатывает и обновление данных не происходит

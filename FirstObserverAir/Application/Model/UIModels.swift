@@ -15,6 +15,12 @@ enum StateDataSource {
     case followingDataUpdate
 }
 
+enum StateCancelShowErrorAlert {
+    case segmentControlFailed
+    case switchGenderFailed
+    case forcedUpdateDataFailed
+}
+
 // MARK: - HomeController
 
 

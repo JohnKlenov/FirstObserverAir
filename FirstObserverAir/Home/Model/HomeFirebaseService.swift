@@ -9,13 +9,16 @@ import Foundation
 
 // Протокол для модели данных
 protocol HomeModelInput: AnyObject {
-    func toggleGender()
-    func returnGender() -> String
+//    func returnePathsGenderListener() -> [String]
+    func isEmptyPathsGenderListener() -> Bool
+    func toggleLocalGender()
+    func toggleGlobalAndLocalGender()
+    func returnLocalGender() -> String
     func fetchGenderData()
     func firstFetchData()
     func isSwitchGender(completion: @escaping () -> Void)
-    func setGender(gender:String)
-    func updateModelGender()
+    func setGlobalGender(gender:String)
+    func updateLocalGender()
     func observeUserAndCardProducts()
     func restartFetchCartProducts()
 
@@ -25,14 +28,14 @@ class HomeFirebaseService {
     
     weak var output: HomeModelOutput?
     
-    let serviceFB = FirebaseService.shared
-    let semaphoreGender = DispatchSemaphore(value: 0)
-    let semaphoreRelate = DispatchSemaphore(value: 0)
+    private let serviceFB = FirebaseService.shared
+    private let semaphoreGender = DispatchSemaphore(value: 0)
+    private let semaphoreRelate = DispatchSemaphore(value: 0)
     
-    lazy var pathsGenderListener = [String]()
-    lazy var pathsRelatedListener = [String]()
+    private lazy var pathsGenderListener = [String]()
+    private lazy var pathsRelatedListener = [String]()
     
-    var dataHome:[String:SectionModel]? {
+    private var dataHome:[String:SectionModel]? {
         didSet {
             if stateDataSource == .followingDataUpdate {
                 DispatchQueue.main.async {
@@ -41,19 +44,19 @@ class HomeFirebaseService {
             }
         }
     }
-    lazy var firstErrors: [Error?] = []
-    lazy var stateDataSource: StateDataSource = .firstDataUpdate
-    lazy var isFirstStartSuccessful = false
-    lazy var gender: String = ""
+    private lazy var firstErrors: [Error?] = []
+    private lazy var stateDataSource: StateDataSource = .firstDataUpdate
+    private lazy var isFirstStartSuccessful = false
+    private lazy var gender: String = ""
     
-    let previewService = PreviewCloudFirestoreService()
-    let productService = ProductCloudFirestoreService()
-    let shopsService = ShopsCloudFirestoreService()
-    let pinService = PinCloudFirestoreService()
+    private let previewService = PreviewCloudFirestoreService()
+    private let productService = ProductCloudFirestoreService()
+    private let shopsService = ShopsCloudFirestoreService()
+    private let pinService = PinCloudFirestoreService()
     
     init(output: HomeModelOutput) {
         self.output = output
-        updateModelGender()
+        updateLocalGender()
         NotificationCenter.default.addObserver(self, selector: #selector(handleSuccessfulFetchPersonalDataNotification), name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
     }
     
@@ -104,19 +107,31 @@ class HomeFirebaseService {
     }
 }
 
+
 extension HomeFirebaseService: HomeModelInput {
-    
-    func toggleGender() {
+    func isEmptyPathsGenderListener() -> Bool {
+        return pathsGenderListener.isEmpty
+    }
+   
+    func toggleLocalGender() {
         if gender == "Man" {
-            setGender(gender: "Woman")
-            updateModelGender()
+            gender = "Woman"
         } else {
-            setGender(gender: "Man")
-            updateModelGender()
+            gender = "Man"
         }
     }
     
-    func returnGender() -> String {
+    func toggleGlobalAndLocalGender() {
+        if gender == "Man" {
+            setGlobalGender(gender: "Woman")
+            updateLocalGender()
+        } else {
+            setGlobalGender(gender: "Man")
+            updateLocalGender()
+        }
+    }
+    
+    func returnLocalGender() -> String {
         return gender
     }
     
@@ -124,11 +139,11 @@ extension HomeFirebaseService: HomeModelInput {
         serviceFB.fetchCartProducts()
     }
     
-    func setGender(gender: String) {
+    func setGlobalGender(gender: String) {
         serviceFB.setGender(gender: gender)
     }
     
-    func updateModelGender() {
+    func updateLocalGender() {
         gender = serviceFB.currentGender
     }
     
@@ -162,8 +177,10 @@ extension HomeFirebaseService: HomeModelInput {
             
         dataHome = [:]
         deleteGenderListeners()
-        pathsGenderListener.append("previewMall\(gender)")
-        previewService.fetchPreviewSection(path: "previewMall\(gender)") { malls, error in
+        
+//        pathsGenderListener.append("previewMall\(gender)")
+        pathsGenderListener.append("previewMall\(serviceFB.currentGender)")
+        previewService.fetchPreviewSection(path: "previewMall\(serviceFB.currentGender)") { malls, error in
             
             let items = self.createItem(malls: malls, shops: nil, products: nil)
             let mallSection = SectionModel(section: "Malls", items: items)
@@ -183,11 +200,11 @@ extension HomeFirebaseService: HomeModelInput {
             }
             self.dataHome?["A"] = mallSection
         }
+        
         semaphoreGender.wait()
-        ///  мы можем не делать запрос на PreviewShop они приходят в ShopGender
-        ///  Нужно будет лишь сгенерировать новый массив моделей PreviewSection!
-        pathsGenderListener.append("previewShops\(gender)")
-        previewService.fetchPreviewSection(path: "previewShops\(gender)") { shops, error in
+//        pathsGenderListener.append("previewShops\(gender)")
+        pathsGenderListener.append("previewShops\(serviceFB.currentGender)")
+        previewService.fetchPreviewSection(path: "previewShops\(serviceFB.currentGender)") { shops, error in
             
             let items = self.createItem(malls: nil, shops: shops, products: nil)
             let shopSection = SectionModel(section: "Shops", items: items)
@@ -209,8 +226,9 @@ extension HomeFirebaseService: HomeModelInput {
         }
         semaphoreGender.wait()
         
-        pathsGenderListener.append("popularProduct\(gender)")
-        productService.fetchProducts(path: "popularProduct\(gender)") { products, error in
+//        pathsGenderListener.append("popularProduct\(gender)")
+        pathsGenderListener.append("popularProduct\(serviceFB.currentGender)")
+        productService.fetchProducts(path: "popularProduct\(serviceFB.currentGender)") { products, error in
             
             let items = self.createItem(malls: nil, shops: nil, products: products)
             let productsSection = SectionModel(section: "PopularProducts", items: items)

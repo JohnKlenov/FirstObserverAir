@@ -158,33 +158,3 @@ private extension ShopCellIntoMall {
     }
 }
 
-//    func configureCell(model: Item) {
-//        let placeholderImage = UIImage(systemName: "photo")
-//        if let urlString = model.shop?.logo {
-//            let urlRef = storage.reference(forURL: urlString)
-//            imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { (image, error, cacheType, url) in
-//                guard let image = image, error == nil else {
-//
-//                    // Обработка ошибок
-//                    self.imageView.image = placeholderImage
-//                    print("Returned message for analytic FB Crashlytics error ShopCell - \(String(describing: error?.localizedDescription))")
-//                    return
-//                }
-//                // Настройка цвета изображения в зависимости от текущей темы
-//                if #available(iOS 13.0, *) {
-//                    let tintableImage = image.withRenderingMode(.alwaysTemplate)
-//                    self.imageView.image = tintableImage
-//                } else {
-//                    self.imageView.image = image
-//                }
-//            }
-//        }else {
-//            imageView.isHidden = true
-//            nameShopLabel.isHidden = false
-//            nameShopLabel.text = model.shop?.name
-//        }
-//
-//        if let floor = model.shop?.floor {
-//            floorLabel.text = floor
-//        }
-//    }

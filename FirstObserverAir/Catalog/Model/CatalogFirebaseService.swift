@@ -10,11 +10,12 @@ import Foundation
 
 // Протокол для модели данных
 protocol CatalogModelInput: AnyObject {
-    //    func isEmptyPathsGenderListener() -> Bool
+        
     //    func toggleLocalGender()
     //    func toggleGlobalAndLocalGender()
     //    func returnLocalGender() -> String
     //    func setGlobalGender(gender:String)
+    func isEmptyPathsGenderListener() -> Bool
     func deleteGenderListeners()
     func updateLocalGender()
     func fetchGenderData()
@@ -45,6 +46,10 @@ class CatalogFirebaseService {
 
 extension CatalogFirebaseService: CatalogModelInput {
     
+    func isEmptyPathsGenderListener() -> Bool {
+        return pathsGenderListener.isEmpty
+    }
+    
     func deleteGenderListeners() {
         removeGenderListeners()
         pathsGenderListener = []
@@ -55,6 +60,7 @@ extension CatalogFirebaseService: CatalogModelInput {
     }
     
     func fetchGenderData() {
+        localData = [:]
         deleteGenderListeners()
         pathsGenderListener.append("previewCatalog\(serviceFB.currentGender)")
         previewService.fetchPreviewSection(path: "previewCatalog\(serviceFB.currentGender)") { [weak self] (catalog, error) in
@@ -67,7 +73,7 @@ extension CatalogFirebaseService: CatalogModelInput {
                 self.output?.updateData(data: catalog, error: error)
                 return
             }
-            
+
             guard let catalog = catalog, error == nil else {
                 return
             }

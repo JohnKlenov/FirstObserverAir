@@ -74,7 +74,8 @@ private extension HomeController {
            let error = userInfo["error"] as? NSError,
            let enumValue = userInfo["enumValue"] as? ListenerErrorState {
             showErrorAlert(message: error.localizedDescription, state: self.stateDataSource) {
-                self.startLoadFirst()
+//                self.startLoadFirst()
+                self.startLoad()
                 switch enumValue {
                     
                 case .restartFetchCartProducts:
@@ -121,7 +122,8 @@ private extension HomeController {
     }
     
     func fetchDataAndUser() {
-        startLoadFirst()
+//        startLoadFirst()
+        startLoad()
         homeModel?.observeUserAndCardProducts()
     }
     
@@ -133,12 +135,14 @@ private extension HomeController {
     }
     
     func forceFetchGenderData() {
-        startLoadFollowing()
+//        startLoadFollowing()
+        startLoad()
         homeModel?.fetchGenderData()
     }
     
     func forceFirstFetchData() {
-        startLoadFirst()
+//        startLoadFirst()
+        startLoad()
         homeModel?.firstFetchData()
     }
     
@@ -153,14 +157,20 @@ private extension HomeController {
 // MARK: - Setting
 private extension HomeController {
     
-    func startLoadFirst() {
+//    func startLoadFirst() {
+//        startSpiner()
+//        /// возможно имеет смысл блокировать везде через setUserInteraction(false)
+//        setUserInteraction(false)
+//    }
+//
+//    func startLoadFollowing() {
+//        startSpiner()
+//        setViewUserInteraction(false)
+//    }
+    
+    func startLoad() {
         startSpiner()
         setUserInteraction(false)
-    }
-    
-    func startLoadFollowing() {
-        startSpiner()
-        setViewUserInteraction(false)
     }
     
     func stopLoad() {

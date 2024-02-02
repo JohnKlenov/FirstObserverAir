@@ -40,8 +40,18 @@ class CatalogController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        
+        if let isEmpty = catalogModel?.isEmptyPathsGenderListener(), isEmpty, stateDataSource == .followingDataUpdate {
+            stateCancelAlert = .forcedUpdateDataFailed
+            fetchGenderData()
+        } else {
+            switchGender()
+        }
     }
     
 }
@@ -65,14 +75,9 @@ private extension CatalogController {
         
     }
     
-    func startLoadFirst() {
+    func startLoad() {
         startSpiner()
         setUserInteraction(false)
-    }
-    
-    func startLoadFollowing() {
-        startSpiner()
-        setViewUserInteraction(false)
     }
     
     func stopLoad() {
@@ -97,7 +102,7 @@ private extension CatalogController {
         if NetworkMonitor.shared.isConnected {
             print("NetworkMonitor.shared.isConnected")
             navController?.hiddenPlaceholder()
-            firstFetchGenderData()
+            fetchGenderData()
         } else {
             navController?.showPlaceholder()
             showErrorAlert(message: "No internet connection!", state: .followingDataUpdate) {
@@ -114,13 +119,8 @@ private extension CatalogController {
         })
     }
     
-    func firstFetchGenderData() {
-        startLoadFirst()
-        catalogModel?.fetchGenderData()
-    }
-    
-    func forceFetchGenderData() {
-        startLoadFollowing()
+    func fetchGenderData() {
+        startLoad()
         catalogModel?.fetchGenderData()
     }
 }
@@ -137,8 +137,9 @@ extension CatalogController:CatalogModelOutput {
             guard let data = data, error == nil else {
                 navController?.showPlaceholder()
                 showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
-                    self.firstFetchGenderData()
+                    self.fetchGenderData()
                 } cancelActionHandler: {
+                    self.catalogModel?.deleteGenderListeners()
                     self.stateDataSource = .followingDataUpdate
                 }
                 return
@@ -151,7 +152,7 @@ extension CatalogController:CatalogModelOutput {
         case .followingDataUpdate:
             guard let data = data, error == nil else {
                 self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: stateDataSource) {
-                    self.forceFetchGenderData()
+                    self.fetchGenderData()
                     /// в этом блоке мы проверяем откуда мы пришли с ошибкой и откатываемся назад
                 } cancelActionHandler: {
                     /// При нажатии на cancel мы всегда теряем observer

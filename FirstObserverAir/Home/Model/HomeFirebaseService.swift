@@ -177,7 +177,6 @@ extension HomeFirebaseService: HomeModelInput {
         dataHome = [:]
         deleteGenderListeners()
         
-//        pathsGenderListener.append("previewMall\(gender)")
         pathsGenderListener.append("previewMall\(serviceFB.currentGender)")
         previewService.fetchPreviewSection(path: "previewMall\(serviceFB.currentGender)") { malls, error in
             

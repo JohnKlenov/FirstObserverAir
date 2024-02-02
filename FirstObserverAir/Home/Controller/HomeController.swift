@@ -24,8 +24,8 @@ final class HomeController: UIViewController {
     
     private var collectionView:HomeCollectionView!
     
-    var stateDataSource: StateDataSource = .firstDataUpdate
-    var stateCancelAlert: StateCancelShowErrorAlert = .switchGenderFailed
+    private var stateDataSource: StateDataSource = .firstDataUpdate
+    private var stateCancelAlert: StateCancelShowErrorAlert = .switchGenderFailed
     
     var dataSource:[SectionModel] = [] {
         didSet {
@@ -91,11 +91,11 @@ private extension HomeController {
 private extension HomeController {
     
     func setupView() {
+        title = "Observer"
         view.backgroundColor = R.Colors.systemBackground
         homeModel = HomeFirebaseService(output: self)
         checkConnectionAndSetupModel()
         setupCollectionView()
-        title = "Observer"
 //        navigationController?.navigationBar.prefersLargeTitles = true
     }
 }

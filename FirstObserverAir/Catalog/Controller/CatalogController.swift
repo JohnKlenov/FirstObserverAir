@@ -8,15 +8,6 @@
 import UIKit
 import Firebase
 
-//class CatalogController: UIViewController {
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        view.backgroundColor = R.Colors.systemBackground
-//    }
-//
-//}
-
 // Протокол для обработки полученных данных
 protocol CatalogModelOutput:AnyObject {
     func updateData(data: [PreviewSection]?, error: Error?)
@@ -27,6 +18,23 @@ class CatalogController: UIViewController {
     private var catalogModel: CatalogModelInput?
     private var stateDataSource: StateDataSource = .firstDataUpdate
     private var stateCancelAlert: StateCancelShowErrorAlert = .switchGenderFailed
+    
+    private lazy var collectionView: UICollectionView = {
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.itemSize = CGSize(width: (UIScreen.main.bounds.width - 20), height: (UIScreen.main.bounds.height) / 4)
+        layout.minimumInteritemSpacing = 15
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
+        collectionView.register(HeaderCatalogSection.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCatalogSection.headerIdentifier)
+
+        return collectionView
+    }()
     
     var dataSource:[PreviewSection] = [] {
         didSet {
@@ -62,9 +70,10 @@ private extension CatalogController {
     func setupView() {
         title = "Catalog"
         view.backgroundColor = R.Colors.systemBackground
-        catalogModel = CatalogFirebaseService(output: self)
-        checkConnectionAndSetupModel()
+//        catalogModel = CatalogFirebaseService(output: self)
+//        checkConnectionAndSetupModel()
         setupCollectionView()
+        setupConstraints()
     }
 }
 
@@ -72,7 +81,7 @@ private extension CatalogController {
 private extension CatalogController {
     
     func setupCollectionView() {
-        
+        view.addSubview(collectionView)
     }
     
     func startLoad() {
@@ -92,6 +101,14 @@ private extension CatalogController {
     func stopSpiner() {
         navController?.stopSpinner()
     }
+}
+
+// MARK: - Layout
+private extension CatalogController {
+    func setupConstraints() {
+        NSLayoutConstraint.activate([collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
+    }
+
 }
 
 // MARK: - Setting DataSource
@@ -136,22 +153,22 @@ extension CatalogController:CatalogModelOutput {
         case .firstDataUpdate:
             guard let data = data, error == nil else {
                 navController?.showPlaceholder()
+                catalogModel?.deleteGenderListeners()
                 showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
                     self.fetchGenderData()
                 } cancelActionHandler: {
-                    self.catalogModel?.deleteGenderListeners()
                     self.stateDataSource = .followingDataUpdate
                 }
                 return
             }
             navController?.hiddenPlaceholder()
             stateDataSource = .followingDataUpdate
-            
             dataSource = data
             
         case .followingDataUpdate:
             guard let data = data, error == nil else {
-                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: stateDataSource) {
+                catalogModel?.deleteGenderListeners()
+                self.showErrorAlert(message: error?.localizedDescription ?? "Something went wrong!", state: .followingDataUpdate) {
                     self.fetchGenderData()
                     /// в этом блоке мы проверяем откуда мы пришли с ошибкой и откатываемся назад
                 } cancelActionHandler: {
@@ -162,11 +179,11 @@ extension CatalogController:CatalogModelOutput {
                     switch self.stateCancelAlert {
                         
                     case .segmentControlFailed:
-//                        self.homeModel?.toggleGlobalAndLocalGender()
-                        NotificationCenter.default.post(name: NSNotification.Name("SwitchSegmentControlNotification"), object: nil)
+                        self.catalogModel?.toggleGlobalAndLocalGender()
+                        NotificationCenter.default.post(name: NSNotification.Name("SwitchSegmentControlHeaderCatalogNotification"), object: nil)
                         self.stateCancelAlert = .switchGenderFailed
                     case .switchGenderFailed:
-//                        self.homeModel?.toggleLocalGender()
+                        self.catalogModel?.toggleLocalGender()
                         break
                     case .forcedUpdateDataFailed:
                         break
@@ -178,6 +195,37 @@ extension CatalogController:CatalogModelOutput {
             dataSource = data
         }
     }
+}
+
+// MARK: - HeaderMallSectionDelegate
+extension CatalogController:HeaderCatalogSectionDelegate {
+    func didSelectSegmentControl(gender: String) {
+        stateCancelAlert = .segmentControlFailed
+        catalogModel?.setGlobalGender(gender: gender)
+        switchGender()
+    }
+}
+
+
+// MARK: - UICollectionViewDataSource + UICollectionViewDelegate + UICollectionViewDelegateFlowLayout
+extension CatalogController: UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout {
     
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 100
+    }
     
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        return UICollectionViewCell()
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell else { return UICollectionViewCell() }
+            cell.configureCell(model: Item(mall: nil, shop: nil, popularProduct: nil), isHiddenTitle: false)
+        cell.backgroundColor = .red
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderCatalogSection.headerIdentifier, for: indexPath) as! HeaderCatalogSection
+        headerView.delegate = self
+        headerView.configureCell(gender: catalogModel?.returnLocalGender() ?? "Man")
+        return headerView
+    }
 }

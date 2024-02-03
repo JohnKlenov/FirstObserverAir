@@ -115,8 +115,8 @@ private extension ProductCell {
         setupConstraints()
         storage = Storage.storage()
         contentView.backgroundColor = R.Colors.secondarySystemBackground
-        contentView.layer.cornerRadius = 5
-        contentView.clipsToBounds = true
+        layer.cornerRadius = 5
+        clipsToBounds = true
     }
 }
 

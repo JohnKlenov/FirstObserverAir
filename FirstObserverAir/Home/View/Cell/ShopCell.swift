@@ -60,8 +60,8 @@ private extension ShopCell {
         contentView.addSubview(imageView)
         setupConstraints()
         storage = Storage.storage()
-        contentView.layer.cornerRadius = 10
-        contentView.clipsToBounds = true
+        layer.cornerRadius = 10
+        clipsToBounds = true
     }
 }
 

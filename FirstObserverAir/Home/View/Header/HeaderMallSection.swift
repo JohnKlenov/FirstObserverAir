@@ -14,9 +14,9 @@ protocol HeaderMallSectionDelegate: AnyObject {
 class HeaderMallSection: UICollectionReusableView {
         
     static let headerIdentifier = "HeaderMall"
-    let defaults = UserDefaults.standard
+//    let defaults = UserDefaults.standard
     weak var delegate: HeaderMallSectionDelegate?
-   
+    
     let segmentedControl: UISegmentedControl = {
         let item = [R.Strings.TabBarController.Home.ViewsHome.segmentedControlWoman,R.Strings.TabBarController.Home.ViewsHome.segmentedControlMan]
         let segmentControl = UISegmentedControl(items: item)
@@ -36,11 +36,11 @@ class HeaderMallSection: UICollectionReusableView {
         label.numberOfLines = 0
         return label
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        NotificationCenter.default.addObserver(self, selector: #selector(handleSwitchSegmentControlNotification), name: NSNotification.Name("SwitchSegmentControlNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleSwitchSegmentControlNotification), name: NSNotification.Name("SwitchSegmentControlHeaderMallNotification"), object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -53,6 +53,7 @@ class HeaderMallSection: UICollectionReusableView {
 private extension HeaderMallSection {
     func setupView() {
         backgroundColor = .clear
+//        backgroundColor = .blue
         addSubview(segmentedControl)
         addSubview(label)
         setupConstraints()
@@ -62,7 +63,7 @@ private extension HeaderMallSection {
 // MARK: - Setting
 extension HeaderMallSection {
     func configureCell(title: String, gender: String) {
-//        let gender = defaults.string(forKey: "gender") ?? "Woman"
+        
         segmentedControl.selectedSegmentIndex = gender == "Woman" ? 0 : 1
         label.text = title
     }
@@ -106,3 +107,5 @@ private extension HeaderMallSection {
         }
     }
 }
+
+//        NSLayoutConstraint.activate([segmentedControl.topAnchor.constraint(equalTo: topAnchor, constant: 5), segmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60), segmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 60), label.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 5), label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5), label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5), label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5)])

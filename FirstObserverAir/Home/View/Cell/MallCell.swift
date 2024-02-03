@@ -17,8 +17,6 @@ class MallCell: UICollectionViewCell {
     let imageView: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
-        image.layer.cornerRadius = 10
-        image.clipsToBounds = true
         image.contentMode = .scaleAspectFill
         image.tintColor = R.Colors.label
         return image
@@ -59,6 +57,8 @@ private extension MallCell {
     func setupView() {
         contentView.addSubview(imageView)
         contentView.addSubview(nameMall)
+        layer.cornerRadius = 10
+        clipsToBounds = true
         setupConstraints()
         storage = Storage.storage()
     }

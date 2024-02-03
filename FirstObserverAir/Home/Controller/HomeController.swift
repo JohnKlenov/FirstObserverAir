@@ -265,7 +265,7 @@ extension HomeController:HomeModelOutput {
                         
                     case .segmentControlFailed:
                         self.homeModel?.toggleGlobalAndLocalGender()
-                        NotificationCenter.default.post(name: NSNotification.Name("SwitchSegmentControlNotification"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name("SwitchSegmentControlHeaderMallNotification"), object: nil)
                         self.stateCancelAlert = .switchGenderFailed
                     case .switchGenderFailed:
                         self.homeModel?.toggleLocalGender()

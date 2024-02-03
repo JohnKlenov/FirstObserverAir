@@ -10,17 +10,16 @@ import Foundation
 
 // Протокол для модели данных
 protocol CatalogModelInput: AnyObject {
-        
-    //    func toggleLocalGender()
-    //    func toggleGlobalAndLocalGender()
-    //    func returnLocalGender() -> String
-    //    func setGlobalGender(gender:String)
+    
+    func toggleLocalGender()
+    func toggleGlobalAndLocalGender()
+    func returnLocalGender() -> String
+    func setGlobalGender(gender:String)
     func isEmptyPathsGenderListener() -> Bool
     func deleteGenderListeners()
     func updateLocalGender()
     func fetchGenderData()
     func isSwitchGender(completion: @escaping () -> Void)
-    
 }
 
 class CatalogFirebaseService {
@@ -45,6 +44,32 @@ class CatalogFirebaseService {
 }
 
 extension CatalogFirebaseService: CatalogModelInput {
+    
+    func returnLocalGender() -> String {
+        return gender
+    }
+    
+    func toggleLocalGender() {
+        if gender == "Man" {
+            gender = "Woman"
+        } else {
+            gender = "Man"
+        }
+    }
+    
+    func toggleGlobalAndLocalGender() {
+        if gender == "Man" {
+            setGlobalGender(gender: "Woman")
+            updateLocalGender()
+        } else {
+            setGlobalGender(gender: "Man")
+            updateLocalGender()
+        }
+    }
+    
+    func setGlobalGender(gender: String) {
+        serviceFB.setGender(gender: gender)
+    }
     
     func isEmptyPathsGenderListener() -> Bool {
         return pathsGenderListener.isEmpty
@@ -82,7 +107,9 @@ extension CatalogFirebaseService: CatalogModelInput {
     }
     
     func isSwitchGender(completion: @escaping () -> Void) {
-        print("")
+        if gender != serviceFB.currentGender {
+            completion()
+        }
     }
     
     

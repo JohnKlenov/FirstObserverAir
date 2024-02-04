@@ -6,14 +6,13 @@
 //
 
 import UIKit
-import Firebase
 
 // Протокол для обработки полученных данных
 protocol CatalogModelOutput:AnyObject {
     func updateData(data: [PreviewSection]?, error: Error?)
 }
 
-class CatalogController: UIViewController {
+final class CatalogController: UIViewController {
 
     private var catalogModel: CatalogModelInput?
     private var stateDataSource: StateDataSource = .firstDataUpdate
@@ -22,7 +21,7 @@ class CatalogController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.itemSize = CGSize(width: (UIScreen.main.bounds.width - 20), height: (UIScreen.main.bounds.height) / 4)
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.height) / 4)
         layout.minimumInteritemSpacing = 15
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -32,7 +31,7 @@ class CatalogController: UIViewController {
         collectionView.delegate = self
         collectionView.register(MallCell.self, forCellWithReuseIdentifier: MallCell.reuseID)
         collectionView.register(HeaderCatalogSection.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCatalogSection.headerIdentifier)
-
+        
         return collectionView
     }()
     
@@ -215,7 +214,6 @@ extension CatalogController: UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        return UICollectionViewCell()
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell else { return UICollectionViewCell() }
             cell.configureCell(model: Item(mall: nil, shop: nil, popularProduct: nil), isHiddenTitle: false)
         cell.backgroundColor = .red
@@ -227,5 +225,17 @@ extension CatalogController: UICollectionViewDataSource, UICollectionViewDelegat
         headerView.delegate = self
         headerView.configureCell(gender: catalogModel?.returnLocalGender() ?? "Man")
         return headerView
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let header = HeaderCatalogSection()
+        /// Вычисляет размер header, который был бы достаточно большим для отображения всего его содержимого, используя текущие ограничения автоматического расположения. UIView.layoutFittingCompressedSize говорит системе, что вы хотите минимальный возможный размер.
+        let headerSize = header.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        
+        return headerSize
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        /// maby pattern Category?
     }
 }

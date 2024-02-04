@@ -6,7 +6,7 @@
 //
 
 import UIKit
-//
+
 protocol HeaderCatalogSectionDelegate: AnyObject {
     func didSelectSegmentControl(gender:String)
 }
@@ -14,7 +14,6 @@ protocol HeaderCatalogSectionDelegate: AnyObject {
 class HeaderCatalogSection: UICollectionReusableView {
         
     static let headerIdentifier = "HeaderCatalog"
-//    let defaults = UserDefaults.standard
     weak var delegate: HeaderCatalogSectionDelegate?
     
     let segmentedControl: UISegmentedControl = {
@@ -57,8 +56,7 @@ extension HeaderCatalogSection {
 // MARK: - Layout
 private extension HeaderCatalogSection {
     func setupConstraints() {
-        
-        NSLayoutConstraint.activate([segmentedControl.topAnchor.constraint(equalTo: topAnchor, constant: 5), segmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60), segmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 60), segmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5)])
+        NSLayoutConstraint.activate([segmentedControl.topAnchor.constraint(equalTo: topAnchor, constant: 5), segmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -60), segmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 60),  segmentedControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15)])
     }
 }
 
@@ -80,11 +78,9 @@ private extension HeaderCatalogSection {
     @objc func didTapSegmentedControl(_ segmentControl: UISegmentedControl) {
         switch segmentControl.selectedSegmentIndex {
         case 0:
-//            defaults.set("Woman", forKey: "gender")
             delegate?.didSelectSegmentControl(gender: "Woman")
             break
         case 1:
-//            defaults.set("Man", forKey: "gender")
             delegate?.didSelectSegmentControl(gender: "Man")
             break
         default:

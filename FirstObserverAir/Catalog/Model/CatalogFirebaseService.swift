@@ -90,19 +90,19 @@ extension CatalogFirebaseService: CatalogModelInput {
         pathsGenderListener.append("previewCatalog\(serviceFB.currentGender)")
         previewService.fetchPreviewSection(path: "previewCatalog\(serviceFB.currentGender)") { [weak self] (catalog, error) in
             guard let self = self else { return }
-            
+            let items = ModelDataTransformation.createItem(malls: catalog, shops: nil, products: nil)
             guard let _ = self.localData["Catalog"] else {
                 if let catalog = catalog, error == nil {
                     self.localData["Catalog"] = catalog
                 }
-                self.output?.updateData(data: catalog, error: error)
+                self.output?.updateData(data: items, error: error)
                 return
             }
 
-            guard let catalog = catalog, error == nil else {
+            guard let _ = catalog, error == nil else {
                 return
             }
-            self.output?.updateData(data: catalog, error: error)
+            self.output?.updateData(data: items, error: error)
         }
     }
     

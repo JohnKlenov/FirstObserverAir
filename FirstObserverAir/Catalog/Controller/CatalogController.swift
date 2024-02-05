@@ -9,7 +9,7 @@ import UIKit
 
 // Протокол для обработки полученных данных
 protocol CatalogModelOutput:AnyObject {
-    func updateData(data: [PreviewSection]?, error: Error?)
+    func updateData(data: [Item]?, error: Error?)
 }
 
 final class CatalogController: UIViewController {
@@ -35,9 +35,9 @@ final class CatalogController: UIViewController {
         return collectionView
     }()
     
-    var dataSource:[PreviewSection] = [] {
+    var dataSource:[Item] = [] {
         didSet {
-//            collectionView.reloadData(data: dataSource, gender: homeModel?.returnLocalGender() ?? "Woman")
+            collectionView.reloadData()
         }
     }
     
@@ -69,8 +69,8 @@ private extension CatalogController {
     func setupView() {
         title = "Catalog"
         view.backgroundColor = R.Colors.systemBackground
-//        catalogModel = CatalogFirebaseService(output: self)
-//        checkConnectionAndSetupModel()
+        catalogModel = CatalogFirebaseService(output: self)
+        checkConnectionAndSetupModel()
         setupCollectionView()
         setupConstraints()
     }
@@ -124,6 +124,8 @@ private extension CatalogController {
             showErrorAlert(message: "No internet connection!", state: .followingDataUpdate) {
                 // Повторно проверяем подключение, когда вызывается блок в showErrorAlert
                 self.checkConnectionAndSetupModel()
+            } cancelActionHandler: {
+                self.stateDataSource = .followingDataUpdate
             }
         }
     }
@@ -145,8 +147,10 @@ private extension CatalogController {
 // MARK: - CatalogModelOutput
 extension CatalogController:CatalogModelOutput {
     
-    func updateData(data: [PreviewSection]?, error: Error?) {
+    func updateData(data: [Item]?, error: Error?) {
+        
         stopLoad()
+        
         switch stateDataSource {
             
         case .firstDataUpdate:
@@ -190,6 +194,7 @@ extension CatalogController:CatalogModelOutput {
                 }
                 return
             }
+            navController?.hiddenPlaceholder()
             stateCancelAlert = .switchGenderFailed
             dataSource = data
         }
@@ -210,20 +215,20 @@ extension CatalogController:HeaderCatalogSectionDelegate {
 extension CatalogController: UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        return dataSource.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MallCell.reuseID, for: indexPath) as? MallCell else { return UICollectionViewCell() }
-            cell.configureCell(model: Item(mall: nil, shop: nil, popularProduct: nil), isHiddenTitle: false)
-        cell.backgroundColor = .red
+        cell.configureCell(model: dataSource[indexPath.row], isHiddenTitle: false)
+//        cell.backgroundColor = .red
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderCatalogSection.headerIdentifier, for: indexPath) as! HeaderCatalogSection
         headerView.delegate = self
-        headerView.configureCell(gender: catalogModel?.returnLocalGender() ?? "Man")
+        headerView.configureCell(gender: catalogModel?.returnLocalGender() ?? "Woman")
         return headerView
     }
     

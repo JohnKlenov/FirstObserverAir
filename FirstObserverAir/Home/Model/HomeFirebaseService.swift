@@ -60,19 +60,19 @@ class HomeFirebaseService {
     }
     
     // help methods
-    
-    func createItem(malls: [PreviewSection]? = nil, shops: [PreviewSection]? = nil, products: [ProductItem]? = nil) -> [Item] {
-        
-        var items = [Item]()
-        if let malls = malls {
-            items = malls.map {Item(mall: $0, shop: nil, popularProduct: nil)}
-        } else if let shops = shops {
-            items = shops.map {Item(mall: nil, shop: $0, popularProduct: nil)}
-        } else if let products = products {
-            items = products.map {Item(mall: nil, shop: nil, popularProduct: $0)}
-        }
-        return items
-    }
+//
+//    func createItem(malls: [PreviewSection]? = nil, shops: [PreviewSection]? = nil, products: [ProductItem]? = nil) -> [Item] {
+//
+//        var items = [Item]()
+//        if let malls = malls {
+//            items = malls.map {Item(mall: $0, shop: nil, popularProduct: nil)}
+//        } else if let shops = shops {
+//            items = shops.map {Item(mall: nil, shop: $0, popularProduct: nil)}
+//        } else if let products = products {
+//            items = products.map {Item(mall: nil, shop: nil, popularProduct: $0)}
+//        }
+//        return items
+//    }
     
     func removeGenderListeners() {
         pathsGenderListener.forEach { path in
@@ -180,7 +180,8 @@ extension HomeFirebaseService: HomeModelInput {
         pathsGenderListener.append("previewMall\(serviceFB.currentGender)")
         previewService.fetchPreviewSection(path: "previewMall\(serviceFB.currentGender)") { malls, error in
             
-            let items = self.createItem(malls: malls, shops: nil, products: nil)
+//            let items = self.createItem(malls: malls, shops: nil, products: nil)
+            let items = ModelDataTransformation.createItem(malls: malls, shops: nil, products: nil)
             let mallSection = SectionModel(section: "Malls", items: items)
             
             guard let _ = self.dataHome?["A"] else {
@@ -204,7 +205,8 @@ extension HomeFirebaseService: HomeModelInput {
         pathsGenderListener.append("previewShops\(serviceFB.currentGender)")
         previewService.fetchPreviewSection(path: "previewShops\(serviceFB.currentGender)") { shops, error in
             
-            let items = self.createItem(malls: nil, shops: shops, products: nil)
+//            let items = self.createItem(malls: nil, shops: shops, products: nil)
+            let items = ModelDataTransformation.createItem(malls: nil, shops: shops, products: nil)
             let shopSection = SectionModel(section: "Shops", items: items)
             
             
@@ -228,7 +230,8 @@ extension HomeFirebaseService: HomeModelInput {
         pathsGenderListener.append("popularProduct\(serviceFB.currentGender)")
         productService.fetchProducts(path: "popularProduct\(serviceFB.currentGender)") { products, error in
             
-            let items = self.createItem(malls: nil, shops: nil, products: products)
+//            let items = self.createItem(malls: nil, shops: nil, products: products)
+            let items = ModelDataTransformation.createItem(malls: nil, shops: nil, products: products)
             let productsSection = SectionModel(section: "PopularProducts", items: items)
             
             

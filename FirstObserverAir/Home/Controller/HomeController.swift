@@ -217,7 +217,8 @@ extension HomeController: UICollectionViewDelegate {
             navigationController?.pushViewController(mallController, animated: true)
         case 1:
             let valueField = dataSource[indexPath.section].items[indexPath.row].shop?.name ?? ""
-            let shopProductVC = BuilderViewController.buildListProductController(gender: gender, shopName: valueField)
+//            let shopProductVC = BuilderViewController.buildListProductController(gender: gender, shopName: valueField)
+            let shopProductVC = BuilderViewController.buildListProductController(gender: gender, keyField: "shops", valueField: valueField, isArrayField: true)
             navigationController?.pushViewController(shopProductVC, animated: true)
         case 2:
             if let product = dataSource[indexPath.section].items[indexPath.row].popularProduct {

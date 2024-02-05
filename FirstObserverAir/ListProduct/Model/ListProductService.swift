@@ -18,12 +18,12 @@ final class ListProductService {
     let serviceFB = FirebaseService.shared
     
     private var path:String
-    private var keyField:String
+    private var keyField:String?
     private var valueField:String
-    private var isArrayField:Bool
+    private var isArrayField:Bool?
     
     
-    init(path:String, keyField:String, valueField:String, isArrayField:Bool) {
+    init(path:String, keyField:String?, valueField:String, isArrayField:Bool?) {
         self.path = path
         self.keyField = keyField
         self.valueField = valueField

@@ -241,6 +241,19 @@ extension CatalogController: UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        /// maby pattern Category?
+        
+        let gender = catalogModel?.returnLocalGender() ?? ""
+        let valueField = dataSource[indexPath.row].mall?.name ?? ""
+        
+        switch indexPath.row {
+        case 0:
+            let categoryProductVC = BuilderViewController.buildListProductController(gender: gender, keyField: nil, valueField: valueField, isArrayField: nil)
+            navigationController?.pushViewController(categoryProductVC, animated: true)
+            print("indexPath.row - \(indexPath.row)")
+        default:
+            let categoryProductVC = BuilderViewController.buildListProductController(gender: gender, keyField: "category", valueField: valueField, isArrayField: false)
+            navigationController?.pushViewController(categoryProductVC, animated: true)
+            print("indexPath.row - \(indexPath.row)")
+        }
     }
 }

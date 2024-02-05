@@ -14,10 +14,10 @@ class BuilderViewController {
         return MallController(modelInput: mallService, title: name, gender: gender)
     }
 
-    static func buildListProductController(gender: String, shopName: String) -> ListProductController {
+    static func buildListProductController(gender: String, keyField:String?, valueField: String, isArrayField:Bool?) -> ListProductController {
         let path = "products\(gender)"
-        let modelListController: ListProductModelInput = ListProductService(path: path, keyField: "shops", valueField: shopName, isArrayField: true)
-        return ListProductController(modelInput: modelListController, title: shopName)
+        let modelListController: ListProductModelInput = ListProductService(path: path, keyField: keyField, valueField: valueField, isArrayField: isArrayField)
+        return ListProductController(modelInput: modelListController, title: valueField)
     }
 
     static func buildProductController(product: ProductItem) -> ProductController {

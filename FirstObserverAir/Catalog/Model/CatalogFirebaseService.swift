@@ -22,7 +22,7 @@ protocol CatalogModelInput: AnyObject {
     func isSwitchGender(completion: @escaping () -> Void)
 }
 
-class CatalogFirebaseService {
+final class CatalogFirebaseService {
     
     weak var output: CatalogModelOutput?
     private let serviceFB = FirebaseService.shared
@@ -43,6 +43,8 @@ class CatalogFirebaseService {
     }
 }
 
+
+// MARK: - CatalogModelInput
 extension CatalogFirebaseService: CatalogModelInput {
     
     func returnLocalGender() -> String {
@@ -98,7 +100,7 @@ extension CatalogFirebaseService: CatalogModelInput {
                 self.output?.updateData(data: items, error: error)
                 return
             }
-
+            
             guard let _ = catalog, error == nil else {
                 return
             }
@@ -111,6 +113,4 @@ extension CatalogFirebaseService: CatalogModelInput {
             completion()
         }
     }
-    
-    
 }

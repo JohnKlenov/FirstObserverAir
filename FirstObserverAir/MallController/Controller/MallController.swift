@@ -207,7 +207,6 @@ extension MallController: UICollectionViewDelegate {
         switch indexPath.section {
         case 2:
             let valueField = dataCollectionView[1].items[indexPath.row].shop?.name ?? ""
-//            let shopProductVC = BuilderViewController.buildListProductController(gender: gender, shopName: valueField)
             let shopProductVC = BuilderViewController.buildListProductController(gender: gender, keyField: "shops", valueField: valueField, isArrayField: true)
             navigationController?.pushViewController(shopProductVC, animated: true)
         default:

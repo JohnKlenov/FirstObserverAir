@@ -179,8 +179,6 @@ extension HomeFirebaseService: HomeModelInput {
         
         pathsGenderListener.append("previewMall\(serviceFB.currentGender)")
         previewService.fetchPreviewSection(path: "previewMall\(serviceFB.currentGender)") { malls, error in
-            
-//            let items = self.createItem(malls: malls, shops: nil, products: nil)
             let items = ModelDataTransformation.createItem(malls: malls, shops: nil, products: nil)
             let mallSection = SectionModel(section: "Malls", items: items)
             
@@ -201,11 +199,9 @@ extension HomeFirebaseService: HomeModelInput {
         }
         
         semaphoreGender.wait()
-//        pathsGenderListener.append("previewShops\(gender)")
         pathsGenderListener.append("previewShops\(serviceFB.currentGender)")
         previewService.fetchPreviewSection(path: "previewShops\(serviceFB.currentGender)") { shops, error in
             
-//            let items = self.createItem(malls: nil, shops: shops, products: nil)
             let items = ModelDataTransformation.createItem(malls: nil, shops: shops, products: nil)
             let shopSection = SectionModel(section: "Shops", items: items)
             
@@ -226,11 +222,9 @@ extension HomeFirebaseService: HomeModelInput {
         }
         semaphoreGender.wait()
         
-//        pathsGenderListener.append("popularProduct\(gender)")
         pathsGenderListener.append("popularProduct\(serviceFB.currentGender)")
         productService.fetchProducts(path: "popularProduct\(serviceFB.currentGender)") { products, error in
-            
-//            let items = self.createItem(malls: nil, shops: nil, products: products)
+        
             let items = ModelDataTransformation.createItem(malls: nil, shops: nil, products: products)
             let productsSection = SectionModel(section: "PopularProducts", items: items)
             

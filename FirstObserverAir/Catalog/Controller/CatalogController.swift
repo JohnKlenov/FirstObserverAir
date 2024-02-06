@@ -35,7 +35,7 @@ final class CatalogController: UIViewController {
         return collectionView
     }()
     
-    var dataSource:[Item] = [] {
+    private var dataSource:[Item] = [] {
         didSet {
             collectionView.reloadData()
         }
@@ -60,7 +60,6 @@ final class CatalogController: UIViewController {
             switchGender()
         }
     }
-    
 }
 
 // MARK: - Setting Views
@@ -107,7 +106,6 @@ private extension CatalogController {
     func setupConstraints() {
         NSLayoutConstraint.activate([collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0), collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor), collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor), collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor)])
     }
-
 }
 
 // MARK: - Setting DataSource
@@ -116,7 +114,6 @@ private extension CatalogController {
     func checkConnectionAndSetupModel() {
         
         if NetworkMonitor.shared.isConnected {
-            print("NetworkMonitor.shared.isConnected")
             navController?.hiddenPlaceholder()
             fetchGenderData()
         } else {
@@ -133,7 +130,7 @@ private extension CatalogController {
     func switchGender() {
         catalogModel?.isSwitchGender(completion: {
             self.catalogModel?.updateLocalGender()
-            self.catalogModel?.fetchGenderData()
+            self.fetchGenderData()
         })
     }
     
@@ -249,11 +246,9 @@ extension CatalogController: UICollectionViewDataSource, UICollectionViewDelegat
         case 0:
             let categoryProductVC = BuilderViewController.buildListProductController(gender: gender, keyField: nil, valueField: valueField, isArrayField: nil)
             navigationController?.pushViewController(categoryProductVC, animated: true)
-            print("indexPath.row - \(indexPath.row)")
         default:
             let categoryProductVC = BuilderViewController.buildListProductController(gender: gender, keyField: "category", valueField: valueField, isArrayField: false)
             navigationController?.pushViewController(categoryProductVC, animated: true)
-            print("indexPath.row - \(indexPath.row)")
         }
     }
 }

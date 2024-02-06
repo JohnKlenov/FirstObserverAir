@@ -26,9 +26,9 @@ class HeaderShopSection: UICollectionReusableView {
         return label
     }()
     
-    let allShop: UIButton = {
+    let allShopButton: UIButton = {
         var configButton = UIButton.Configuration.gray()
-        configButton.title = R.Strings.TabBarController.Home.ViewsHome.headerCategoryViewAllShops
+        configButton.title = R.Strings.TabBarController.Home.ViewsHome.headerShopAllShopButton
         configButton.baseForegroundColor = R.Colors.systemPurple
         configButton.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incomig in
 
@@ -61,7 +61,7 @@ private extension HeaderShopSection {
     func setupView() {
         backgroundColor = .clear
         addSubview(label)
-        addSubview(allShop)
+        addSubview(allShopButton)
         setupConstraints()
     }
 }
@@ -76,9 +76,10 @@ extension HeaderShopSection {
 // MARK: - Layout
 private extension HeaderShopSection {
     func setupConstraints() {
-        NSLayoutConstraint.activate([label.topAnchor.constraint(equalTo: topAnchor, constant: 5), label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5), label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5), allShop.topAnchor.constraint(equalTo: topAnchor, constant: 5), allShop.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5), allShop.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0)])
+        NSLayoutConstraint.activate([label.topAnchor.constraint(equalTo: topAnchor, constant: 8), label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5), label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5), allShopButton.topAnchor.constraint(equalTo: topAnchor, constant: 8), allShopButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5), allShopButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0)])
     }
 }
+
 
 // MARK: - Selectors
 private extension HeaderShopSection {

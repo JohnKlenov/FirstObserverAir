@@ -92,7 +92,8 @@ enum R {
                     static let headerProductView = "Products"
                     static let headerShopView = "Shops"
                     static let headerMallView = "Malls"
-                    static let headerCategoryViewAllShops = "AllShops"
+                    static let headerShopAllShopButton = "AllShops"
+                    static let headerMallAllMallButton = "AllMalls"
                 }
             }
             enum Catalog {

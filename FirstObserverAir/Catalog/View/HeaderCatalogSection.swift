@@ -11,12 +11,12 @@ protocol HeaderCatalogSectionDelegate: AnyObject {
     func didSelectSegmentControl(gender:String)
 }
 
-class HeaderCatalogSection: UICollectionReusableView {
+final class HeaderCatalogSection: UICollectionReusableView {
         
     static let headerIdentifier = "HeaderCatalog"
     weak var delegate: HeaderCatalogSectionDelegate?
     
-    let segmentedControl: UISegmentedControl = {
+    private let segmentedControl: UISegmentedControl = {
         let item = [R.Strings.TabBarController.Home.ViewsHome.segmentedControlWoman,R.Strings.TabBarController.Home.ViewsHome.segmentedControlMan]
         let segmentControl = UISegmentedControl(items: item)
         segmentControl.translatesAutoresizingMaskIntoConstraints = false

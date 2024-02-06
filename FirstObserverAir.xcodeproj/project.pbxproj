@@ -52,6 +52,7 @@
 		5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E712B44ACAD0009B8E8 /* MallTableViewCell.swift */; };
 		5E7D7E742B44AD030009B8E8 /* ShopDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E732B44AD030009B8E8 /* ShopDetailController.swift */; };
 		5E7DE9D62B723D88007B44CC /* Patterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9D52B723D88007B44CC /* Patterns.swift */; };
+		5E7DE9DA2B7253A4007B44CC /* AllMallsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9D92B7253A4007B44CC /* AllMallsController.swift */; };
 		5E88134D2AF4D8110044F299 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88134C2AF4D8110044F299 /* AppDelegate.swift */; };
 		5E88134F2AF4D8110044F299 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E88134E2AF4D8110044F299 /* SceneDelegate.swift */; };
 		5E8813562AF4D8180044F299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8813552AF4D8180044F299 /* Assets.xcassets */; };
@@ -127,6 +128,7 @@
 		5E7D7E712B44ACAD0009B8E8 /* MallTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallTableViewCell.swift; sourceTree = "<group>"; };
 		5E7D7E732B44AD030009B8E8 /* ShopDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopDetailController.swift; sourceTree = "<group>"; };
 		5E7DE9D52B723D88007B44CC /* Patterns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patterns.swift; sourceTree = "<group>"; };
+		5E7DE9D92B7253A4007B44CC /* AllMallsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMallsController.swift; sourceTree = "<group>"; };
 		5E8813492AF4D8110044F299 /* FirstObserverAir.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirstObserverAir.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E88134C2AF4D8110044F299 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5E88134E2AF4D8110044F299 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -543,6 +545,22 @@
 			path = Pattern;
 			sourceTree = "<group>";
 		};
+		5E7DE9D72B72536E007B44CC /* AllMalls */ = {
+			isa = PBXGroup;
+			children = (
+				5E7DE9D82B725387007B44CC /* Controller */,
+			);
+			path = AllMalls;
+			sourceTree = "<group>";
+		};
+		5E7DE9D82B725387007B44CC /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5E7DE9D92B7253A4007B44CC /* AllMallsController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		5E8813402AF4D8110044F299 = {
 			isa = PBXGroup;
 			children = (
@@ -582,6 +600,7 @@
 				5E1A35532B14D1F50076FDC1 /* Onboard */,
 				5E1A355B2B15FF3B0076FDC1 /* LaunchScreen */,
 				5E22B1332B3AE40000CDD18A /* AllShops */,
+				5E7DE9D72B72536E007B44CC /* AllMalls */,
 				5E22B13A2B3C0AAD00CDD18A /* ListProduct */,
 			);
 			path = FirstObserverAir;
@@ -921,6 +940,7 @@
 				5E1A35612B161CF60076FDC1 /* AppSettings.swift in Sources */,
 				5E0DE9072B458ABA00F3387C /* MapView.swift in Sources */,
 				5EFAC99B2B666C8100B8A824 /* MapCell.swift in Sources */,
+				5E7DE9DA2B7253A4007B44CC /* AllMallsController.swift in Sources */,
 				5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */,
 				5E9B52242B51222C00F907B6 /* FullScreenImageCell.swift in Sources */,
 				5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */,

@@ -284,6 +284,9 @@ extension HomeController:HomeModelOutput {
 // MARK: - HeaderMallSectionDelegate
 extension HomeController:HeaderMallSectionDelegate {
     func didTapAllMallButton() {
+        let gender = homeModel?.returnLocalGender() ?? ""
+        let allShops = AllMallsController(malls: dataSource[0], currentGender: gender)
+        navigationController?.pushViewController(allShops, animated: true)
         print("didTapAllMallButton")
     }
     

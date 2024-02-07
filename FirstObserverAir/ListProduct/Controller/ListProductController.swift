@@ -13,6 +13,8 @@ final class ListProductController: UIViewController {
     private var listProductModel: ListProductModelInput?
     private var dataSource: [ProductItem] = [] {
         didSet {
+            print("didSet dataSource")
+            
             collectionView?.updateData(data: dataSource)
         }
     }

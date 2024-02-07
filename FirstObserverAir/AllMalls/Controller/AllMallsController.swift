@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 final class AllMallsController: UIViewController {
-    var malls:SectionModel
-    var gender: String
+    private var malls:SectionModel
+    private var gender: String
     
     private lazy var collectionView: UICollectionView = {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -83,6 +83,8 @@ extension AllMallsController: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("\(indexPath.row)")
+        let valueField = malls.items[indexPath.row].mall?.name ?? ""
+        let mallController = BuilderViewController.buildMallController(gender: gender, name: valueField)
+        navigationController?.pushViewController(mallController, animated: true)
     }
 }

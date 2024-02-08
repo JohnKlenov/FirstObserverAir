@@ -161,7 +161,7 @@ private extension ListProductController {
     }
     
     func setupFilterAndSort() {
-        if title == "All shose" {
+        if title == "All shoes" {
             configureNavigationItem()
             setupAlertSorted()
         }

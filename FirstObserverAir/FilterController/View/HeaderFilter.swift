@@ -36,6 +36,14 @@ class HeaderFilterCollectionReusableView: UICollectionReusableView {
         backgroundColor = .clear
     }
    
+    static func referenceSize(width: CGFloat, title: String) -> CGSize {
+            let label = UILabel()
+            label.font = UIFont.systemFont(ofSize: 17)
+            label.text = title
+            let height = label.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)).height
+            return CGSize(width: width, height: height)
+        }
+    
     private func setupConstraints() {
         NSLayoutConstraint.activate([label.topAnchor.constraint(equalTo: topAnchor, constant: 5), label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5), label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10), label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)])
     }

@@ -120,10 +120,10 @@ private extension ListProductController {
             
             var sortData = products
             sortData.sort { (product1, product2) -> Bool in
-                guard let price1 = product1.priorityIndex, let price2 = product2.priorityIndex else {
+                guard let priorityIndex1 = product1.priorityIndex, let priorityIndex2 = product2.priorityIndex else {
                     return false // Обработайте случаи, когда price равно nil, если это необходимо
                 }
-                return price1 > price2
+                return priorityIndex1 > priorityIndex2
             }
             self.dataSource = sortData
             self.filteredDataSource = sortData
@@ -368,7 +368,7 @@ extension ListProductController {
 
 
 // MARK:  - UICollectionViewDelegate, UICollectionViewDataSource
-extension ListProductController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension ListProductController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fieldsForFilters.count
@@ -379,21 +379,14 @@ extension ListProductController: UICollectionViewDelegate, UICollectionViewDataS
             return UICollectionViewCell()
         }
         cell.delegate = self
-        cell.label.text = fieldsForFilters[indexPath.row]
+        cell.configureCell(textLabel: fieldsForFilters[indexPath.item])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        var labelSize = CGSize()
-        var label :UILabel? = UILabel()
-        label?.font = UIFont.systemFont(ofSize: 17)
-        label?.textAlignment = .center
-        label?.textColor = UIColor.label
-        label?.text = fieldsForFilters[indexPath.item]
-        
-        labelSize = label?.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)) ?? .zero
-        labelSize = CGSize(width: labelSize.width + labelSize.height + 20, height: labelSize.height + 10)
-        label = nil
+        let font = UIFont.systemFont(ofSize: 17)
+        let text = fieldsForFilters[indexPath.item]
+        let labelSize = sizeForLabel(text: text, font: font)
         return labelSize
     }
 }
@@ -409,6 +402,15 @@ private extension ListProductController {
         let sortedButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortedButtonTapped))
         sortedButton.tintColor = UIColor.systemCyan
         navigationItem.rightBarButtonItems = [sortedButton, filterButton]
+    }
+    
+    func sizeForLabel(text: String, font: UIFont) -> CGSize {
+        let label = UILabel()
+        label.font = font
+        label.text = text
+        var labelSize = label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+        labelSize = CGSize(width: labelSize.width + labelSize.height + 20, height: labelSize.height + 10)
+        return labelSize
     }
 }
 
@@ -489,46 +491,46 @@ private extension ListProductController {
     
     @objc func filterButtonTapped() {
         
-//        let indexPath = IndexPath(item: 333, section: 333)
-//        selectedFilterByIndex?[indexPath] = nil
-//
-//        let customVC = CustomRangeViewController()
-//        customVC.allProducts = reserverDataSource
-//        customVC.delegate = self
-//        if isActiveScreenFilter {
-//            customVC.selectedItem = selectedFilterByIndex ?? [:]
-//            customVC.minimumValue = minimumValue
-//            customVC.maximumValue = maximumValue
-//            customVC.lowerValue = lowerValue
-//            customVC.upperValue = upperValue
-//            customVC.countFilterProduct = countFilterProduct
-//            customVC.isActiveScreenFilter = isActiveScreenFilter
-//            customVC.isFixedPriceProducts = isFixedPriceProducts ?? false
-//        }
-//        let navigationVC = CustomNavigationController(rootViewController: customVC)
-//        navigationVC.navigationBar.backgroundColor = UIColor.secondarySystemBackground
-//        navigationVC.modalPresentationStyle = .fullScreen
-//        present(navigationVC, animated: true, completion: nil)
+        let indexPath = IndexPath(item: 333, section: 333)
+        selectedFilterByIndex?[indexPath] = nil
+        
+        let customVC = CustomRangeViewController()
+        customVC.allProducts = filteredDataSource
+        customVC.delegate = self
+        if isActiveScreenFilter {
+            customVC.selectedItem = selectedFilterByIndex ?? [:]
+            customVC.minimumValue = minimumValue
+            customVC.maximumValue = maximumValue
+            customVC.lowerValue = lowerValue
+            customVC.upperValue = upperValue
+            customVC.countFilterProduct = countFilterProduct
+            customVC.isActiveScreenFilter = isActiveScreenFilter
+            customVC.isFixedPriceProducts = isFixedPriceProducts ?? false
+        }
+        let navigationVC = UINavigationController(rootViewController: customVC)
+        navigationVC.navigationBar.backgroundColor = UIColor.secondarySystemBackground
+        navigationVC.modalPresentationStyle = .fullScreen
+        present(navigationVC, animated: true, completion: nil)
     }
-
+    
     @objc func sortedButtonTapped() {
         
-//        if let alert = alert {
-//            alert.actions.forEach { action in
-//                if action.title == changedAlertAction.rawValue {
-//                    action.setValue(UIColor.systemGray3, forKey: "titleTextColor")
-//                    action.isEnabled = false
-//                } else {
-//                    action.isEnabled = true
-//                    action.setValue(UIColor.systemCyan, forKey: "titleTextColor")
-//                }
-//
-//            }
-//            present(alert, animated: true, completion: nil)
-//        }
-//    }
+        if let alert = alert {
+            alert.actions.forEach { action in
+                if action.title == changedAlertAction.rawValue {
+                    action.setValue(UIColor.systemGray3, forKey: "titleTextColor")
+                    action.isEnabled = false
+                } else {
+                    action.isEnabled = true
+                    action.setValue(UIColor.systemCyan, forKey: "titleTextColor")
+                }
+                
+            }
+            present(alert, animated: true, completion: nil)
+        }
+    }
 }
-}
+
 
 // MARK: - FilterCellDelegate
 extension ListProductController: FilterCellDelegate {

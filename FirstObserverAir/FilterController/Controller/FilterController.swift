@@ -24,6 +24,7 @@ class CustomRangeViewController: UIViewController, UICollectionViewDataSource, U
 
     var dataSource = [String:[String]]() {
         didSet {
+            print(" didSet CustomRangeViewController dataSource ")
             collectionView.reloadData()
         }
     }
@@ -167,7 +168,6 @@ class CustomRangeViewController: UIViewController, UICollectionViewDataSource, U
         super.viewDidLayoutSubviews()
         rangeView.frame = CGRect(x: 0, y: 10, width: UIScreen.main.bounds.width, height: 90)
         rangeSlider.frame = CGRect(x: 10, y: rangeView.frame.maxY, width: UIScreen.main.bounds.width - 20, height: 30)
-        
     }
     
     @objc func rangeSliderValueChanged(rangeSlider: RangeSlider) {
@@ -517,39 +517,32 @@ class CustomRangeViewController: UIViewController, UICollectionViewDataSource, U
     // MARK: - UICollectionViewDelegateFlowLayout
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-       
         var labelSize = CGSize()
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? MyCell
-        
+        var text = ""
+
         switch indexPath.section {
         case 0:
             let colors = dataSource["color"]
-            cell?.label.text = colors?[indexPath.row]
-            //             Определяем размеры метки с помощью метода sizeThatFits()
-            labelSize = cell?.label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)) ?? .zero
-            labelSize = CGSize(width: labelSize.width + 20, height: labelSize.height + 20)
+            text = colors?[indexPath.row] ?? ""
         case 1:
             let brands = dataSource["brand"]
-            cell?.label.text = brands?[indexPath.row]
-            labelSize = cell?.label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)) ?? .zero
-            labelSize = CGSize(width: labelSize.width + 20, height: labelSize.height + 20)
+            text = brands?[indexPath.row] ?? ""
         case 2:
             let material = dataSource["material"]
-            cell?.label.text = material?[indexPath.row]
-            labelSize = cell?.label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)) ?? .zero
-            labelSize = CGSize(width: labelSize.width + 20, height: labelSize.height + 20)
+            text = material?[indexPath.row] ?? ""
         case 3:
             let season = dataSource["season"]
-            cell?.label.text = season?[indexPath.row]
-            labelSize = cell?.label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)) ?? .zero
-            labelSize = CGSize(width: labelSize.width + 20, height: labelSize.height + 20)
+            text = season?[indexPath.row] ?? ""
         default:
             print("Returned message for analytic FB Crashlytics error")
-            labelSize = .zero
         }
+
+        let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]
+        labelSize = (text as NSString).size(withAttributes: attributes)
+        labelSize = CGSize(width: labelSize.width + 20, height: labelSize.height + 20)
+
         return labelSize
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
@@ -577,12 +570,20 @@ class CustomRangeViewController: UIViewController, UICollectionViewDataSource, U
    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
-        let headerView = HeaderFilterCollectionReusableView()
-        headerView.configureCell(title: "Test")
-        let width = collectionView.bounds.width
-        let height = headerView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)).height
-        
-        return CGSize(width: width, height: height)
+        let title: String
+            switch section {
+            case 0:
+                title = "Color"
+            case 1:
+                title = "Brand"
+            case 2:
+                title = "Material"
+            case 3:
+                title = "Season"
+            default:
+                title = ""
+            }
+            return HeaderFilterCollectionReusableView.referenceSize(width: collectionView.bounds.width, title: title)
     }
     
     deinit {

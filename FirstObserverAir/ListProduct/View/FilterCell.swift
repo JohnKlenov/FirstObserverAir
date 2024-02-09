@@ -60,6 +60,14 @@ private extension FilterCell {
     }
 }
 
+// MARK: - Setting
+extension FilterCell {
+    func configureCell(textLabel:String) {
+        print("configureCell(textLabel:String) - \(textLabel)")
+        label.text = textLabel
+    }
+}
+
 // MARK: - Layout
 private extension FilterCell {
     func setupConstraints() {

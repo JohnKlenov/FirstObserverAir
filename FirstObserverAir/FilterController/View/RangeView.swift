@@ -70,14 +70,7 @@ class RangeView: UIView {
     }
 
     func updateLabels(lowerValue:Double, upperValue:Double) {
-//        let formatter = NumberFormatter()
-//        formatter.numberStyle = .currency
-//
-//      let minimumValueString = formatter.string(from: NSNumber(value: lowerValue))
-//      let maximumValueString = formatter.string(from: NSNumber(value: upperValue))
 
-//      fromLabel.text = "From \(minimumValueString ?? "")"
-//      toLabel.text = "To \(maximumValueString ?? "")"
         fromLabel.text = "\(Int(lowerValue))"
         toLabel.text = "\(Int(upperValue))"
         self.lowerValue = lowerValue

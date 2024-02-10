@@ -70,7 +70,7 @@ private extension ListProductCollectionView {
         group.interItemSpacing = .fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 15)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
         return section
     }
     

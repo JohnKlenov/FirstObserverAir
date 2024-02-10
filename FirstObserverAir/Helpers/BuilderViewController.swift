@@ -17,7 +17,7 @@ class BuilderViewController {
     static func buildListProductController(gender: String, keyField:String?, valueField: String, isArrayField:Bool?) -> ListProductController {
         let path = "products\(gender)"
         let modelListController: ListProductModelInput = ListProductService(path: path, keyField: keyField, valueField: valueField, isArrayField: isArrayField)
-        return ListProductController(modelInput: modelListController, title: valueField)
+        return ListProductController(modelInput: modelListController, title: valueField, isFilterEnabled: (keyField == nil))
     }
 
     static func buildProductController(product: ProductItem) -> ProductController {

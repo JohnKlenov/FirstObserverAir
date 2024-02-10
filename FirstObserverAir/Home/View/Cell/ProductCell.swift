@@ -102,7 +102,7 @@ class ProductCell: UICollectionViewCell {
     }
     
     deinit {
-        print("deinit ProductCell")
+//        print("deinit ProductCell")
     }
 }
 

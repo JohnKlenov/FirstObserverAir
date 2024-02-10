@@ -8,25 +8,44 @@
 
 import UIKit
 
+enum AlertActions:String {
+    case Recommendation
+    case PriceDown
+    case PriceUp
+    case Alphabetically
+}
+
+
+protocol CustomRangeViewDelegate: AnyObject {
+    func didChangedFilterProducts(filterProducts:[ProductItem], isActiveScreenFilter:Bool?, isFixedPriceProducts:Bool?, minimumValue: Double?, maximumValue: Double?, lowerValue: Double?, upperValue: Double?, countFilterProduct:Int?, selectedItem: [IndexPath:String]?)
+}
+
 final class ListProductController: UIViewController {
     
     private var listProductModel: ListProductModelInput?
     private var dataSource: [ProductItem] = [] {
         didSet {
             print("didSet dataSource")
-            
             collectionView?.updateData(data: dataSource)
         }
     }
     
-    
     private var navController: NavigationController? {
             return self.navigationController as? NavigationController
         }
+    
     private var collectionView:ListProductCollectionView!
+    private var heightCnstrCollectionView: NSLayoutConstraint!
+    private let filterCollectionView: UICollectionView = {
+        let layout = UserProfileTagsFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
     
     // MARK: Filter property
-    
     var filteredDataSource: [ProductItem] = []
     var fieldsForFilters: [String] = []
     
@@ -43,20 +62,12 @@ final class ListProductController: UIViewController {
     /// фиксирует что массив фильтруется по Price
     var isFixedPriceProducts:Bool?
     var selectedFilterByIndex: [IndexPath:String]?
+    var isFilterEnabled:Bool
     
-    var heightCnstrCollectionView: NSLayoutConstraint!
     
-    private let filterCollectionView: UICollectionView = {
-        let layout = UserProfileTagsFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        return collectionView
-    }()
-    
-    init(modelInput: ListProductModelInput, title:String) {
+    init(modelInput: ListProductModelInput, title:String, isFilterEnabled:Bool) {
         self.listProductModel = modelInput
+        self.isFilterEnabled = isFilterEnabled
         super.init(nibName: nil, bundle: nil)
         self.title = title
     }
@@ -117,16 +128,8 @@ private extension ListProductController {
                 }
                 return
             }
-            
-            var sortData = products
-            sortData.sort { (product1, product2) -> Bool in
-                guard let priorityIndex1 = product1.priorityIndex, let priorityIndex2 = product2.priorityIndex else {
-                    return false // Обработайте случаи, когда price равно nil, если это необходимо
-                }
-                return priorityIndex1 > priorityIndex2
-            }
-            self.dataSource = sortData
-            self.filteredDataSource = sortData
+            self.dataSource = self.sortProductByIndex(products)
+            self.filteredDataSource = self.dataSource
         }
     }
 }
@@ -160,24 +163,12 @@ private extension ListProductController {
         navController?.stopSpinner()
     }
     
-    func setupFilterAndSort() {
-        if title == "All shoes" {
-            configureNavigationItem()
-            setupAlertSorted()
-        }
-    }
-}
-
-// MARK: - Setting CollectionView
-private extension ListProductController {
-    
     func setupCollectionView() {
         collectionView = ListProductCollectionView()
         collectionView.delegateListProduct = self
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
         
-        ///
         filterCollectionView.dataSource = self
         filterCollectionView.delegate = self
         filterCollectionView.register(FilterCell.self, forCellWithReuseIdentifier: "filterCell")
@@ -203,8 +194,6 @@ private extension ListProductController {
             filterCollectionView.reloadData()
             let layout = filterCollectionView.collectionViewLayout as? UserProfileTagsFlowLayout
             layout?.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-//            view.setNeedsLayout()
-//            view.layoutIfNeeded()
             heightCnstrCollectionView.constant = 1
         } else {
             fieldsForFilters = []
@@ -214,18 +203,32 @@ private extension ListProductController {
             heightCnstrCollectionView.constant = 0
         }
     }
-}
-
-
-// MARK: ListProductCollectionDelegate
-extension ListProductController: ListProductCollectionDelegate {
-    func didSelectCell(_ index: Int) {
-        let product = dataSource[index]
-        let productVC = ProductController(product: product)
-        navigationController?.pushViewController(productVC, animated: true)
+    
+    func configureNavigationItem() {
+        let filterButton = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease"), style: .plain, target: self, action: #selector(filterButtonTapped))
+        filterButton.tintColor = UIColor.systemCyan
+        let sortedButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortedButtonTapped))
+        sortedButton.tintColor = UIColor.systemCyan
+        navigationItem.rightBarButtonItems = [sortedButton, filterButton]
+    }
+    
+    /// calculate size for collectionCell
+    func sizeForLabel(text: String, font: UIFont) -> CGSize {
+        let label = UILabel()
+        label.font = font
+        label.text = text
+        var labelSize = label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+        labelSize = CGSize(width: labelSize.width + labelSize.height + 20, height: labelSize.height + 10)
+        return labelSize
+    }
+    
+    func setupFilterAndSort() {
+        if isFilterEnabled {
+            configureNavigationItem()
+            setupAlertSorted()
+        }
     }
 }
-
 
 // MARK: - Layout
 private extension ListProductController {
@@ -242,178 +245,76 @@ private extension ListProductController {
     }
 }
 
-
-
-
-
-
-// MARK: - Filter implemintation -
-
-enum AlertActions:String {
-    case Recommendation
-    case PriceDown
-    case PriceUp
-    case Alphabetically
-}
-
-
-protocol CustomRangeViewDelegate: AnyObject {
-    func didChangedFilterProducts(filterProducts:[ProductItem], isActiveScreenFilter:Bool?, isFixedPriceProducts:Bool?, minimumValue: Double?, maximumValue: Double?, lowerValue: Double?, upperValue: Double?, countFilterProduct:Int?, selectedItem: [IndexPath:String]?)
-}
-
-
 // MARK: Sort methods
+
 private extension ListProductController {
 
-    func sortAlphabetically() {
-        dataSource.sort { (product1, product2) -> Bool in
+    func sortProductByIndex(_ products: [ProductItem]) -> [ProductItem] {
+        return products.sorted { (product1, product2) -> Bool in
+            guard let priorityIndex1 = product1.priorityIndex, let priorityIndex2 = product2.priorityIndex else {
+                return false
+            }
+            return priorityIndex1 > priorityIndex2
+        }
+    }
+
+    func sortAlphabetically(_ products: [ProductItem]) {
+        var sortProducts = products
+        sortProducts.sort { (product1, product2) -> Bool in
             guard let brand1 = product1.brand, let brand2 = product2.brand else {
                 return false // Обработайте случаи, когда brand равно nil, если это необходимо
             }
             return brand1.localizedCaseInsensitiveCompare(brand2) == .orderedAscending
         }
+        dataSource = sortProducts
     }
 
-    func sortPriceDown() {
-        dataSource.sort { (product1, product2) -> Bool in
+    func sortPriceDown(_ products: [ProductItem]) {
+        var sortProducts = products
+        sortProducts.sort { (product1, product2) -> Bool in
             guard let price1 = product1.price, let price2 = product2.price else {
                 return false // Обработайте случаи, когда price равно nil, если это необходимо
             }
             return price1 > price2
         }
+        dataSource = sortProducts
     }
 
-    func sortPriceUp() {
-        dataSource.sort { (product1, product2) -> Bool in
+    func sortPriceUp(_ products: [ProductItem]) {
+        var sortProducts = products
+        sortProducts.sort { (product1, product2) -> Bool in
             guard let price1 = product1.price, let price2 = product2.price else {
                 return false // Обработайте случаи, когда price равно nil, если это необходимо
             }
             return price1 < price2
         }
+        dataSource = sortProducts
     }
 
-    func sortRecommendation() {
-        /// после сортировки срабатывает didSet?
-        dataSource.sort { (product1, product2) -> Bool in
+    func sortRecommendation(_ products: [ProductItem]) {
+        var sortProducts = products
+        sortProducts.sort { (product1, product2) -> Bool in
             guard let price1 = product1.priorityIndex, let price2 = product2.priorityIndex else {
                 return false // Обработайте случаи, когда price равно nil, если это необходимо
             }
             return price1 > price2
         }
+        dataSource = sortProducts
     }
     
-    func applyCurrentSorting() {
+    func applyCurrentSorting(_ products: [ProductItem]) {
         switch changedAlertAction {
         case .Recommendation:
-            sortRecommendation()
+            sortRecommendation(products)
         case .PriceDown:
-            sortPriceDown()
+            sortPriceDown(products)
         case .PriceUp:
-            sortPriceUp()
+            sortPriceUp(products)
         case .Alphabetically:
-            sortAlphabetically()
+            sortAlphabetically(products)
         }
     }
 }
-
-
-// MARK: - Setup Alert Sorted
-extension ListProductController {
-    
-    func setupAlertSorted() {
-
-        alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
-        alert?.overrideUserInterfaceStyle = .dark
-        
-        
-        let recommendation = UIAlertAction(title: "Recommendation", style: .default) { action in
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemCyan : UIColor.systemPink
-            self.changedAlertAction = .Recommendation
-            self.sortRecommendation()
-        }
-        
-        let priceDown = UIAlertAction(title: "PriceDown", style: .default) { action in
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
-            self.changedAlertAction = .PriceDown
-            self.sortPriceDown()
-        }
-
-        let priceUp = UIAlertAction(title: "PriceUp", style: .default) { action in
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
-            self.changedAlertAction = .PriceUp
-            self.sortPriceUp()
-        }
-        
-        let alphabetically = UIAlertAction(title: "Alphabetically", style: .default) { action in
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
-            self.changedAlertAction = .Alphabetically
-            self.sortAlphabetically()
-        }
-        
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel) { action in
-            
-        }
-
-        let titleAlertController = NSAttributedString(string: "Sort by", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 17)])
-        alert?.setValue(titleAlertController, forKey: "attributedTitle")
-
-        
-        alert?.addAction(recommendation)
-        alert?.addAction(priceDown)
-        alert?.addAction(priceUp)
-        alert?.addAction(alphabetically)
-        alert?.addAction(cancel)
-    }
-}
-
-
-// MARK:  - UICollectionViewDelegate, UICollectionViewDataSource
-extension ListProductController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fieldsForFilters.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filterCell", for: indexPath) as? FilterCell else {
-            return UICollectionViewCell()
-        }
-        cell.delegate = self
-        cell.configureCell(textLabel: fieldsForFilters[indexPath.item])
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let font = UIFont.systemFont(ofSize: 17)
-        let text = fieldsForFilters[indexPath.item]
-        let labelSize = sizeForLabel(text: text, font: font)
-        return labelSize
-    }
-}
-
-
-// MARK: Setting
-private extension ListProductController {
-    func configureNavigationItem() {
-        
-        // Создание кнопок
-        let filterButton = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease"), style: .plain, target: self, action: #selector(filterButtonTapped))
-        filterButton.tintColor = UIColor.systemCyan
-        let sortedButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortedButtonTapped))
-        sortedButton.tintColor = UIColor.systemCyan
-        navigationItem.rightBarButtonItems = [sortedButton, filterButton]
-    }
-    
-    func sizeForLabel(text: String, font: UIFont) -> CGSize {
-        let label = UILabel()
-        label.font = font
-        label.text = text
-        var labelSize = label.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
-        labelSize = CGSize(width: labelSize.width + labelSize.height + 20, height: labelSize.height + 10)
-        return labelSize
-    }
-}
-
 
 // MARK: - Filter method
 extension ListProductController {
@@ -454,10 +355,9 @@ extension ListProductController {
     }
 }
 
-
 // MARK: - Calculate Range Price
 extension ListProductController {
-    /// высчитываем диапозон цен для массива продуктов
+    /// высчитываем диапозон цен для [ProductItem]
     /// видимо когда обратно на FilterController пойдем передадим диапозон цен для текущих продуктов с которыми будем работать
     private func calculateRangePrice(products: [ProductItem]) {
         
@@ -483,6 +383,81 @@ extension ListProductController {
             lowerValue = Double(minPrice)
             upperValue = Double(maxPrice)
         }
+    }
+}
+
+
+// MARK: - Setup Alert Sorted
+extension ListProductController {
+    
+    func setupAlertSorted() {
+
+        alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
+        alert?.overrideUserInterfaceStyle = .dark
+        
+        
+        let recommendation = UIAlertAction(title: "Recommendation", style: .default) { action in
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemCyan : UIColor.systemPink
+            self.changedAlertAction = .Recommendation
+            self.sortRecommendation(self.dataSource)
+        }
+        
+        let priceDown = UIAlertAction(title: "PriceDown", style: .default) { action in
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
+            self.changedAlertAction = .PriceDown
+            self.sortPriceDown(self.dataSource)
+        }
+
+        let priceUp = UIAlertAction(title: "PriceUp", style: .default) { action in
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
+            self.changedAlertAction = .PriceUp
+            self.sortPriceUp(self.dataSource)
+        }
+        
+        let alphabetically = UIAlertAction(title: "Alphabetically", style: .default) { action in
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
+            self.changedAlertAction = .Alphabetically
+            self.sortAlphabetically(self.dataSource)
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel) { action in
+            
+        }
+
+        let titleAlertController = NSAttributedString(string: "Sort by", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 17)])
+        alert?.setValue(titleAlertController, forKey: "attributedTitle")
+
+        
+        alert?.addAction(recommendation)
+        alert?.addAction(priceDown)
+        alert?.addAction(priceUp)
+        alert?.addAction(alphabetically)
+        alert?.addAction(cancel)
+    }
+}
+
+
+// MARK:  - UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
+extension ListProductController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return fieldsForFilters.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "filterCell", for: indexPath) as? FilterCell else {
+            return UICollectionViewCell()
+        }
+        cell.delegate = self
+        cell.configureCell(textLabel: fieldsForFilters[indexPath.item])
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let font = UIFont.systemFont(ofSize: 17)
+        let text = fieldsForFilters[indexPath.item]
+        let labelSize = sizeForLabel(text: text, font: font)
+        return labelSize
     }
 }
 
@@ -531,6 +506,14 @@ private extension ListProductController {
     }
 }
 
+// MARK: ListProductCollectionDelegate
+extension ListProductController: ListProductCollectionDelegate {
+    func didSelectCell(_ index: Int) {
+        let product = dataSource[index]
+        let productVC = ProductController(product: product)
+        navigationController?.pushViewController(productVC, animated: true)
+    }
+}
 
 // MARK: - FilterCellDelegate
 extension ListProductController: FilterCellDelegate {
@@ -559,21 +542,18 @@ extension ListProductController: FilterCellDelegate {
             if let selectedItem = selectedFilterByIndex, selectedItem.isEmpty {
                 self.selectedFilterByIndex = nil
                 self.isActiveScreenFilter = false
-                // на всяк про всяк очистим проперти
                 isFixedPriceProducts = nil
                 minimumValue = nil
                 maximumValue = nil
                 lowerValue = nil
                 upperValue = nil
                 countFilterProduct = nil
-                
                 /// так как нет критерия фильтрации делаем collectionView = .zero
                 let layout = filterCollectionView.collectionViewLayout as? UserProfileTagsFlowLayout
                 layout?.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
                 heightCnstrCollectionView.constant = 0
                 /// возвращаем все исходные товары на ListProductController
-                dataSource = filteredDataSource
-                applyCurrentSorting()
+                applyCurrentSorting(filteredDataSource)
                 navigationItem.rightBarButtonItems?[1].tintColor = UIColor.systemCyan
                 
             } else if let selectedItem = selectedFilterByIndex {
@@ -595,13 +575,13 @@ extension ListProductController: FilterCellDelegate {
                 let season = filteredSeason.isEmpty ? nil : filteredSeason
                 
                 if let isFixedPriceProducts = isFixedPriceProducts, let lowerValue = lowerValue, let upperValue = upperValue, isFixedPriceProducts {
-                    dataSource = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season, minPrice: Int(lowerValue), maxPrice: Int(upperValue))
-                    countFilterProduct = dataSource.count
-                    applyCurrentSorting()
+                    let data = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season, minPrice: Int(lowerValue), maxPrice: Int(upperValue))
+                    countFilterProduct = data.count
+                    applyCurrentSorting(data)
                 } else {
-                    dataSource = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season)
-                    countFilterProduct = dataSource.count
-                    applyCurrentSorting()
+                    let data = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season)
+                    countFilterProduct = data.count
+                    applyCurrentSorting(data)
                     if countFilterProduct == 0 {
                         lowerValue = 0
                         upperValue = 0
@@ -620,12 +600,8 @@ extension ListProductController: FilterCellDelegate {
 // MARK: - CustomRangeViewDelegate
 extension ListProductController:CustomRangeViewDelegate {
     func didChangedFilterProducts(filterProducts: [ProductItem], isActiveScreenFilter: Bool?, isFixedPriceProducts: Bool?, minimumValue: Double?, maximumValue: Double?, lowerValue: Double?, upperValue: Double?, countFilterProduct: Int?, selectedItem: [IndexPath:String]?) {
-        
-        dataSource = filterProducts
-        /// или стоит работать с applyCurrentSorting() в методах иначе - сортировать а затем отсортированный отдавать dataSource = filterProducts
-        /// что бы не вызывать дважды didSet и дважды не делать reloadData.
-        /// а в Action Alert оставить его.
-        applyCurrentSorting()
+    
+        applyCurrentSorting(filterProducts)
         
         if filteredDataSource.count == filterProducts.count {
             navigationItem.rightBarButtonItems?[1].tintColor = UIColor.systemCyan
@@ -656,12 +632,105 @@ extension ListProductController:CustomRangeViewDelegate {
 
 
 
+// MARK: Trash
+
+
+//            let product1 = ProductItem(dict: ["brand" : "kllkjlaksj"])
+//            let product2 = ProductItem(dict: ["brand" : "ef'alk"])
+//            let product3 = ProductItem(dict: ["brand" : ";vmavm"])
+//            let product4 = ProductItem(dict: ["brand" : "w;elv;erkv"])
+//            let product5 = ProductItem(dict: ["brand" : "r3q;lrq;l"])
+//            let product6 = ProductItem(dict: ["brand" : "sa;l;lkadl;kasl;kas;"])
+//            let product7 = ProductItem(dict: ["brand" : "kdkdkdkdkdkdkd;"])
+//            let product8 = ProductItem(dict: ["brand" : "lkdfklsdjf;"])
+//            let product9 = ProductItem(dict: ["brand" : "flv,l;dv,l;dfv"])
+//            let product10 = ProductItem(dict: ["brand" : "kj;kfaklf"])
+//            var data = products
+//            [product1, product2, product3, product4, product5, product6, product7, product8, product9, product10].forEach { item in
+//                data.append(item)
+//            }
+//            self.dataSource = data
+
+//                dataSource = filteredDataSource
+//                applyCurrentSorting()
+
+//                    dataSource = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season)
+//                    countFilterProduct = dataSource.count
+//                    applyCurrentSorting()
+
+//                    dataSource = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season, minPrice: Int(lowerValue), maxPrice: Int(upperValue))
+//                    countFilterProduct = dataSource.count
+//                    applyCurrentSorting()
+
+//        dataSource = filterProducts
+//        applyCurrentSorting()
+
+//private extension ListProductController {
+//
+//    func sortProductByIndex(_ products: [ProductItem]) -> [ProductItem] {
+//        return products.sorted { (product1, product2) -> Bool in
+//            guard let priorityIndex1 = product1.priorityIndex, let priorityIndex2 = product2.priorityIndex else {
+//                return false // Обработайте случаи, когда priorityIndex равно nil, если это необходимо
+//            }
+//            return priorityIndex1 > priorityIndex2
+//        }
+//    }
+//
+//    func sortAlphabetically() {
+//        dataSource.sort { (product1, product2) -> Bool in
+//            guard let brand1 = product1.brand, let brand2 = product2.brand else {
+//                return false // Обработайте случаи, когда brand равно nil, если это необходимо
+//            }
+//            return brand1.localizedCaseInsensitiveCompare(brand2) == .orderedAscending
+//        }
+//    }
+//
+//    func sortPriceDown() {
+//        dataSource.sort { (product1, product2) -> Bool in
+//            guard let price1 = product1.price, let price2 = product2.price else {
+//                return false // Обработайте случаи, когда price равно nil, если это необходимо
+//            }
+//            return price1 > price2
+//        }
+//    }
+//
+//    func sortPriceUp() {
+//        dataSource.sort { (product1, product2) -> Bool in
+//            guard let price1 = product1.price, let price2 = product2.price else {
+//                return false // Обработайте случаи, когда price равно nil, если это необходимо
+//            }
+//            return price1 < price2
+//        }
+//    }
+//
+//    func sortRecommendation() {
+//        /// после сортировки срабатывает didSet?
+//        dataSource.sort { (product1, product2) -> Bool in
+//            guard let price1 = product1.priorityIndex, let price2 = product2.priorityIndex else {
+//                return false // Обработайте случаи, когда price равно nil, если это необходимо
+//            }
+//            return price1 > price2
+//        }
+//    }
+//
+//    func applyCurrentSorting() {
+//        switch changedAlertAction {
+//        case .Recommendation:
+//            sortRecommendation()
+//        case .PriceDown:
+//            sortPriceDown()
+//        case .PriceUp:
+//            sortPriceUp()
+//        case .Alphabetically:
+//            sortAlphabetically()
+//        }
+//    }
+//}
 
 
 
 
-
-
+// MARK: before filter implemintation
 
 //import UIKit
 //

@@ -41,7 +41,7 @@ class HeaderFilterCollectionReusableView: UICollectionReusableView {
             label.font = UIFont.systemFont(ofSize: 17)
             label.text = title
             let height = label.sizeThatFits(CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)).height
-            return CGSize(width: width, height: height)
+            return CGSize(width: width, height: height + 10)
         }
     
     private func setupConstraints() {

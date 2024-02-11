@@ -469,7 +469,7 @@ private extension ListProductController {
         let indexPath = IndexPath(item: 333, section: 333)
         selectedFilterByIndex?[indexPath] = nil
         
-        let customVC = CustomRangeViewController()
+        let customVC = FilterController()
         customVC.allProducts = filteredDataSource
         customVC.delegate = self
         if isActiveScreenFilter {

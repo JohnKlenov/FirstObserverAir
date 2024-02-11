@@ -85,3 +85,46 @@ extension UIViewController {
         self.present(vc, animated: true, completion: nil)
     }
 }
+
+
+// MARK: - FilterController
+///функция configureNavigationBar, настраивает внешний вид панели навигации.
+///Установку цвета фона на backgoundColor.
+///Установку цвета текста большого заголовка и обычного заголовка на largeTitleColor.
+///Удаление тени под панелью навигации.
+///Применение этих настроек к стандартному, компактному и scrollEdge внешнему виду панели навигации.
+///Установку предпочтения больших заголовков в соответствии с параметром preferredLargeTitle.
+///Установку свойства isTranslucent панели навигации в false, чтобы сделать панель навигации непрозрачной.
+///Установку цвета элементов управления панели навигации (например, кнопок) на tintColor.
+///Установку заголовка панели навигации на title.
+extension UIViewController {
+
+    /// configure navigationBar and combines status bar with navigationBar
+    func configureNavigationBar(largeTitleColor: UIColor, backgoundColor: UIColor, tintColor: UIColor, title: String, preferredLargeTitle: Bool) {
+    if #available(iOS 13.0, *) {
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: largeTitleColor]
+        navBarAppearance.titleTextAttributes = [.foregroundColor: largeTitleColor]
+        navBarAppearance.backgroundColor = backgoundColor
+        navBarAppearance.shadowColor = .clear
+
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.compactAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+
+        navigationController?.navigationBar.prefersLargeTitles = preferredLargeTitle
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.tintColor = tintColor
+        navigationItem.title = title
+
+    } else {
+        // Fallback on earlier versions
+        navigationController?.navigationBar.barTintColor = backgoundColor
+        navigationController?.navigationBar.tintColor = tintColor
+        navigationController?.navigationBar.isTranslucent = false
+//        navigationController?.navigationBar.layer.shadowColor = nil
+        navigationItem.title = title
+    }
+}}
+

@@ -316,45 +316,6 @@ private extension ListProductController {
     }
 }
 
-// MARK: - Filter method
-extension ListProductController {
-    /// можно вынести в Helper дублируется в FilterController
-    /// тут мы подаем значения по которому будем фильтровать массив и возвращаем отфильтрованный.
-    func filterProductsUniversal(products: [ProductItem], color: [String]? = nil, brand: [String]? = nil, material: [String]? = nil, season: [String]? = nil, minPrice: Int? = nil, maxPrice: Int? = nil) -> [ProductItem] {
-        let filteredProducts = products.filter { product in
-            var isMatched = true
-
-            if let color = color {
-                isMatched = isMatched && color.contains(product.color ?? "")
-            }
-
-            if let brand = brand {
-                isMatched = isMatched && brand.contains(product.brand ?? "")
-            }
-
-            if let material = material {
-                isMatched = isMatched && material.contains(product.material ?? "")
-            }
-
-            if let season = season {
-                isMatched = isMatched && season.contains(product.season ?? "")
-            }
-
-            if let minPrice = minPrice {
-                isMatched = isMatched && (product.price ?? -1 >= minPrice)
-            }
-
-            if let maxPrice = maxPrice {
-                isMatched = isMatched && (product.price ?? 1000 <= maxPrice)
-            }
-
-            return isMatched
-        }
-
-        return filteredProducts
-    }
-}
-
 // MARK: - Calculate Range Price
 extension ListProductController {
     /// высчитываем диапозон цен для [ProductItem]
@@ -396,25 +357,29 @@ extension ListProductController {
         alert?.overrideUserInterfaceStyle = .dark
         
         
-        let recommendation = UIAlertAction(title: "Recommendation", style: .default) { action in
+        let recommendation = UIAlertAction(title: "Recommendation", style: .default) { [weak self] action in
+            guard let self = self else { return }
             self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemCyan : UIColor.systemPink
             self.changedAlertAction = .Recommendation
             self.sortRecommendation(self.dataSource)
         }
         
-        let priceDown = UIAlertAction(title: "PriceDown", style: .default) { action in
+        let priceDown = UIAlertAction(title: "PriceDown", style: .default) { [weak self] action in
+            guard let self = self else { return }
             self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
             self.changedAlertAction = .PriceDown
             self.sortPriceDown(self.dataSource)
         }
 
-        let priceUp = UIAlertAction(title: "PriceUp", style: .default) { action in
+        let priceUp = UIAlertAction(title: "PriceUp", style: .default) { [weak self] action in
+            guard let self = self else { return }
             self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
             self.changedAlertAction = .PriceUp
             self.sortPriceUp(self.dataSource)
         }
         
-        let alphabetically = UIAlertAction(title: "Alphabetically", style: .default) { action in
+        let alphabetically = UIAlertAction(title: "Alphabetically", style: .default) { [weak self] action in
+            guard let self = self else { return }
             self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
             self.changedAlertAction = .Alphabetically
             self.sortAlphabetically(self.dataSource)
@@ -558,28 +523,14 @@ extension ListProductController: FilterCellDelegate {
                 
             } else if let selectedItem = selectedFilterByIndex {
                 
-                /// можно вынести в Helper дублируется
-                /// тут мы из selectedItem по indexPath.section собираем все tagy для фильтрации продуктов
-                /// то есть ищем все критерии фильтрации что мы выбрали для всех категориий - Color, Brand, Material ..
-                /// затем подаем их на filterProductsUniversal и получаем массив отфильтрованных продуктов.
-                let filteredColor = Array((selectedItem.filter { $0.key.section == 0 }).values)
-                let color = filteredColor.isEmpty ? nil : filteredColor
-                
-                let filteredBrand = Array((selectedItem.filter { $0.key.section == 1 }).values)
-                let brand = filteredBrand.isEmpty ? nil : filteredBrand
-                
-                let filteredMaterial = Array((selectedItem.filter { $0.key.section == 2 }).values)
-                let material = filteredMaterial.isEmpty ? nil : filteredMaterial
-                
-                let filteredSeason = Array((selectedItem.filter { $0.key.section == 3 }).values)
-                let season = filteredSeason.isEmpty ? nil : filteredSeason
+                let (season, material, brand, color) = ModelDataTransformation.extractValues(from: selectedItem)
                 
                 if let isFixedPriceProducts = isFixedPriceProducts, let lowerValue = lowerValue, let upperValue = upperValue, isFixedPriceProducts {
-                    let data = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season, minPrice: Int(lowerValue), maxPrice: Int(upperValue))
+                    let data = ModelDataTransformation.filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season, minPrice: Int(lowerValue), maxPrice: Int(upperValue))
                     countFilterProduct = data.count
                     applyCurrentSorting(data)
                 } else {
-                    let data = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season)
+                    let data = ModelDataTransformation.filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season)
                     countFilterProduct = data.count
                     applyCurrentSorting(data)
                     if countFilterProduct == 0 {
@@ -596,6 +547,7 @@ extension ListProductController: FilterCellDelegate {
         }
     }
 }
+
 
 // MARK: - CustomRangeViewDelegate
 extension ListProductController:CustomRangeViewDelegate {
@@ -634,6 +586,64 @@ extension ListProductController:CustomRangeViewDelegate {
 
 // MARK: Trash
 
+//// MARK: - Filter method
+//extension ListProductController {
+//    /// можно вынести в Helper дублируется в FilterController
+//    /// тут мы подаем значения по которому будем фильтровать массив и возвращаем отфильтрованный.
+//    func filterProductsUniversal(products: [ProductItem], color: [String]? = nil, brand: [String]? = nil, material: [String]? = nil, season: [String]? = nil, minPrice: Int? = nil, maxPrice: Int? = nil) -> [ProductItem] {
+//        let filteredProducts = products.filter { product in
+//            var isMatched = true
+//
+//            if let color = color {
+//                isMatched = isMatched && color.contains(product.color ?? "")
+//            }
+//
+//            if let brand = brand {
+//                isMatched = isMatched && brand.contains(product.brand ?? "")
+//            }
+//
+//            if let material = material {
+//                isMatched = isMatched && material.contains(product.material ?? "")
+//            }
+//
+//            if let season = season {
+//                isMatched = isMatched && season.contains(product.season ?? "")
+//            }
+//
+//            if let minPrice = minPrice {
+//                isMatched = isMatched && (product.price ?? -1 >= minPrice)
+//            }
+//
+//            if let maxPrice = maxPrice {
+//                isMatched = isMatched && (product.price ?? 1000 <= maxPrice)
+//            }
+//
+//            return isMatched
+//        }
+//
+//        return filteredProducts
+//    }
+//}
+
+/// можно вынести в Helper дублируется
+/// тут мы из selectedItem по indexPath.section собираем все tagy для фильтрации продуктов
+/// то есть ищем все критерии фильтрации что мы выбрали для всех категориий - Color, Brand, Material ..
+/// затем подаем их на filterProductsUniversal и получаем массив отфильтрованных продуктов.
+//                let filteredColor = Array((selectedItem.filter { $0.key.section == 0 }).values)
+//                let color = filteredColor.isEmpty ? nil : filteredColor
+//
+//                let filteredBrand = Array((selectedItem.filter { $0.key.section == 1 }).values)
+//                let brand = filteredBrand.isEmpty ? nil : filteredBrand
+//
+//                let filteredMaterial = Array((selectedItem.filter { $0.key.section == 2 }).values)
+//                let material = filteredMaterial.isEmpty ? nil : filteredMaterial
+//
+//                let filteredSeason = Array((selectedItem.filter { $0.key.section == 3 }).values)
+//                let season = filteredSeason.isEmpty ? nil : filteredSeason
+
+//                    let data = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season, minPrice: Int(lowerValue), maxPrice: Int(upperValue))
+
+//                    let data = filterProductsUniversal(products: filteredDataSource, color: color, brand: brand, material: material, season: season)
 
 //            let product1 = ProductItem(dict: ["brand" : "kllkjlaksj"])
 //            let product2 = ProductItem(dict: ["brand" : "ef'alk"])

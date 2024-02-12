@@ -124,47 +124,6 @@ final class FilterController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-//        view.backgroundColor = UIColor.systemBackground
-//
-//        collectionView.dataSource = self
-//        collectionView.delegate = self
-//        customTabBarView.delegate = self
-//        collectionView.backgroundColor = .clear
-//
-//        collectionView.register(MyCell.self, forCellWithReuseIdentifier: "cell")
-//        collectionView.register(HeaderFilterCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderFilterCollectionReusableView.headerIdentifier)
-//
-//        view.addSubview(rangeView)
-//        view.addSubview(rangeSlider)
-//        view.addSubview(collectionView)
-//        view.addSubview(customTabBarView)
-//        configureNavigationBar(largeTitleColor: UIColor.label, backgoundColor: UIColor.secondarySystemBackground, tintColor: UIColor.label, title: "Filters", preferredLargeTitle: false)
-//        configureNavigationItem()
-//        rangeSlider.addTarget(self, action: #selector(rangeSliderValueChanged(rangeSlider:)), for: .valueChanged)
-//        rangeSlider.addTarget(self, action: #selector(rangeSliderTouchUpInside(rangeSlider:)), for: .touchUpInside)
-//
-//        NSLayoutConstraint.activate([
-//            collectionView.topAnchor.constraint(equalTo: rangeSlider.bottomAnchor, constant: 10),
-//            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            collectionView.bottomAnchor.constraint(equalTo: customTabBarView.topAnchor)
-//        ])
-//
-//        NSLayoutConstraint.activate([
-//            customTabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            customTabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            customTabBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-//        ])
-
-//        if !isActiveScreenFilter {
-//            calculateDataSource(products: allProducts)
-//            customTabBarView.setCounterButton(count: allProducts.count)
-//            stateReturnFilterProduct = .firstStart
-//        } else {
-//            customTabBarView.setCounterButton(count: countFilterProduct ?? 0)
-//            stateReturnFilterProduct = .firstStart
-//            calculateDataSourceForScreenFilter(products: allProducts)
-//        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -403,42 +362,6 @@ private extension FilterController {
         }
     }
     
-    /// можно вынести в Helper дублируется в ListProductController
-    /// тут мы подаем значения по которому будем фильтровать массив и возвращаем отфильтрованный.
-    func filterProductsUniversal(products: [ProductItem], color: [String]? = nil, brand: [String]? = nil, material: [String]? = nil, season: [String]? = nil, minPrice: Int? = nil, maxPrice: Int? = nil) -> [ProductItem] {
-        let filteredProducts = products.filter { product in
-            var isMatched = true
-
-            if let color = color {
-                isMatched = isMatched && color.contains(product.color ?? "")
-            }
-
-            if let brand = brand {
-                isMatched = isMatched && brand.contains(product.brand ?? "")
-            }
-
-            if let material = material {
-                isMatched = isMatched && material.contains(product.material ?? "")
-            }
-
-            if let season = season {
-                isMatched = isMatched && season.contains(product.season ?? "")
-            }
-
-            if let minPrice = minPrice {
-                isMatched = isMatched && (product.price ?? -1 >= minPrice)
-            }
-
-            if let maxPrice = maxPrice {
-                isMatched = isMatched && (product.price ?? 1000 <= maxPrice)
-            }
-
-            return isMatched
-        }
-
-        return filteredProducts
-    }
-    
     /// return filterProduct for ListProductController
     func returnFilterProducts() {
         ///если range price не был изменен
@@ -560,27 +483,14 @@ extension FilterController: UICollectionViewDelegate, UICollectionViewDataSource
         } else {
             selectedItem[indexPath] = item
         }
-        /// можно вынести в Helper дублируется
-        /// тут мы из selectedItem по indexPath.section собираем все tagy для фильтрации продуктов
-        /// то есть ищем все критерии фильтрации что мы выбрали для всех категориий - Color, Brand, Material ..
-        /// затем подаем их на filterProductsUniversal и получаем массив отфильтрованных продуктов.
-        let filteredColor = Array((selectedItem.filter { $0.key.section == 0 }).values)
-        let color = filteredColor.isEmpty ? nil : filteredColor
         
-        let filteredBrand = Array((selectedItem.filter { $0.key.section == 1 }).values)
-        let brand = filteredBrand.isEmpty ? nil : filteredBrand
-        
-        let filteredMaterial = Array((selectedItem.filter { $0.key.section == 2 }).values)
-        let material = filteredMaterial.isEmpty ? nil : filteredMaterial
-        
-        let filteredSeason = Array((selectedItem.filter { $0.key.section == 3 }).values)
-        let season = filteredSeason.isEmpty ? nil : filteredSeason
+        let (season, material, brand, color) = ModelDataTransformation.extractValues(from: selectedItem)
         
         if !isFixedPriceProducts {
             rangeSlider.isEnabled = true
-            filterProducts = filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season)
+            filterProducts = ModelDataTransformation.filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season)
         } else {
-            fixedPriceFilterProducts = filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season, minPrice: Int(rangeSlider.lowerValue), maxPrice: Int(rangeSlider.upperValue))
+            fixedPriceFilterProducts = ModelDataTransformation.filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season, minPrice: Int(rangeSlider.lowerValue), maxPrice: Int(rangeSlider.upperValue))
         }
 
         // уходим от анимированного изменения цвета
@@ -588,6 +498,7 @@ extension FilterController: UICollectionViewDelegate, UICollectionViewDataSource
                collectionView.reloadItems(at: [indexPath])
            }
     }
+    
     
     ///UICollectionViewDelegateFlowLayout methods
     ///UICollectionViewDelegateFlowLayout является подпротоколом UICollectionViewDelegate
@@ -650,24 +561,12 @@ private extension FilterController {
     
     @objc func rangeSliderTouchUpInside(rangeSlider: RangeSlider) {
         
-        /// дубликат
-        let filteredColor = Array((selectedItem.filter { $0.key.section == 0 }).values)
-        let color = filteredColor.isEmpty ? nil : filteredColor
-        
-        let filteredBrand = Array((selectedItem.filter { $0.key.section == 1 }).values)
-        let brand = filteredBrand.isEmpty ? nil : filteredBrand
-        
-        let filteredMaterial = Array((selectedItem.filter { $0.key.section == 2 }).values)
-        let material = filteredMaterial.isEmpty ? nil : filteredMaterial
-        
-        let filteredSeason = Array((selectedItem.filter { $0.key.section == 3 }).values)
-        let season = filteredSeason.isEmpty ? nil : filteredSeason
-        
+        let (season, material, brand, color) = ModelDataTransformation.extractValues(from: selectedItem)
         stateReturnFilterProduct = .nul
         isFixedPriceProducts = true
         lowerValue = rangeSlider.lowerValue
         upperValue = rangeSlider.upperValue
-        fixedPriceFilterProducts = filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season, minPrice: Int(rangeSlider.lowerValue), maxPrice: Int(rangeSlider.upperValue))
+        fixedPriceFilterProducts = ModelDataTransformation.filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season, minPrice: Int(rangeSlider.lowerValue), maxPrice: Int(rangeSlider.upperValue))
     }
     
     @objc func didTapCloseButton() {
@@ -720,3 +619,115 @@ extension FilterController: CustomTabBarViewDelegate {
 }
 
 
+
+
+// MARK: - Trash
+/// можно вынести в Helper дублируется
+/// тут мы из selectedItem по indexPath.section собираем все tagy для фильтрации продуктов
+/// то есть ищем все критерии фильтрации что мы выбрали для всех категориий - Color, Brand, Material ..
+/// затем подаем их на filterProductsUniversal и получаем массив отфильтрованных продуктов.
+//        let filteredColor = Array((selectedItem.filter { $0.key.section == 0 }).values)
+//        let color = filteredColor.isEmpty ? nil : filteredColor
+//
+//        let filteredBrand = Array((selectedItem.filter { $0.key.section == 1 }).values)
+//        let brand = filteredBrand.isEmpty ? nil : filteredBrand
+//
+//        let filteredMaterial = Array((selectedItem.filter { $0.key.section == 2 }).values)
+//        let material = filteredMaterial.isEmpty ? nil : filteredMaterial
+//
+//        let filteredSeason = Array((selectedItem.filter { $0.key.section == 3 }).values)
+//        let season = filteredSeason.isEmpty ? nil : filteredSeason
+//            filterProducts = filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season)
+//            fixedPriceFilterProducts = filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season, minPrice: Int(rangeSlider.lowerValue), maxPrice: Int(rangeSlider.upperValue))
+//        fixedPriceFilterProducts = filterProductsUniversal(products: allProducts, color: color, brand: brand, material: material, season: season, minPrice: Int(rangeSlider.lowerValue), maxPrice: Int(rangeSlider.upperValue))
+/// дубликат
+//        let filteredColor = Array((selectedItem.filter { $0.key.section == 0 }).values)
+//        let color = filteredColor.isEmpty ? nil : filteredColor
+//
+//        let filteredBrand = Array((selectedItem.filter { $0.key.section == 1 }).values)
+//        let brand = filteredBrand.isEmpty ? nil : filteredBrand
+//
+//        let filteredMaterial = Array((selectedItem.filter { $0.key.section == 2 }).values)
+//        let material = filteredMaterial.isEmpty ? nil : filteredMaterial
+//
+//        let filteredSeason = Array((selectedItem.filter { $0.key.section == 3 }).values)
+//        let season = filteredSeason.isEmpty ? nil : filteredSeason
+
+/// можно вынести в Helper дублируется в ListProductController
+/// тут мы подаем значения по которому будем фильтровать массив и возвращаем отфильтрованный.
+//    func filterProductsUniversal(products: [ProductItem], color: [String]? = nil, brand: [String]? = nil, material: [String]? = nil, season: [String]? = nil, minPrice: Int? = nil, maxPrice: Int? = nil) -> [ProductItem] {
+//        let filteredProducts = products.filter { product in
+//            var isMatched = true
+//
+//            if let color = color {
+//                isMatched = isMatched && color.contains(product.color ?? "")
+//            }
+//
+//            if let brand = brand {
+//                isMatched = isMatched && brand.contains(product.brand ?? "")
+//            }
+//
+//            if let material = material {
+//                isMatched = isMatched && material.contains(product.material ?? "")
+//            }
+//
+//            if let season = season {
+//                isMatched = isMatched && season.contains(product.season ?? "")
+//            }
+//
+//            if let minPrice = minPrice {
+//                isMatched = isMatched && (product.price ?? -1 >= minPrice)
+//            }
+//
+//            if let maxPrice = maxPrice {
+//                isMatched = isMatched && (product.price ?? 1000 <= maxPrice)
+//            }
+//
+//            return isMatched
+//        }
+//
+//        return filteredProducts
+//    }
+
+
+//        view.backgroundColor = UIColor.systemBackground
+//
+//        collectionView.dataSource = self
+//        collectionView.delegate = self
+//        customTabBarView.delegate = self
+//        collectionView.backgroundColor = .clear
+//
+//        collectionView.register(MyCell.self, forCellWithReuseIdentifier: "cell")
+//        collectionView.register(HeaderFilterCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderFilterCollectionReusableView.headerIdentifier)
+//
+//        view.addSubview(rangeView)
+//        view.addSubview(rangeSlider)
+//        view.addSubview(collectionView)
+//        view.addSubview(customTabBarView)
+//        configureNavigationBar(largeTitleColor: UIColor.label, backgoundColor: UIColor.secondarySystemBackground, tintColor: UIColor.label, title: "Filters", preferredLargeTitle: false)
+//        configureNavigationItem()
+//        rangeSlider.addTarget(self, action: #selector(rangeSliderValueChanged(rangeSlider:)), for: .valueChanged)
+//        rangeSlider.addTarget(self, action: #selector(rangeSliderTouchUpInside(rangeSlider:)), for: .touchUpInside)
+//
+//        NSLayoutConstraint.activate([
+//            collectionView.topAnchor.constraint(equalTo: rangeSlider.bottomAnchor, constant: 10),
+//            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            collectionView.bottomAnchor.constraint(equalTo: customTabBarView.topAnchor)
+//        ])
+//
+//        NSLayoutConstraint.activate([
+//            customTabBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            customTabBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            customTabBarView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+//        ])
+
+//        if !isActiveScreenFilter {
+//            calculateDataSource(products: allProducts)
+//            customTabBarView.setCounterButton(count: allProducts.count)
+//            stateReturnFilterProduct = .firstStart
+//        } else {
+//            customTabBarView.setCounterButton(count: countFilterProduct ?? 0)
+//            stateReturnFilterProduct = .firstStart
+//            calculateDataSourceForScreenFilter(products: allProducts)
+//        }

@@ -8,31 +8,31 @@
 import UIKit
 
 class RangeSlider: UIControl {
+    
+    deinit {
+        print("deinit RangeSlider")
+    }
 
     var minimumValue: Double = 0 {
         didSet {
-//            print("minimumValue - \(minimumValue)")
             updateLayerFrames()
         }
     }
     
     var maximumValue: Double = 100 {
         didSet {
-//            print("maximumValue - \(maximumValue)")
             updateLayerFrames()
         }
     }
     
     var lowerValue: Double = 0 {
         didSet {
-//            print("lowerValue - \(lowerValue)")
             updateLayerFrames()
         }
     }
     
     var upperValue: Double = 100 {
         didSet {
-//            print("upperValue - \(upperValue)")
             updateLayerFrames()
         }
     }
@@ -42,9 +42,6 @@ class RangeSlider: UIControl {
             trackLayer.setNeedsDisplay()
         }
     }
-//    var trackHighlightTintColor: UIColor = UIColor.systemPurple
-//    var trackHighlightTintColor: UIColor = UIColor(red: 0.0, green: 0.45, blue: 0.94, alpha: 1.0)
-//    var trackHighlightTintColor: UIColor = UIColor(red: 0.5, green: 0.0, blue: 0.5, alpha: 1.0)
 
     var trackHighlightTintColor: UIColor = UIColor.systemCyan {
         didSet {
@@ -79,16 +76,7 @@ class RangeSlider: UIControl {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        //
-//        trackLayer.backgroundColor = UIColor.blue.cgColor
-//        layer.addSublayer(trackLayer)
-//
-//        lowerThumbLayer.backgroundColor = UIColor.green.cgColor
-//        layer.addSublayer(lowerThumbLayer)
-//
-//        upperThumbLayer.backgroundColor = UIColor.green.cgColor
-//        layer.addSublayer(upperThumbLayer)
-        //
+    
         lowerThumbLayer.rangeSlider = self
         upperThumbLayer.rangeSlider = self
         

@@ -22,6 +22,10 @@ import UIKit
 
 class UserProfileTagsFlowLayout: UICollectionViewFlowLayout {
 
+    deinit {
+        print("deinit UserProfileTagsFlowLayout")
+    }
+    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         guard let attributesForElementsInRect = super.layoutAttributesForElements(in: rect) else { return nil }
         guard let newAttributesForElementsInRect = NSArray(array: attributesForElementsInRect, copyItems: true) as? [UICollectionViewLayoutAttributes] else { return nil }

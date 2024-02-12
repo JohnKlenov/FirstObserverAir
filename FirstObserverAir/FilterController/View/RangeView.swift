@@ -7,7 +7,7 @@
 
 import UIKit
 
-class RangeView: UIView {
+final class RangeView: UIView {
     
     let fromLabel: UILabel = {
         let view = UILabel()
@@ -26,7 +26,6 @@ class RangeView: UIView {
     let titleLabel: UILabel = {
         let view = UILabel()
         view.textColor = UIColor.label
-//        view.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         view.textAlignment = .left
         return view
     }()
@@ -41,10 +40,21 @@ class RangeView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupUI()
+        setupViews()
     }
     
-    private func setupUI() {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("deinit RangeView")
+    }
+}
+
+// MARK: - Setting
+extension RangeView {
+    private func setupViews() {
         
         // UILabel сверху на всю ширину
         titleLabel.frame = CGRect(x: 10, y: 0, width: frame.width - 20, height: 30)
@@ -54,7 +64,6 @@ class RangeView: UIView {
 
         // Левый UILabel в одном ряду со сверху лежащим UILabel
         fromLabel.frame = CGRect(x: 10, y: titleLabel.frame.maxY + 10, width: 60, height: 30)
-//        fromLabel.text = "238"
         fromLabel.backgroundColor = UIColor.secondarySystemBackground
         fromLabel.layer.cornerRadius = 5
         fromLabel.clipsToBounds = true
@@ -62,23 +71,17 @@ class RangeView: UIView {
 
         // Правый UILabel в одном ряду со сверху лежащим UILabel и прижатый к правому краю
         toLabel.frame = CGRect(x: frame.width - 70, y: titleLabel.frame.maxY + 10, width: 60, height: 30)
-//        toLabel.text = "765"
         toLabel.backgroundColor = UIColor.secondarySystemBackground
         toLabel.layer.cornerRadius = 5
         toLabel.clipsToBounds = true
         addSubview(toLabel)
     }
-
+    
     func updateLabels(lowerValue:Double, upperValue:Double) {
 
         fromLabel.text = "\(Int(lowerValue))"
         toLabel.text = "\(Int(upperValue))"
         self.lowerValue = lowerValue
         self.upperValue = upperValue
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupUI()
     }
 }

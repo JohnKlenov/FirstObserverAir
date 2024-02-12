@@ -55,7 +55,7 @@
 		5E7DE9DA2B7253A4007B44CC /* AllMallsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9D92B7253A4007B44CC /* AllMallsController.swift */; };
 		5E7DE9E02B73BBF2007B44CC /* FieldFilterFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9DF2B73BBF2007B44CC /* FieldFilterFlowLayout.swift */; };
 		5E7DE9E22B73BD57007B44CC /* FilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9E12B73BD57007B44CC /* FilterCell.swift */; };
-		5E7DE9E42B7515EF007B44CC /* MyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9E32B7515EF007B44CC /* MyCell.swift */; };
+		5E7DE9E42B7515EF007B44CC /* FilterParameterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9E32B7515EF007B44CC /* FilterParameterCell.swift */; };
 		5E7DE9E62B751647007B44CC /* HeaderFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9E52B751647007B44CC /* HeaderFilter.swift */; };
 		5E7DE9E82B751699007B44CC /* FilterTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9E72B751699007B44CC /* FilterTabBar.swift */; };
 		5E7DE9EA2B7516D9007B44CC /* RangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7DE9E92B7516D9007B44CC /* RangeView.swift */; };
@@ -139,7 +139,7 @@
 		5E7DE9D92B7253A4007B44CC /* AllMallsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMallsController.swift; sourceTree = "<group>"; };
 		5E7DE9DF2B73BBF2007B44CC /* FieldFilterFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldFilterFlowLayout.swift; sourceTree = "<group>"; };
 		5E7DE9E12B73BD57007B44CC /* FilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCell.swift; sourceTree = "<group>"; };
-		5E7DE9E32B7515EF007B44CC /* MyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCell.swift; sourceTree = "<group>"; };
+		5E7DE9E32B7515EF007B44CC /* FilterParameterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterParameterCell.swift; sourceTree = "<group>"; };
 		5E7DE9E52B751647007B44CC /* HeaderFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderFilter.swift; sourceTree = "<group>"; };
 		5E7DE9E72B751699007B44CC /* FilterTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTabBar.swift; sourceTree = "<group>"; };
 		5E7DE9E92B7516D9007B44CC /* RangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeView.swift; sourceTree = "<group>"; };
@@ -592,7 +592,7 @@
 			isa = PBXGroup;
 			children = (
 				5E7DE9DF2B73BBF2007B44CC /* FieldFilterFlowLayout.swift */,
-				5E7DE9E32B7515EF007B44CC /* MyCell.swift */,
+				5E7DE9E32B7515EF007B44CC /* FilterParameterCell.swift */,
 				5E7DE9E52B751647007B44CC /* HeaderFilter.swift */,
 				5E7DE9E72B751699007B44CC /* FilterTabBar.swift */,
 				5E7DE9E92B7516D9007B44CC /* RangeView.swift */,
@@ -1018,7 +1018,7 @@
 				5E1148E92B5907680073B2E8 /* MallController.swift in Sources */,
 				5E88134F2AF4D8110044F299 /* SceneDelegate.swift in Sources */,
 				5E7DE9E62B751647007B44CC /* HeaderFilter.swift in Sources */,
-				5E7DE9E42B7515EF007B44CC /* MyCell.swift in Sources */,
+				5E7DE9E42B7515EF007B44CC /* FilterParameterCell.swift in Sources */,
 				5E2700392B70C99D0073367C /* ModelDataTransformation.swift in Sources */,
 				5EFAC9992B665F7F00B8A824 /* NavigationMallCell.swift in Sources */,
 			);

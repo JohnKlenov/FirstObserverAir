@@ -52,9 +52,6 @@ final class FilterController: UIViewController {
     private var stateReturnFilterProduct: StateFirstStart = .nul
     private var isForcedPrice: Bool = false
     
-    
-//    var dataManager = FactoryProducts.shared
-    
     // MARK: property for fixed filter screen -
     
     /// фиксирует что массив фильтруется по Price
@@ -110,8 +107,8 @@ final class FilterController: UIViewController {
         return button
     }()
     
-    private let customTabBarView: CustomTabBarView = {
-        let view = CustomTabBarView()
+    private let customTabBarView: FilterTabBar = {
+        let view = FilterTabBar()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -162,7 +159,7 @@ private extension FilterController {
         collectionView.backgroundColor = .clear
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(MyCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(FilterParameterCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(HeaderFilterCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderFilterCollectionReusableView.headerIdentifier)
         view.addSubview(collectionView)
     }
@@ -411,7 +408,7 @@ extension FilterController: UICollectionViewDelegate, UICollectionViewDataSource
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? MyCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? FilterParameterCell else {
             return UICollectionViewCell()
         }
         
@@ -471,7 +468,7 @@ extension FilterController: UICollectionViewDelegate, UICollectionViewDataSource
         stateReturnFilterProduct = .nul
         isForcedPrice = false
         
-        guard let cell = collectionView.cellForItem(at: indexPath) as? MyCell else {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? FilterParameterCell else {
             return
         }
         
@@ -600,9 +597,9 @@ private extension FilterController {
 
 
 // MARK: - CustomTabBarViewDelegate
-extension FilterController: CustomTabBarViewDelegate {
+extension FilterController: FilterTabBarDelegate {
     
-    func customTabBarViewDidTapButton(_ tabBarView: CustomTabBarView) {
+    func customTabBarViewDidTapButton(_ tabBarView: FilterTabBar) {
         
         switch stateReturnFilterProduct {
             

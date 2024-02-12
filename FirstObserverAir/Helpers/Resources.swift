@@ -45,6 +45,7 @@ enum R {
         static let systemPurple = UIColor.systemPurple
         static let systemRed = UIColor.systemRed
         static let systemGreen = UIColor.systemGreen
+        static let systemPink = UIColor.systemPink
        
         /// custom color for dark mode
     

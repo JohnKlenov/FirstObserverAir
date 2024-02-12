@@ -206,9 +206,9 @@ private extension ListProductController {
     
     func configureNavigationItem() {
         let filterButton = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease"), style: .plain, target: self, action: #selector(filterButtonTapped))
-        filterButton.tintColor = UIColor.systemCyan
+        filterButton.tintColor = R.Colors.systemPurple
         let sortedButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortedButtonTapped))
-        sortedButton.tintColor = UIColor.systemCyan
+        sortedButton.tintColor = R.Colors.systemPurple
         navigationItem.rightBarButtonItems = [sortedButton, filterButton]
     }
     
@@ -312,6 +312,7 @@ private extension ListProductController {
             sortPriceUp(products)
         case .Alphabetically:
             sortAlphabetically(products)
+            
         }
     }
 }
@@ -354,33 +355,31 @@ extension ListProductController {
     func setupAlertSorted() {
 
         alert = UIAlertController(title: "", message: nil, preferredStyle: .actionSheet)
-        alert?.overrideUserInterfaceStyle = .dark
-        
         
         let recommendation = UIAlertAction(title: "Recommendation", style: .default) { [weak self] action in
             guard let self = self else { return }
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemCyan : UIColor.systemPink
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? R.Colors.systemPurple : R.Colors.systemPink
             self.changedAlertAction = .Recommendation
             self.sortRecommendation(self.dataSource)
         }
         
         let priceDown = UIAlertAction(title: "PriceDown", style: .default) { [weak self] action in
             guard let self = self else { return }
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? R.Colors.systemPink : R.Colors.systemPurple
             self.changedAlertAction = .PriceDown
             self.sortPriceDown(self.dataSource)
         }
 
         let priceUp = UIAlertAction(title: "PriceUp", style: .default) { [weak self] action in
             guard let self = self else { return }
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? R.Colors.systemPink : R.Colors.systemPurple
             self.changedAlertAction = .PriceUp
             self.sortPriceUp(self.dataSource)
         }
         
         let alphabetically = UIAlertAction(title: "Alphabetically", style: .default) { [weak self] action in
             guard let self = self else { return }
-            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? UIColor.systemPink : UIColor.systemCyan
+            self.navigationItem.rightBarButtonItems?[0].tintColor = action.isEnabled ? R.Colors.systemPink : R.Colors.systemPurple
             self.changedAlertAction = .Alphabetically
             self.sortAlphabetically(self.dataSource)
         }
@@ -458,11 +457,11 @@ private extension ListProductController {
         if let alert = alert {
             alert.actions.forEach { action in
                 if action.title == changedAlertAction.rawValue {
-                    action.setValue(UIColor.systemGray3, forKey: "titleTextColor")
+                    action.setValue(UIColor.systemGray2, forKey: "titleTextColor")
                     action.isEnabled = false
                 } else {
                     action.isEnabled = true
-                    action.setValue(UIColor.systemCyan, forKey: "titleTextColor")
+                    action.setValue(R.Colors.systemPurple, forKey: "titleTextColor")
                 }
                 
             }
@@ -519,7 +518,7 @@ extension ListProductController: FilterCellDelegate {
                 heightCnstrCollectionView.constant = 0
                 /// возвращаем все исходные товары на ListProductController
                 applyCurrentSorting(filteredDataSource)
-                navigationItem.rightBarButtonItems?[1].tintColor = UIColor.systemCyan
+                navigationItem.rightBarButtonItems?[1].tintColor = R.Colors.systemPurple
                 
             } else if let selectedItem = selectedFilterByIndex {
                 
@@ -556,9 +555,9 @@ extension ListProductController:CustomRangeViewDelegate {
         applyCurrentSorting(filterProducts)
         
         if filteredDataSource.count == filterProducts.count {
-            navigationItem.rightBarButtonItems?[1].tintColor = UIColor.systemCyan
+            navigationItem.rightBarButtonItems?[1].tintColor = R.Colors.systemPurple
         } else {
-            navigationItem.rightBarButtonItems?[1].tintColor = UIColor.systemPink
+            navigationItem.rightBarButtonItems?[1].tintColor = R.Colors.systemPink
         }
         
         // MARK: set property for filter or reset filter -

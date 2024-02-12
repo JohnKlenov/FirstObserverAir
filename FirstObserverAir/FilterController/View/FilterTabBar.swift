@@ -18,14 +18,14 @@ final class FilterTabBar: UIView {
     let button: UIButton = {
         var configButton = UIButton.Configuration.gray()
         configButton.title = "Show products"
-        configButton.baseForegroundColor = UIColor.systemOrange
+        configButton.baseForegroundColor = R.Colors.systemPurple
         configButton.buttonSize = .large
-        configButton.baseBackgroundColor = UIColor.systemGray3
+//        configButton.baseBackgroundColor = UIColor.systemGray3
         configButton.titleAlignment = .leading
         configButton.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incomig in
 
             var outgoing = incomig
-            outgoing.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+            outgoing.font = UIFont.systemFont(ofSize: 17, weight: .bold)
             return outgoing
         }
         var button = UIButton(configuration: configButton)

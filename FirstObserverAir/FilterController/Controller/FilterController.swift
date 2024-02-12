@@ -78,7 +78,7 @@ final class FilterController: UIViewController {
     private let closeButton: UIButton = {
         var configButton = UIButton.Configuration.plain()
         configButton.title = "Close"
-        configButton.baseForegroundColor = UIColor.systemCyan
+        configButton.baseForegroundColor = R.Colors.systemPurple
         configButton.titleAlignment = .leading
         configButton.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incomig in
 
@@ -94,7 +94,7 @@ final class FilterController: UIViewController {
     private let resetButton: UIButton = {
         var configButton = UIButton.Configuration.plain()
         configButton.title = "Reset"
-        configButton.baseForegroundColor = UIColor.systemCyan
+        configButton.baseForegroundColor = R.Colors.systemPurple
         configButton.titleAlignment = .trailing
         configButton.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incomig in
 
@@ -413,7 +413,7 @@ extension FilterController: UICollectionViewDelegate, UICollectionViewDataSource
         }
         
         if let _ = selectedItem[indexPath] {
-            cell.contentView.backgroundColor = UIColor.systemCyan
+            cell.contentView.backgroundColor = R.Colors.systemPurple
                } else {
                    cell.contentView.backgroundColor = UIColor.secondarySystemBackground
                }

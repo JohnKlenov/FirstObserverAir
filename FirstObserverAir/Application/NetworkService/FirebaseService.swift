@@ -24,7 +24,12 @@ final class FirebaseService {
     }
     var currentCartProducts:[ProductItem]? {
         didSet {
-            updateCartProducts()
+            
+            print("currentCartProducts")
+            currentCartProducts?.forEach({ item in
+                print("product - \(String(describing: item.model))")
+            })
+//            updateCartProducts()
         }
     }
     var shops:[String:[Shop]] = [:]
@@ -120,24 +125,29 @@ final class FirebaseService {
         }
     }
 
-    /// Cloud Firestore поддерживает сохранение данных в автономном режиме мы можем не обрабатывать ошибку.
-    func addItemForCartProduct(item: [String : Any], nameDocument:String, completion: @escaping (Error?) -> Void) {
-        
+    /// Cloud Firestore поддерживает сохранение и удаление данных в автономном режиме мы можем не обрабатывать ошибку.
+    func addItemForCartProduct(item: [String : Any], nameDocument:String) {
         guard let uid = currentUser?.uid else {
-            let error = NSError(domain: "com.FirstObserverAir.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
-            completion(error)
             return
         }
         // Создайте ссылку на документ
         let docRef = db.collection("users").document(uid).collection("cartProducts").document(nameDocument)
-        
         // Добавьте данные в Firestore
-        docRef.setData(item) { error in
-            completion(error)
+        docRef.setData(item)
+    }
+    
+    func removeItemFromCartProduct(_ productModel: String) {
+        guard let uid = currentUser?.uid else {
+            return
         }
+        // Создайте ссылку на документ
+        let docRef = db.collection("users").document(uid).collection("cartProducts").document(productModel)
+        
+        // Удалите документ из Firestore
+        docRef.delete()
     }
 
-    
+
     
     // MARK: - Auth
     
@@ -149,6 +159,7 @@ final class FirebaseService {
                 completionHandler(false)
             }
         } else {
+            print("Returned message for analytic FB Crashlytics error FirebaseService")
             completionHandler(nil)
         }
     }
@@ -332,6 +343,23 @@ final class FirebaseService {
 
 
 // MARK: - Trash
+
+
+//    func addItemForCartProduct(item: [String : Any], nameDocument:String, completion: @escaping (Error?) -> Void) {
+//
+//        guard let uid = currentUser?.uid else {
+//            let error = NSError(domain: "com.FirstObserverAir.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+//            completion(error)
+//            return
+//        }
+//        // Создайте ссылку на документ
+//        let docRef = db.collection("users").document(uid).collection("cartProducts").document(nameDocument)
+//
+//        // Добавьте данные в Firestore
+//        docRef.setData(item) { error in
+//            completion(error)
+//        }
+//    }
 
 //    func fetchCollectionSortedByIndex(for path: String, completion: @escaping (Any?, Error?) -> Void) {
 //        let collection = db.collection(path)

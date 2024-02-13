@@ -52,6 +52,7 @@ class ShopCell: UICollectionViewCell {
     }
 }
 
+
 // MARK: - Setting Views
 private extension ShopCell {
     func setupView() {

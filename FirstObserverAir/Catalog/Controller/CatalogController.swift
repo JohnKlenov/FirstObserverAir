@@ -62,6 +62,8 @@ final class CatalogController: UIViewController {
     }
 }
 
+
+
 // MARK: - Setting Views
 private extension CatalogController {
     
@@ -236,6 +238,7 @@ extension CatalogController: UICollectionViewDataSource, UICollectionViewDelegat
         
         return headerSize
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         

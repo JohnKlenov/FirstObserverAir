@@ -468,18 +468,15 @@ private extension ProductController {
     }
     
     @objc func addItemToCartPressed(_ sender: UIButton) {
-        isActivityIndicatorBtn = true
-        productModel?.addItemForCartProduct(dataSource, completion: { [weak self] error in
-            guard let self = self else { return }
-            self.isActivityIndicatorBtn = false
-            if let _ = error {
-                self.showAlertView(state: .failed, frame: self.view.frame)
-            } else {
-                self.showAlertView(state: .success, frame: self.view.frame)
-                self.configureBadgeValue()
-                self.isAddedToCard = !self.isAddedToCard
-            }
-        })
+        /// если нет стабильного подключения
+        /// completion в addItemForCartProduct не срабатывает и спинер крутится
+        if NetworkMonitor.shared.isConnected {
+            productModel?.addItemForCartProduct(dataSource)
+            showAlertView(state: .success, frame: self.view.frame)
+        } else {
+            showAlertView(state: .failed, frame: self.view.frame)
+        }
+        
     }
     
     @objc func webPageForItemPressed(_ sender: UIButton) {
@@ -593,6 +590,23 @@ extension ProductController {
 
 
 // MARK: - Trash
+
+//    @objc func addItemToCartPressed(_ sender: UIButton) {
+//        /// если нет стабильного подключения
+//        /// completion в addItemForCartProduct не срабатывает и спинер крутится
+//        isActivityIndicatorBtn = true
+//        productModel?.addItemForCartProduct(dataSource, completion: { [weak self] error in
+//            guard let self = self else { return }
+//            self.isActivityIndicatorBtn = false
+//            if let _ = error {
+//                self.showAlertView(state: .failed, frame: self.view.frame)
+//            } else {
+//                self.showAlertView(state: .success, frame: self.view.frame)
+//                self.configureBadgeValue()
+//                self.isAddedToCard = !self.isAddedToCard
+//            }
+//        })
+//    }
 
 //    let addItemToCartBtn: UIButton = {
 //

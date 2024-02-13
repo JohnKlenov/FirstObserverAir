@@ -106,6 +106,7 @@ class ProductCell: UICollectionViewCell {
     }
 }
 
+
 // MARK: - Setting Views
 private extension ProductCell {
     func setupView() {
@@ -136,6 +137,8 @@ extension ProductCell {
     func configureCell(model: ProductItem) {
        
         let placeholderImage = UIImage(systemName: "photo")
+//        let configuration = UIImage.SymbolConfiguration(pointSize: 0.5, weight: .ultraLight, scale: .default)
+//        let imageSymbo = placeholderImage?.withConfiguration(configuration)
         placeholderImage?.withRenderingMode(.alwaysTemplate)
         
         if let firstRef = model.refImage?.first {

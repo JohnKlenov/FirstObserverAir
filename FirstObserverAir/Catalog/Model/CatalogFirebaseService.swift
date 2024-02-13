@@ -36,6 +36,8 @@ final class CatalogFirebaseService {
         updateLocalGender()
     }
     
+    
+    
     func removeGenderListeners() {
         pathsGenderListener.forEach { path in
             self.serviceFB.removeListeners(for: path)

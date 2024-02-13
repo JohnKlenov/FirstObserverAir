@@ -60,6 +60,7 @@ struct PreviewSection: Hashable {
     }
 }
 
+
 struct ProductItem: Hashable {
     let brand: String?
     let model: String?

@@ -46,6 +46,10 @@
 		5E22B1412B3C0D4E00CDD18A /* ListProductService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B1402B3C0D4E00CDD18A /* ListProductService.swift */; };
 		5E22B1432B3C443500CDD18A /* ListProductCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B1422B3C443500CDD18A /* ListProductCollectionView.swift */; };
 		5E2700392B70C99D0073367C /* ModelDataTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E2700382B70C99D0073367C /* ModelDataTransformation.swift */; };
+		5E3F6E092B7B5659005C6776 /* CartFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E082B7B5659005C6776 /* CartFirebaseService.swift */; };
+		5E3F6E0B2B7B65FA005C6776 /* CartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E0A2B7B65FA005C6776 /* CartCell.swift */; };
+		5E3F6E0D2B7B696B005C6776 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E0C2B7B696B005C6776 /* CartView.swift */; };
+		5E3F6E0F2B7B6D9A005C6776 /* UITableView + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E0E2B7B6D9A005C6776 /* UITableView + ext.swift */; };
 		5E7D7E6A2B44A0EE0009B8E8 /* ProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */; };
 		5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */; };
 		5E7D7E702B44ABD80009B8E8 /* ImageNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6F2B44ABD80009B8E8 /* ImageNumber.swift */; };
@@ -130,6 +134,10 @@
 		5E22B1402B3C0D4E00CDD18A /* ListProductService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListProductService.swift; sourceTree = "<group>"; };
 		5E22B1422B3C443500CDD18A /* ListProductCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListProductCollectionView.swift; sourceTree = "<group>"; };
 		5E2700382B70C99D0073367C /* ModelDataTransformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDataTransformation.swift; sourceTree = "<group>"; };
+		5E3F6E082B7B5659005C6776 /* CartFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartFirebaseService.swift; sourceTree = "<group>"; };
+		5E3F6E0A2B7B65FA005C6776 /* CartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartCell.swift; sourceTree = "<group>"; };
+		5E3F6E0C2B7B696B005C6776 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		5E3F6E0E2B7B6D9A005C6776 /* UITableView + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView + ext.swift"; sourceTree = "<group>"; };
 		5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductController.swift; sourceTree = "<group>"; };
 		5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		5E7D7E6F2B44ABD80009B8E8 /* ImageNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageNumber.swift; sourceTree = "<group>"; };
@@ -331,6 +339,7 @@
 				5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */,
 				5E1A35512B14AE980076FDC1 /* UITabBarController + ext.swift */,
 				5E1148FB2B5BC6EA0073B2E8 /* UIApplication + ext.swift */,
+				5E3F6E0E2B7B6D9A005C6776 /* UITableView + ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -392,6 +401,8 @@
 		5E1A35472B13E7E90076FDC1 /* Cart */ = {
 			isa = PBXGroup;
 			children = (
+				5E3F6E072B7B560C005C6776 /* View */,
+				5E3F6E062B7B5606005C6776 /* Model */,
 				5E1A35482B13E8070076FDC1 /* Controller */,
 			);
 			path = Cart;
@@ -512,6 +523,23 @@
 			children = (
 				5E22B1422B3C443500CDD18A /* ListProductCollectionView.swift */,
 				5E7DE9E12B73BD57007B44CC /* FilterCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5E3F6E062B7B5606005C6776 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5E3F6E082B7B5659005C6776 /* CartFirebaseService.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5E3F6E072B7B560C005C6776 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5E3F6E0A2B7B65FA005C6776 /* CartCell.swift */,
+				5E3F6E0C2B7B696B005C6776 /* CartView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -959,6 +987,7 @@
 				5E7D7E702B44ABD80009B8E8 /* ImageNumber.swift in Sources */,
 				5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */,
 				5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */,
+				5E3F6E0F2B7B6D9A005C6776 /* UITableView + ext.swift in Sources */,
 				5E22B1392B3AE91700CDD18A /* AllShopCell.swift in Sources */,
 				5E1A355D2B15FF720076FDC1 /* LaunchScreenController.swift in Sources */,
 				5E1A35552B14D2760076FDC1 /* PresentController.swift in Sources */,
@@ -974,6 +1003,7 @@
 				5EFAC99D2B69313300B8A824 /* BuilderViewController.swift in Sources */,
 				5E9B52262B51226000F907B6 /* ImageScrollView.swift in Sources */,
 				5E22B1372B3AE59300CDD18A /* AllShops.swift in Sources */,
+				5E3F6E0D2B7B696B005C6776 /* CartView.swift in Sources */,
 				5E7DE9E82B751699007B44CC /* FilterTabBar.swift in Sources */,
 				5E1148FC2B5BC6EA0073B2E8 /* UIApplication + ext.swift in Sources */,
 				5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */,
@@ -982,6 +1012,7 @@
 				5E1148F72B5BC5BA0073B2E8 /* CustomNavigationBar.swift in Sources */,
 				5E99AB5C2B358B7C00FA9FD4 /* HomeCollectionView.swift in Sources */,
 				5E7DE9EC2B751770007B44CC /* RangeSlider.swift in Sources */,
+				5E3F6E092B7B5659005C6776 /* CartFirebaseService.swift in Sources */,
 				5E1A35392B13E27E0076FDC1 /* NavigationController.swift in Sources */,
 				5E7D7E6A2B44A0EE0009B8E8 /* ProductController.swift in Sources */,
 				5EC4923E2B3076F10061C71F /* BackgroundCollectionReusableView.swift in Sources */,
@@ -1012,6 +1043,7 @@
 				5E0DE90C2B459B9000F3387C /* ProductFirebaseService.swift in Sources */,
 				5E22B1412B3C0D4E00CDD18A /* ListProductService.swift in Sources */,
 				5E1148FA2B5BC6180073B2E8 /* Date.swift in Sources */,
+				5E3F6E0B2B7B65FA005C6776 /* CartCell.swift in Sources */,
 				5E1A35462B13E7CC0076FDC1 /* MallsController.swift in Sources */,
 				5E1A35672B1734A90076FDC1 /* PlaceholderView.swift in Sources */,
 				5E22B1432B3C443500CDD18A /* ListProductCollectionView.swift in Sources */,

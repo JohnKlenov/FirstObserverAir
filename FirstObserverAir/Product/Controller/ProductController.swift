@@ -470,13 +470,10 @@ private extension ProductController {
     @objc func addItemToCartPressed(_ sender: UIButton) {
         /// если нет стабильного подключения
         /// completion в addItemForCartProduct не срабатывает и спинер крутится
-        if NetworkMonitor.shared.isConnected {
-            productModel?.addItemForCartProduct(dataSource)
-            showAlertView(state: .success, frame: self.view.frame)
-        } else {
-            showAlertView(state: .failed, frame: self.view.frame)
-        }
-        
+        productModel?.addItemForCartProduct(dataSource)
+        configureBadgeValue()
+        isAddedToCard = !isAddedToCard
+        showAlertView(state: .success, frame: self.view.frame)
     }
     
     @objc func webPageForItemPressed(_ sender: UIButton) {

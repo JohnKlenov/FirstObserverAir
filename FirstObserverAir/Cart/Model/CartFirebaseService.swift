@@ -20,7 +20,6 @@ final class CartFirebaseService {
     
     init(output: CartModelOutput) {
         self.output = output
-        
     }
 }
 

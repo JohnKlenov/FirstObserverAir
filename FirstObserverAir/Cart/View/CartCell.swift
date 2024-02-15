@@ -17,7 +17,6 @@ class CartCell: UITableViewCell {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = R.Colors.secondarySystemBackground
-//        view.backgroundColor = .clear
         view.layer.cornerRadius = 10
         return view
     }()
@@ -35,10 +34,10 @@ class CartCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         label.backgroundColor = .clear
         label.textColor = R.Colors.label
-        label.numberOfLines = 2
+        label.numberOfLines = 1
         return label
     }()
     
@@ -48,8 +47,19 @@ class CartCell: UITableViewCell {
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 13)
         label.backgroundColor = .clear
-        label.textColor = R.Colors.label
-        label.numberOfLines = 2
+        label.textColor = R.Colors.secondaryLabel
+        label.numberOfLines = 1
+        return label
+    }()
+    
+    let shopLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .left
+        label.font = UIFont.systemFont(ofSize: 15)
+        label.backgroundColor = .clear
+        label.textColor = R.Colors.systemPurple
+        label.numberOfLines = 1
         return label
     }()
     
@@ -57,7 +67,7 @@ class CartCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         label.backgroundColor = .clear
         label.textColor = R.Colors.label
         label.numberOfLines = 0
@@ -69,7 +79,7 @@ class CartCell: UITableViewCell {
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.distribution = .fill
-        stack.spacing = 0
+        stack.spacing = 1
         return stack
     }()
     
@@ -79,8 +89,6 @@ class CartCell: UITableViewCell {
         containerView.addSubview(stackView)
         contentView.addSubview(containerView)
         configureStackView()
-//        containerView.addSubview(imageCell)
-//        containerView.addSubview(stackView)
         setupConstraints()
         storage = Storage.storage()
     }
@@ -90,15 +98,26 @@ class CartCell: UITableViewCell {
     }
     
     private func configureStackView() {
-        let arrayViews = [brandLabel, modelLabel, priceLabel]
-        arrayViews.forEach { view in
-            stackView.addArrangedSubview(view)
-        }
+        [brandLabel, modelLabel, shopLabel, priceLabel].forEach { stackView.addArrangedSubview($0) }
     }
     
     private func setupConstraints() {
         
-        NSLayoutConstraint.activate([containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5), containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5), containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5), containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5)])
+        let topContainerCnstr = containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5)
+        topContainerCnstr.priority = UILayoutPriority(999)
+        topContainerCnstr.isActive = true
+        
+        let bottomContainerCnstr = containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5)
+        bottomContainerCnstr.priority = UILayoutPriority(999)
+        bottomContainerCnstr.isActive = true
+        
+        let leadingContainerCnstr = containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5)
+        leadingContainerCnstr.priority = UILayoutPriority(999)
+        leadingContainerCnstr.isActive = true
+        
+        let trailingContainerCnstr = containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5)
+        trailingContainerCnstr.priority = UILayoutPriority(999)
+        trailingContainerCnstr.isActive = true
         
         let topImageViewCnstr = imageCell.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5)
         topImageViewCnstr.priority = UILayoutPriority(999)
@@ -132,8 +151,7 @@ class CartCell: UITableViewCell {
         }
         brandLabel.text = model.brand
         modelLabel.text = model.model
+        shopLabel.text = model.shops?.first
         priceLabel.text = "\(model.price ?? 0) BYN"
     }
-    
-    
 }

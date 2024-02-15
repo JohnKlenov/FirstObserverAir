@@ -27,7 +27,11 @@ final class CartController: UIViewController {
         return table
     }()
     
-    private var cartProducts: [ProductItem] = []
+    private var cartProducts: [ProductItem] = [] {
+        didSet {
+            configureTableViewIsEmpty(products: cartProducts, tableView: tableView)
+        }
+    }
     private var cartViewIsEmpty: CartView?
     private var isAnonymouslyUser = false
 
@@ -45,7 +49,6 @@ final class CartController: UIViewController {
 
 // MARK: - Setting Views
 private extension CartController {
-    
     func setupView() {
         view.backgroundColor = R.Colors.systemBackground
         title = R.Strings.TabBarController.Cart.title
@@ -64,7 +67,7 @@ private extension CartController {
     }
     
     func createCartViewIsEmpty() {
-        cartViewIsEmpty = CartView()
+        cartViewIsEmpty = CartView(frame: view.frame)
         cartViewIsEmpty?.delegate = self
         cartViewIsEmpty?.signInSignUpButton.isHidden = isAnonymouslyUser ? false : true
     }
@@ -72,8 +75,8 @@ private extension CartController {
     func configureTableViewIsEmpty(products:[ProductItem], tableView:UITableView) {
         if products.count == 0 {
             createCartViewIsEmpty()
-            tableView.setEmptyView(emptyView: cartViewIsEmpty ?? UIView())
-
+            tableView.backgroundView = cartViewIsEmpty
+            tableView.separatorStyle = .none
         } else {
             tableView.backgroundView = nil
             cartViewIsEmpty = nil
@@ -81,17 +84,14 @@ private extension CartController {
     }
     
     func removeCartProduct(tableView: UITableView, indexPath: IndexPath) {
-            let product = cartProducts[indexPath.row]
-            cartProducts.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            cartModel?.removeCartProduct(model: product.model ?? "", index: indexPath.row)
-    }
-    
-    func setupAlertNotConnected() {
-        let alert = UIAlertController(title: "Oops!", message: "No internet connection", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alert.addAction(okAction)
-        present(alert, animated: true)
+        ///tableView.beginUpdates(), вы сообщаете таблице, что вы собираетесь сделать несколько изменений, которые нужно анимировать одновременно.
+        tableView.beginUpdates()
+        let product = cartProducts[indexPath.row]
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        cartProducts.remove(at: indexPath.row)
+        cartModel?.removeCartProduct(model: product.model ?? "", index: indexPath.row)
+        ///Когда вы заканчиваете внесение изменений, вы вызываете tableView.endUpdates(), и все ваши изменения будут анимированы одновременно.
+        tableView.endUpdates()
     }
 }
 
@@ -106,7 +106,7 @@ private extension CartController {
 extension CartController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        configureTableViewIsEmpty(products: cartProducts, tableView: tableView)
+//        configureTableViewIsEmpty(products: cartProducts, tableView: tableView)
         return cartProducts.count
     }
     
@@ -123,17 +123,15 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        print("didSelectRowAt")
     }
-    
-    
 }
 
 // MARK: - CartModelOutput
 extension CartController:CartModelOutput {
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
-        cartProducts = cartProduct
         isAnonymouslyUser = isAnonymousUser
+        cartProducts = cartProduct
         tableView.reloadData()
     }
 }

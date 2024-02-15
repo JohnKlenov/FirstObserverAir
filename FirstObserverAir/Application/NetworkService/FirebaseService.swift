@@ -24,11 +24,9 @@ final class FirebaseService {
     }
     var currentCartProducts:[ProductItem]? {
         didSet {
-            
-            print("currentCartProducts")
-            currentCartProducts?.forEach({ item in
-                print("product - \(String(describing: item.model))")
-            })
+//            currentCartProducts?.forEach({ item in
+//                print("product - \(String(describing: item.model))")
+//            })
 //            updateCartProducts()
         }
     }
@@ -126,6 +124,7 @@ final class FirebaseService {
     }
 
     /// Cloud Firestore поддерживает сохранение и удаление данных в автономном режиме мы можем не обрабатывать ошибку.
+    /// В автономном режиме Cloud Firestore сохраняет все изменения данных в локальном кэше. Когда устройство пользователя восстанавливает подключение к сети, Firestore синхронизирует данные из локального кэша с сервером Firestore. Если во время этого процесса возникают ошибки (например, из-за проблем с безопасностью или квотами), они будут переданы в ваш обработчик ошибок. Таким образом, если возникнут проблемы с интернетом, completion блок моментально не вернет ошибку, но вернет ошибку позже, если при восстановлении соединения не получится сохранить данные. Это обеспечивает более гладкий пользовательский опыт при временных проблемах с подключением к интернету.
     func addItemForCartProduct(item: [String : Any], nameDocument:String) {
         guard let uid = currentUser?.uid else {
             return

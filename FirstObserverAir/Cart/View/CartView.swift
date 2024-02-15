@@ -12,17 +12,15 @@ protocol CartViewDelegate: AnyObject {
     func didTapCatalogButton()
 }
 
-class CartView: UIView {
+final class CartView: UIView {
 
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-//        ?.withRenderingMode(.alwaysTemplate)
         if let image = UIImage(systemName: R.Strings.TabBarController.Cart.CartView.imageSystemNameCart) {
             let tintableImage = image.withRenderingMode(.alwaysTemplate)
             imageView.image = tintableImage
         }
-//        image.image = UIImage(named: R.Strings.TabBarController.Cart.CartView.imageSystemNameCart)
         imageView.tintColor = R.Colors.label
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
@@ -51,15 +49,6 @@ class CartView: UIView {
         label.text = R.Strings.TabBarController.Cart.CartView.subtitleLabel
         label.numberOfLines = 0
         return label
-    }()
-    
-    private let stackViewForLabel: UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.spacing = 2
-        return stack
     }()
     
     private let catalogButton: UIButton = {
@@ -104,75 +93,68 @@ class CartView: UIView {
         return grayButton
     }()
     
-    private let stackViewForButton: UIStackView = {
-        let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.spacing = 5
-        return stack
-    }()
-    
     weak var delegate: CartViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .clear
-        layer.cornerRadius = 10
-        configureStackView()
-        addSubview(imageView)
-        addSubview(stackViewForLabel)
-        addSubview(stackViewForButton)
-        setupConstraints()
+        setupView()
     }
     
-    private func configureStackView() {
-        let arrayLabel = [titleLabel, subtitleLabel]
-        arrayLabel.forEach { view in
-            stackViewForLabel.addArrangedSubview(view)
-        }
-        
-        let arrayButton = [catalogButton, signInSignUpButton]
-        arrayButton.forEach { view in
-            stackViewForButton.addArrangedSubview(view)
-        }
-    }
-    
-    private func setupConstraints() {
-        let topImageViewCnstr = imageView.topAnchor.constraint(equalTo: topAnchor, constant: 40)
-        topImageViewCnstr.isActive = true
-        let centerYImageViewCnstr = imageView.centerXAnchor.constraint(equalTo: centerXAnchor)
-        centerYImageViewCnstr.isActive = true
-        let widthImageViewCnstr = imageView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/5)
-        widthImageViewCnstr.isActive = true
-        let heightImageViewCnstr = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor)
-        heightImageViewCnstr.isActive = true
-        let topStackForLabelCnstr = stackViewForLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 0)
-        topStackForLabelCnstr.isActive = true
-        let trailingStackForLabelCnstr = stackViewForLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
-        trailingStackForLabelCnstr.isActive = true
-        let leadingStackForLabelCnstr = stackViewForLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
-        leadingStackForLabelCnstr.isActive = true
-        let topStackForButtonCnstr = stackViewForButton.topAnchor.constraint(equalTo: stackViewForLabel.bottomAnchor, constant: 20)
-        topStackForButtonCnstr.isActive = true
-        let trailingStackForButtonCnstr = stackViewForButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30)
-        trailingStackForButtonCnstr.isActive = true
-        let leadingStackForButtonCnstr = stackViewForButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30)
-        leadingStackForButtonCnstr.isActive = true
-        let bottomStackForButtonCnstr = stackViewForButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20)
-        bottomStackForButtonCnstr.isActive = true
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupFrameView()
     }
 
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
+    deinit {
+        print("deinit CartView")
+    }
+}
+
+
+// MARK: - Setting Views
+private extension CartView {
+    func setupView() {
+        backgroundColor = .clear
+        layer.cornerRadius = 10
+        addSubview(imageView)
+        addSubview(titleLabel)
+        addSubview(subtitleLabel)
+        addSubview(catalogButton)
+        addSubview(signInSignUpButton)
+    }
+}
+
+// MARK: - frame-based layout
+private extension CartView {
+    func setupFrameView() {
+        let imageViewSize = frame.width / 5
+        imageView.frame = CGRect(x: (frame.width - imageViewSize) / 2, y: frame.height/3, width: imageViewSize, height: imageViewSize)
+        
+        let titleLabelY = imageView.frame.maxY
+        titleLabel.frame = CGRect(x: 10, y: titleLabelY, width: frame.width - 20, height: titleLabel.frame.height)
+        
+        let subtitleLabelY = titleLabel.frame.maxY + 5
+        subtitleLabel.frame = CGRect(x: 10, y: subtitleLabelY, width: frame.width - 20, height: subtitleLabel.frame.height)
+        
+        let catalogButtonY = subtitleLabel.frame.maxY + 20
+        catalogButton.frame = CGRect(x: 30, y: catalogButtonY, width: frame.width - 60, height: catalogButton.frame.height)
+        
+        let signInSignUpButtonY = catalogButton.frame.maxY + 5
+        signInSignUpButton.frame = CGRect(x: 30, y: signInSignUpButtonY, width: frame.width - 60, height: signInSignUpButton.frame.height)
+    }
+}
+
+// MARK: - Selector
+private extension CartView {
     @objc func catalogButtonPressed(_ sender: UIButton) {
         delegate?.didTapCatalogButton()
     }
     
     @objc func logInButtonPressed(_ sender: UIButton) {
         delegate?.didTaplogInButton()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

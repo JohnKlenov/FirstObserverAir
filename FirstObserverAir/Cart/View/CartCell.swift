@@ -8,7 +8,7 @@
 import UIKit
 import FirebaseStorageUI
 
-class CartCell: UITableViewCell {
+final class CartCell: UITableViewCell {
 
     static var reuseID: String = "CartCell"
     var storage: Storage!
@@ -85,6 +85,21 @@ class CartCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("deinit CartCell")
+    }
+}
+
+// MARK: - Setting Views
+private extension CartCell {
+    func setupView() {
         containerView.addSubview(imageCell)
         containerView.addSubview(stackView)
         contentView.addSubview(containerView)
@@ -92,15 +107,33 @@ class CartCell: UITableViewCell {
         setupConstraints()
         storage = Storage.storage()
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+}
+
+// MARK: - Setting
+extension CartCell {
+    func configureCell(model: ProductItem) {
+        let placeholderImage = UIImage(systemName: "photo")
+        placeholderImage?.withRenderingMode(.alwaysTemplate)
+        
+        if let firstRef = model.refImage?.first {
+            let urlRef = storage.reference(forURL: firstRef)
+            self.imageCell.sd_setImage(with: urlRef, placeholderImage: placeholderImage)
+        } else {
+            imageCell.image = placeholderImage
+        }
+        brandLabel.text = model.brand
+        modelLabel.text = model.model
+        shopLabel.text = model.shops?.first
+        priceLabel.text = "\(model.price ?? 0) BYN"
     }
     
     private func configureStackView() {
         [brandLabel, modelLabel, shopLabel, priceLabel].forEach { stackView.addArrangedSubview($0) }
     }
-    
+}
+
+// MARK: - Layout
+private extension CartCell {
     private func setupConstraints() {
         
         let topContainerCnstr = containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5)
@@ -137,21 +170,5 @@ class CartCell: UITableViewCell {
         bottomImageViewCnstr.isActive = true
         
         NSLayoutConstraint.activate([stackView.topAnchor.constraint(equalTo: imageCell.topAnchor), stackView.leadingAnchor.constraint(equalTo: imageCell.trailingAnchor, constant: 10), stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10)])
-    }
-    
-    func configureCell(model: ProductItem) {
-        let placeholderImage = UIImage(systemName: "photo")
-        placeholderImage?.withRenderingMode(.alwaysTemplate)
-        
-        if let firstRef = model.refImage?.first {
-            let urlRef = storage.reference(forURL: firstRef)
-            self.imageCell.sd_setImage(with: urlRef, placeholderImage: placeholderImage)
-        } else {
-            imageCell.image = placeholderImage
-        }
-        brandLabel.text = model.brand
-        modelLabel.text = model.model
-        shopLabel.text = model.shops?.first
-        priceLabel.text = "\(model.price ?? 0) BYN"
     }
 }

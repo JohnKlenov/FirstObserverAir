@@ -106,7 +106,6 @@ private extension CartController {
 extension CartController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        configureTableViewIsEmpty(products: cartProducts, tableView: tableView)
         return cartProducts.count
     }
     
@@ -116,14 +115,39 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            removeCartProduct(tableView: tableView, indexPath: indexPath)
+    ///создаем контекстное меню которое появляется при долгом нажатии
+//    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+//        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+//            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+//                self.removeCartProduct(tableView: tableView, indexPath: indexPath)
+//            }
+//            return UIMenu(title: "", children: [deleteAction])
+//        }
+//        return configuration
+//    }
+    
+    /// добавляем действие по свайпу
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // действие удаления
+        let actionDelete = UIContextualAction(style: .destructive, title: "Delete") { _,_,_ in
+            self.removeCartProduct(tableView: tableView, indexPath: indexPath)
         }
+        // формируем экземпляр, описывающий доступные действия
+        let actions = UISwipeActionsConfiguration(actions: [actionDelete])
+        return actions
     }
+
+    /// был объявлен устаревшим с ios13
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            removeCartProduct(tableView: tableView, indexPath: indexPath)
+//        }
+//    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("didSelectRowAt")
+        let product = cartProducts[indexPath.row]
+        let productVC = BuilderViewController.buildProductController(product: product)
+        navigationController?.pushViewController(productVC, animated: true)
     }
 }
 
@@ -140,11 +164,15 @@ extension CartController:CartModelOutput {
 // MARK: - CartViewDelegate
 extension CartController: CartViewDelegate {
     func didTaplogInButton() {
-        print("didTaplogInButton")
+//        let signInVC = NewSignInViewController()
+////        signInVC.cartProducts = cartProducts
+//        signInVC.delegate = self
+//        signInVC.presentationController?.delegate = self
+//        present(signInVC, animated: true, completion: nil)
     }
     
     func didTapCatalogButton() {
-        print("didTapCatalogButton")
+        tabBarController?.selectedIndex = 1
     }
     
     

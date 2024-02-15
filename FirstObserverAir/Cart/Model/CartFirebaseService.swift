@@ -22,7 +22,7 @@ final class CartFirebaseService {
         self.output = output
     }
 }
-
+// реализовать метод проверки актуальности добавленных в корзину продуктов на сервере
 extension CartFirebaseService: CartModelInput {
     func fetchData() {
         serviceFB.userIsAnonymously { [weak self] isAnonymous in

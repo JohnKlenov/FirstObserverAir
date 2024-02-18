@@ -22,6 +22,7 @@ protocol CatalogModelInput: AnyObject {
     func isSwitchGender(completion: @escaping () -> Void)
 }
 
+
 final class CatalogFirebaseService {
     
     weak var output: CatalogModelOutput?

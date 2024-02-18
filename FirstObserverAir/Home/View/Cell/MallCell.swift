@@ -18,6 +18,7 @@ class MallCell: UICollectionViewCell {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFill
+        image.backgroundColor = .tertiarySystemBackground
         image.tintColor = R.Colors.label
         return image
     }()

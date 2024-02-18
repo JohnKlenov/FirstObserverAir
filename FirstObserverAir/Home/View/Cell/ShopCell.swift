@@ -18,6 +18,7 @@ class ShopCell: UICollectionViewCell {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
+//        image.backgroundColor = .tertiarySystemBackground
         image.tintColor = R.Colors.label
         return image
     }()

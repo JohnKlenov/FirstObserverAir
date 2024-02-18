@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+//import FirebaseStorageUI
 
 final class FirebaseService {
     
@@ -90,7 +91,28 @@ final class FirebaseService {
         }
         
         query.getDocuments { (querySnapshot, error) in
-            print("query.getDocuments")
+            if let error = error {
+                completion(nil, error)
+                return
+            }
+            guard let querySnapshot = querySnapshot else {
+                completion(nil, error)
+                return
+            }
+            var documents = [[String : Any]]()
+            for document in querySnapshot.documents {
+                let documentData = document.data()
+                documents.append(documentData)
+            }
+            completion(documents, nil)
+        }
+    }
+    
+    ///Если по запросу в коллекции не будет ни одного документа с искомыми полями в models: [String], то querySnapshot будет не nil, но его свойство documents будет пустым массивом.
+    func checkingCurrentProducts(models: [String], for path: String, completion: @escaping (Any?, Error?) -> Void) {
+        let collection = db.collection(path).whereField("model", in: models)
+        
+        collection.getDocuments() { (querySnapshot, error) in
             if let error = error {
                 completion(nil, error)
                 return

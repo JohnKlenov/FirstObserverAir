@@ -34,7 +34,7 @@ final class CartController: UIViewController {
     }
     private var cartViewIsEmpty: CartView?
     private var isAnonymouslyUser = false
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -156,6 +156,7 @@ extension CartController:CartModelOutput {
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
         isAnonymouslyUser = isAnonymousUser
         cartProducts = cartProduct
+        cartModel?.checkingActualCurrentCartProducts(cartProducts: cartProducts)
         tableView.reloadData()
     }
 }

@@ -53,7 +53,7 @@ struct FetchPreviewDataResponse {
 }
 
 class ProductCloudFirestoreService {
-   
+    
     
     func fetchProducts(path: String, completion: @escaping ([ProductItem]?, Error?) -> Void) {
         
@@ -67,10 +67,31 @@ class ProductCloudFirestoreService {
                 let response = try FetchProductsDataResponse(documents: documents)
                 completion(response.items, nil)
             } catch {
-//                ManagerFB.shared.CrashlyticsMethod
+                //                ManagerFB.shared.CrashlyticsMethod
                 completion(nil, error)
             }
             
+        }
+    }
+}
+
+class CheckingProductCloudFirestoreService {
+    
+    func fetchActualCurrentCartProducts(path: String, models: [String], completion: @escaping ([ProductItem]?, Error?) -> Void) {
+        
+        FirebaseService.shared.checkingCurrentProducts(models: models, for: path) { documents, error in
+            guard let documents = documents, error == nil else {
+                completion(nil, error)
+                return
+            }
+            
+            do {
+                let response = try FetchProductsDataResponse(documents: documents)
+                completion(response.items, nil)
+            } catch {
+                //                ManagerFB.shared.CrashlyticsMethod
+                completion(nil, error)
+            }
         }
     }
 }

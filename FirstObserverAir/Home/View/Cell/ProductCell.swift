@@ -20,6 +20,7 @@ class ProductCell: UICollectionViewCell {
         image.contentMode = .scaleAspectFit
         image.tintColor = R.Colors.label
         image.layer.cornerRadius = 8
+        image.backgroundColor = .tertiarySystemBackground
         image.clipsToBounds = true
         return image
     }()
@@ -136,22 +137,22 @@ extension ProductCell {
     
     func configureCell(model: ProductItem) {
        
-        let placeholderImage = UIImage(systemName: "photo")
-//        let configuration = UIImage.SymbolConfiguration(pointSize: 0.5, weight: .ultraLight, scale: .default)
-//        let imageSymbo = placeholderImage?.withConfiguration(configuration)
-        placeholderImage?.withRenderingMode(.alwaysTemplate)
+//        let placeholderImage = UIImage(systemName: "photo")
+//        placeholderImage?.withRenderingMode(.alwaysTemplate)
         
         if let firstRef = model.refImage?.first {
             let urlRef = storage.reference(forURL: firstRef)
-            self.imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage)
+            self.imageView.sd_setImage(with: urlRef, placeholderImage: nil)
         } else {
-            imageView.image = placeholderImage
+            imageView.image = nil
         }
         brandLabel.text = model.brand
         modelLabel.text = model.model
         shopLabel.text = model.shops?.first
         priceLabel.text = "\(model.price ?? 0) BYN"
     }
+    //        let configuration = UIImage.SymbolConfiguration(pointSize: 0.5, weight: .ultraLight, scale: .default)
+    //        let imageSymbo = placeholderImage?.withConfiguration(configuration)
 }
 
 // MARK: - Layout

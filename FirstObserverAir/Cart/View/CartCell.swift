@@ -26,6 +26,7 @@ final class CartCell: UITableViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFill
         image.layer.cornerRadius = 4
+        image.backgroundColor = .tertiarySystemBackground
         image.clipsToBounds = true
         return image
     }()
@@ -111,22 +112,23 @@ private extension CartCell {
 
 // MARK: - Setting
 extension CartCell {
+    
     func configureCell(model: ProductItem) {
-        let placeholderImage = UIImage(systemName: "photo")
-        placeholderImage?.withRenderingMode(.alwaysTemplate)
-        
+//        let placeholderImage = UIImage(systemName: "photo")
+//        placeholderImage?.withRenderingMode(.alwaysTemplate)
+
         if let firstRef = model.refImage?.first {
             let urlRef = storage.reference(forURL: firstRef)
-            self.imageCell.sd_setImage(with: urlRef, placeholderImage: placeholderImage)
+            self.imageCell.sd_setImage(with: urlRef, placeholderImage: nil)
         } else {
-            imageCell.image = placeholderImage
+            imageCell.image = nil
         }
         brandLabel.text = model.brand
         modelLabel.text = model.model
         shopLabel.text = model.shops?.first
         priceLabel.text = "\(model.price ?? 0) BYN"
     }
-    
+
     private func configureStackView() {
         [brandLabel, modelLabel, shopLabel, priceLabel].forEach { stackView.addArrangedSubview($0) }
     }
@@ -172,3 +174,78 @@ private extension CartCell {
         NSLayoutConstraint.activate([stackView.topAnchor.constraint(equalTo: imageCell.topAnchor), stackView.leadingAnchor.constraint(equalTo: imageCell.trailingAnchor, constant: 10), stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10)])
     }
 }
+
+
+
+
+// MARK: - Trash
+
+   
+    
+
+//    func configureCell(model: ProductItem) {
+//        SDImageCache.shared.removeImage(forKey: <#T##String?#>) {
+//            <#code#>
+//        }
+//        let placeholderImage = UIImage(systemName: "photo")
+//        placeholderImage?.withRenderingMode(.alwaysTemplate)
+//        let outdatedImage = UIImage(named: "swift") // Загрузите ваше изображение "устарело" здесь
+//
+//        if let firstRef = model.refImage?.first {
+//            let urlRef = storage.reference(forURL: firstRef)
+//            self.imageCell.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { image, error, cacheType, storageRef in
+//                if let error = error as NSError? {
+//                    if error.code == StorageErrorCode.objectNotFound.rawValue {
+//                        print("StorageErrorCode.objectNotFound.rawValue - \(error.localizedDescription)")
+//                        // Если объект не найден, установите изображение как "устарело"
+//                        self.imageCell.image = outdatedImage
+//                    } else {
+//                        print("another errors - \(error.localizedDescription)")
+//                        // Обработка других ошибок
+//                    }
+//                } else {
+//                    print("error - \(String(describing: error?.localizedDescription))")
+//                }
+//            }
+//        } else {
+//            imageCell.image = placeholderImage
+//        }
+//        brandLabel.text = model.brand
+//        modelLabel.text = model.model
+//        shopLabel.text = model.shops?.first
+//        priceLabel.text = "\(model.price ?? 0) BYN"
+//    }
+
+//    func configureCell(model: ProductItem) {
+//        let placeholderImage = UIImage(systemName: "photo")
+//        placeholderImage?.withRenderingMode(.alwaysTemplate)
+//        let outdatedImage = UIImage(systemName: "swift") // Загрузите ваше изображение "устарело" здесь
+//        print("configureCell")
+//        CacheManager.cacheImageRemoveMemoryAndDisk(imageView: imageCell)
+//
+//        if let firstRef = model.refImage?.first {
+//            let urlRef = storage.reference(forURL: firstRef)
+//            imageCell.sd_setImage(with: urlRef, maxImageSize: UInt64.max, placeholderImage: nil, options: .refreshCached) { image, error, cache, storageRef in
+//                print("imageCell.sd_setImage")
+//                if let error = error as NSError? {
+//                    if error.code == StorageErrorCode.objectNotFound.rawValue {
+//                        print("StorageErrorCode.objectNotFound.rawValue - \(error.localizedDescription)")
+//                        // Если объект не найден, установите изображение как "устарело"
+//                        self.imageCell.image = outdatedImage
+//                    } else {
+//                        print("another errors - \(error.localizedDescription)")
+//                        // Обработка других ошибок
+//                    }
+//                } else {
+//                    print("error - \(String(describing: error?.localizedDescription))")
+//                }
+//            }
+//        } else {
+//            imageCell.image = nil
+//        }
+//        brandLabel.text = model.brand
+//        modelLabel.text = model.model
+//        shopLabel.text = model.shops?.first
+//        priceLabel.text = "\(model.price ?? 0) BYN"
+//
+//    }

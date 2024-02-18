@@ -49,6 +49,7 @@
 		5E3F6E092B7B5659005C6776 /* CartFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E082B7B5659005C6776 /* CartFirebaseService.swift */; };
 		5E3F6E0B2B7B65FA005C6776 /* CartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E0A2B7B65FA005C6776 /* CartCell.swift */; };
 		5E3F6E0D2B7B696B005C6776 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E0C2B7B696B005C6776 /* CartView.swift */; };
+		5E690EED2B7F9AE50067B410 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E690EEC2B7F9AE40067B410 /* CacheManager.swift */; };
 		5E7D7E6A2B44A0EE0009B8E8 /* ProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */; };
 		5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */; };
 		5E7D7E702B44ABD80009B8E8 /* ImageNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6F2B44ABD80009B8E8 /* ImageNumber.swift */; };
@@ -136,6 +137,7 @@
 		5E3F6E082B7B5659005C6776 /* CartFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartFirebaseService.swift; sourceTree = "<group>"; };
 		5E3F6E0A2B7B65FA005C6776 /* CartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartCell.swift; sourceTree = "<group>"; };
 		5E3F6E0C2B7B696B005C6776 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		5E690EEC2B7F9AE40067B410 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductController.swift; sourceTree = "<group>"; };
 		5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		5E7D7E6F2B44ABD80009B8E8 /* ImageNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageNumber.swift; sourceTree = "<group>"; };
@@ -729,6 +731,7 @@
 			children = (
 				5E1A355E2B161B3D0076FDC1 /* FirebaseService.swift */,
 				5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */,
+				5E690EEC2B7F9AE40067B410 /* CacheManager.swift */,
 			);
 			path = NetworkService;
 			sourceTree = "<group>";
@@ -1033,6 +1036,7 @@
 				5E0701922B2733DE00517EA0 /* UIViewController + ext.swift in Sources */,
 				5E9B52242B51222C00F907B6 /* FullScreenImageCell.swift in Sources */,
 				5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */,
+				5E690EED2B7F9AE50067B410 /* CacheManager.swift in Sources */,
 				5E1A35652B17246E0076FDC1 /* ActivityContainerView.swift in Sources */,
 				5E1A354A2B13E81E0076FDC1 /* CartController.swift in Sources */,
 				5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */,

@@ -10,6 +10,7 @@ import UIKit
 // Протокол для обработки полученных данных
 protocol CartModelOutput:AnyObject {
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool)
+    func markProductsDepricated(models: [String])
 }
 
 final class CartController: UIViewController {
@@ -153,6 +154,10 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
 
 // MARK: - CartModelOutput
 extension CartController:CartModelOutput {
+    func markProductsDepricated(models: [String]) {
+        print("markProductsDepricated - \(models)")
+    }
+    
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
         isAnonymouslyUser = isAnonymousUser
         cartProducts = cartProduct

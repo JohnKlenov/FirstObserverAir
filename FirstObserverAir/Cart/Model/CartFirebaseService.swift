@@ -23,14 +23,20 @@ final class CartFirebaseService {
     init(output: CartModelOutput) {
         self.output = output
     }
+    
+    deinit {
+        print("deinit CartFirebaseService")
+    }
 }
 // реализовать метод проверки актуальности добавленных в корзину продуктов на сервере
 extension CartFirebaseService: CartModelInput {
     func checkingActualCurrentCartProducts(cartProducts: [ProductItem]) {
         
-//        var lastError: Error?
         var actualManProducts: [ProductItem]?
         var actualWomanProducts: [ProductItem]?
+        var actualProducts: [ProductItem] = []
+        var currentModels: [String] = []
+        
         DispatchQueue.global().async { [weak self] in
             
             guard let self = self else {
@@ -59,38 +65,64 @@ extension CartFirebaseService: CartModelInput {
                 return
             }
             
+            currentModels = manModels + womanModels
+            
+            
             let semaphore = DispatchSemaphore(value: 0)
             
-            self.checkingProduct.fetchActualCurrentCartProducts(path: "productsMan", models: manModels) { products, error in
-                // code ..
-                if let products = products, error == nil {
-                    actualManProducts = products
+            if !manModels.isEmpty {
+                self.checkingProduct.fetchActualCurrentCartProducts(path: "productsMan", models: manModels) { products, error in
+                    print("fetchActualCurrentCartProducts(path: productsMan")
+                    // code ..
+                    if let products = products, error == nil {
+                        actualManProducts = products
+                    }
+                    semaphore.signal()
                 }
-                semaphore.signal()
+                semaphore.wait()
             }
-            semaphore.wait()
-            
-            self.checkingProduct.fetchActualCurrentCartProducts(path: "productsWoman", models: womanModels) { products, error in
-                // code ..
-                if let products = products, error == nil {
-                    actualWomanProducts = products
+          
+            if !womanModels.isEmpty {
+                self.checkingProduct.fetchActualCurrentCartProducts(path: "productsWoman", models: womanModels) { products, error in
+                    print("fetchActualCurrentCartProducts(path: productsWoman")
+                    // code ..
+                    if let products = products, error == nil {
+                        actualWomanProducts = products
+                    }
+                    semaphore.signal()
                 }
-                semaphore.signal()
+                semaphore.wait()
             }
-            semaphore.wait()
 
             DispatchQueue.main.async {
                 // обновить UI
-                guard let actualWomanProducts = actualWomanProducts, let actualManProducts = actualManProducts else { return }
-                let actualProducts = actualWomanProducts + actualManProducts
-                let models: [String] = actualProducts.compactMap {
+                if let actualWomanProducts = actualWomanProducts {
+                    actualProducts += actualWomanProducts
+                }
+                
+                if let actualManProducts = actualManProducts {
+                    actualProducts += actualManProducts
+                }
+        
+                let actualModels: [String] = actualProducts.compactMap {
                     if let model = $0.model {
                         return model
                     } else {
                         return nil
                     }
                 }
-                print("models - \(models)")
+                
+                ///В missingModels теперь будут элементы, которые есть в currentModels, но отсутствуют в actualModels.
+                let currentModelsSet = Set(currentModels)
+                let actualModelsSet = Set(actualModels)
+                let missingModels = currentModelsSet.subtracting(actualModelsSet)
+                
+                print("missingModels - \(missingModels)")
+                print("models - \(actualModels)")
+                
+                if !missingModels.isEmpty {
+                    self.output?.markProductsDepricated(models: Array(missingModels))
+                }
             }
         }
     }

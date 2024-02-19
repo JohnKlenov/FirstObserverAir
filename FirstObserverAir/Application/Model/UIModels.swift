@@ -76,6 +76,7 @@ struct ProductItem: Hashable {
     let shops: [String]?
     let originalContent: String?
     let gender: String?
+    let isNotAvailoble: Bool?
     init(dict: [String: Any]) {
         brand = dict["brand"] as? String
         model = dict["model"] as? String
@@ -91,6 +92,27 @@ struct ProductItem: Hashable {
         shops = dict["shops"] as? [String]
         originalContent = dict["originalContent"] as? String
         gender = dict["gender"] as? String
+        isNotAvailoble = dict["isNotAvailoble"] as? Bool
+    }
+    
+    var dictionaryRepresentation: [String: Any] {
+        return [
+            "brand": brand as Any,
+            "model": model as Any,
+            "category": category as Any,
+            "priorityIndex": priorityIndex as Any,
+            "strengthIndex": strengthIndex as Any,
+            "season": season as Any,
+            "color": color as Any,
+            "material": material as Any,
+            "description": description as Any,
+            "price": price as Any,
+            "refImage": refImage as Any,
+            "shops": shops as Any,
+            "originalContent": originalContent as Any,
+            "gender": gender as Any,
+            "isNotAvailoble": isNotAvailoble as Any
+        ]
     }
 }
 

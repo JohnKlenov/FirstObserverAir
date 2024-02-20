@@ -467,6 +467,7 @@ private extension ProductController {
         }
     }
     
+    /// сравнение для активации addedButton должно быть по id
     @objc func addItemToCartPressed(_ sender: UIButton) {
         /// если нет стабильного подключения
         /// completion в addItemForCartProduct не срабатывает и спинер крутится

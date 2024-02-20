@@ -82,6 +82,7 @@ extension ProductFirebaseService: ProductModelInput {
 // MARK: - Seeting
 private extension ProductFirebaseService {
     
+    /// сравнение для активации addedButton должно быть по id
     func addItemToCart(currentModel:String, gender: String) -> Bool {
         guard let cartProduct = serviceFB.currentCartProducts else {
             print("Returned message for analytic FB Crashlytics error ProductFirebaseService func addItemToCart(currentModel:String) -> Bool")

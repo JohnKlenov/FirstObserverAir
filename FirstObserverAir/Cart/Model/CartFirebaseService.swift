@@ -48,6 +48,7 @@ private extension CartFirebaseService {
     }
     
     func getProductModels(from cartProducts: [ProductItem]) -> ProductModels {
+        /// если мы ишем по id то можем не привязываться к gender
         let manModels: [String] = cartProducts.compactMap {
             if $0.gender == "Мужские", let model = $0.model {
                 return model
@@ -67,7 +68,7 @@ private extension CartFirebaseService {
         return ProductModels(manModels: manModels, womanModels: womanModels)
     }
     
-    func updateUI(with actualProducts: [ProductItem], currentModels: [String]) {
+    func updateUI(cartProduct: [ProductItem], with actualProducts: [ProductItem], currentModels: [String]) {
         let actualModels: [String] = actualProducts.compactMap { $0.model }
         
         let currentModelsSet = Set(currentModels)
@@ -78,13 +79,78 @@ private extension CartFirebaseService {
         print("models - \(actualModels)")
         
         if !missingModels.isEmpty {
-            self.output?.markProductsDepricated(models: Array(missingModels))
+            let (updateCartProducts, updatedAvailable)  = updateCartProducts(products: cartProduct, with: Array(missingModels))
+            addItemsForCartProducts(updatedAvailable: updatedAvailable)
+            self.output?.updateOutdatedProducts(products: updateCartProducts)
         }
     }
+    
+    func updateCartProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
+        var cartProducts = products
+        // Находим устаревшие продукты, которые есть в models
+        let available = cartProducts.filter { product in
+            guard let model = product.model, product.isNotAvailoble == nil  else { return false }
+            return models.contains(model)
+        }
+        
+        // Удаляем устаревшие продукты из cartProducts
+        cartProducts.removeAll { product in
+            guard let model = product.model, product.isNotAvailoble == nil  else { return false }
+            return models.contains(model)
+        }
+        
+        /// сравнение для активации addedButton должно быть по id
+        // Обновляем поля продуктов в устаревших продуктах
+        let updatedAvailable = available.map { product -> ProductItem in
+            var dict = product.dictionaryRepresentation
+            dict["category"] = nil
+            dict["strengthIndex"] = nil
+            dict["season"] = nil
+            dict["color"] = nil
+            dict["material"] = nil
+            dict["description"] = nil
+            dict["price"] = nil
+            dict["refImage"] = nil
+            dict["shops"] = ["Нет в наличии"]
+            dict["originalContent"] = nil
+            dict["gender"] = nil
+            dict["isNotAvailoble"] = true
+            return ProductItem(dict: dict)
+        }
+        
+        // Добавляем обновленные продукты обратно в cartProducts
+        cartProducts.append(contentsOf: updatedAvailable)
+        return (cartProducts, updatedAvailable)
+    }
+    
+    func addItemsForCartProducts(updatedAvailable: [ProductItem]) {
+//        let models: [String] = updatedAvailable.compactMap { $0.model }
+//        serviceFB.currentCartProducts = replaceProducts(in: <#T##[ProductItem]#>, with: <#T##[String]#>, newItem: <#T##ProductItem#>)
+        
+//        updatedAvailable.forEach { product in
+//            let dict = product.dictionaryRepresentation.compactMapValues { $0 }
+//            guard let model = product.model, !model.isEmpty else { return }
+//            serviceFB.currentCartProducts = replaceProducts(in: serviceFB.currentCartProducts ?? [], with: [model], newItem: product)
+//            serviceFB.addItemForCartProduct(item: dict, nameDocument: model)
+//        }
+    }
+    
+    func replaceProducts(in cartProducts: [ProductItem], with models: [String], newItem: ProductItem) -> [ProductItem] {
+        return cartProducts.map { product in
+            if let model = product.model, models.contains(model) {
+                return newItem
+            } else {
+                return product
+            }
+        }
+    }
+
 }
 
 // реализовать метод проверки актуальности добавленных в корзину продуктов на сервере
 extension CartFirebaseService: CartModelInput {
+    
+  
     
     func checkingActualCurrentCartProducts(cartProducts: [ProductItem]) {
         var actualProducts: [ProductItem] = []
@@ -120,7 +186,7 @@ extension CartFirebaseService: CartModelInput {
                     semaphore.wait()
                     
                     DispatchQueue.main.async {
-                        self.updateUI(with: actualProducts, currentModels: currentModels)
+                        self.updateUI(cartProduct: cartProducts, with: actualProducts, currentModels: currentModels)
                     }
                 }
             }

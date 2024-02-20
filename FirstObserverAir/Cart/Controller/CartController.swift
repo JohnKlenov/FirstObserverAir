@@ -10,7 +10,7 @@ import UIKit
 // Протокол для обработки полученных данных
 protocol CartModelOutput:AnyObject {
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool)
-    func markProductsDepricated(models: [String])
+    func updateOutdatedProducts(products: [ProductItem])
 }
 
 final class CartController: UIViewController {
@@ -94,45 +94,6 @@ private extension CartController {
         ///Когда вы заканчиваете внесение изменений, вы вызываете tableView.endUpdates(), и все ваши изменения будут анимированы одновременно.
         tableView.endUpdates()
     }
-    
-    func updateCartProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
-        var cartProducts = products
-        // Находим продукты, которые есть в models
-        let available = cartProducts.filter { product in
-            guard let model = product.model else { return false }
-            return models.contains(model)
-        }
-        
-        // Удаляем найденные продукты из cartProducts
-        cartProducts.removeAll { product in
-            guard let model = product.model else { return false }
-            return models.contains(model)
-        }
-        
-        // Обновляем поля продуктов в available
-        let updatedAvailable = available.map { product -> ProductItem in
-            var dict = product.dictionaryRepresentation
-            dict["model"] = "Нет в наличии"
-            dict["category"] = nil
-            dict["strengthIndex"] = nil
-            dict["season"] = nil
-            dict["color"] = nil
-            dict["material"] = nil
-            dict["description"] = nil
-            dict["price"] = nil
-            dict["refImage"] = nil
-            dict["shops"] = nil
-            dict["originalContent"] = nil
-            dict["gender"] = nil
-            dict["isNotAvailoble"] = true
-            return ProductItem(dict: dict)
-        }
-        
-        // Добавляем обновленные продукты обратно в cartProducts
-        cartProducts.append(contentsOf: updatedAvailable)
-        return (cartProducts, available)
-    }
-//    updateCartProducts(&cartProducts, with: models)
 }
 
 // MARK: - Layout
@@ -193,19 +154,8 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
 
 // MARK: - CartModelOutput
 extension CartController:CartModelOutput {
-    func markProductsDepricated(models: [String]) {
-        ///находим в cartProducts товар который отстутствует в продаже у магазина
-        ///для этого ProductItem чистим поля: все поля кроме priorityIndex, brand и model = "Нет в наличии"
-        ///Так как мы осуществляем активацию кнопки добавить по полю model
-        ///И если вдруг товар будет возобнавлен в продажу мы в поле model = "Нет в наличии"
-        ///активируем поле isNotAvailoble = true
-        ///placemark - xmark
-        ///в didSet перед каждым вызовом кода разворачиваем isNotAvailoble
-        ///добавляем модель обратно в массив удаляя прошлый объект
-        
-        ///все устаревшие продукты с измененными полями отправляем на user/id/cartProducts
-        print("markProductsDepricated - \(models)")
-        let (updatedCartProducts, availableProducts)  = updateCartProducts(products: cartProducts, with: models)
+    func updateOutdatedProducts(products: [ProductItem]) {
+        cartProducts = products
     }
     
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
@@ -231,3 +181,45 @@ extension CartController: CartViewDelegate {
         tabBarController?.selectedIndex = 1
     }
 }
+
+
+
+// MARK: - Trash
+
+//    func updateCartProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
+//        var cartProducts = products
+//        // Находим устаревшие продукты, которые есть в models
+//        let available = cartProducts.filter { product in
+//            guard let model = product.model else { return false }
+//            return models.contains(model)
+//        }
+//
+//        // Удаляем устаревшие продукты из cartProducts
+//        cartProducts.removeAll { product in
+//            guard let model = product.model else { return false }
+//            return models.contains(model)
+//        }
+//
+//        /// сравнение для активации addedButton должно быть по id
+//        // Обновляем поля продуктов в устаревших продуктах
+//        let updatedAvailable = available.map { product -> ProductItem in
+//            var dict = product.dictionaryRepresentation
+//            dict["category"] = nil
+//            dict["strengthIndex"] = nil
+//            dict["season"] = nil
+//            dict["color"] = nil
+//            dict["material"] = nil
+//            dict["description"] = nil
+//            dict["price"] = nil
+//            dict["refImage"] = nil
+//            dict["shops"] = ["Нет в наличии"]
+//            dict["originalContent"] = nil
+//            dict["gender"] = nil
+//            dict["isNotAvailoble"] = true
+//            return ProductItem(dict: dict)
+//        }
+//
+//        // Добавляем обновленные продукты обратно в cartProducts
+//        cartProducts.append(contentsOf: updatedAvailable)
+//        return (cartProducts, updatedAvailable)
+//    }

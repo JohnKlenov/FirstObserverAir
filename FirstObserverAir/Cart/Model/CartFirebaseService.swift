@@ -82,10 +82,12 @@ private extension CartFirebaseService {
             let (updateCartProducts, updatedAvailable)  = updateCartProducts(products: cartProduct, with: Array(missingModels))
             addItemsForCartProducts(updatedAvailable: updatedAvailable)
             self.output?.updateOutdatedProducts(products: updateCartProducts)
+            serviceFB.currentCartProducts = updateCartProducts
         }
     }
     
     func updateCartProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
+        /// что если available пустой?
         var cartProducts = products
         // Находим устаревшие продукты, которые есть в models
         let available = cartProducts.filter { product in
@@ -124,27 +126,13 @@ private extension CartFirebaseService {
     }
     
     func addItemsForCartProducts(updatedAvailable: [ProductItem]) {
-//        let models: [String] = updatedAvailable.compactMap { $0.model }
-//        serviceFB.currentCartProducts = replaceProducts(in: <#T##[ProductItem]#>, with: <#T##[String]#>, newItem: <#T##ProductItem#>)
-        
-//        updatedAvailable.forEach { product in
-//            let dict = product.dictionaryRepresentation.compactMapValues { $0 }
-//            guard let model = product.model, !model.isEmpty else { return }
-//            serviceFB.currentCartProducts = replaceProducts(in: serviceFB.currentCartProducts ?? [], with: [model], newItem: product)
-//            serviceFB.addItemForCartProduct(item: dict, nameDocument: model)
-//        }
-    }
-    
-    func replaceProducts(in cartProducts: [ProductItem], with models: [String], newItem: ProductItem) -> [ProductItem] {
-        return cartProducts.map { product in
-            if let model = product.model, models.contains(model) {
-                return newItem
-            } else {
-                return product
-            }
+
+        updatedAvailable.forEach { product in
+            let dict = product.dictionaryRepresentation.compactMapValues { $0 }
+            guard let model = product.model, !model.isEmpty else { return }
+            serviceFB.addItemForCartProduct(item: dict, nameDocument: model)
         }
     }
-
 }
 
 // реализовать метод проверки актуальности добавленных в корзину продуктов на сервере

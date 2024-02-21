@@ -114,14 +114,19 @@ private extension CartCell {
 extension CartCell {
     
     func configureCell(model: ProductItem) {
-//        let placeholderImage = UIImage(systemName: "photo")
-//        placeholderImage?.withRenderingMode(.alwaysTemplate)
+        let placeholderImage = UIImage(systemName: "xmark")
+        placeholderImage?.withRenderingMode(.alwaysTemplate)
 
         if let firstRef = model.refImage?.first {
             let urlRef = storage.reference(forURL: firstRef)
             self.imageCell.sd_setImage(with: urlRef, placeholderImage: nil)
         } else {
-            imageCell.image = nil
+            if let _ = model.isNotAvailoble {
+                imageCell.image = placeholderImage
+            } else {
+                imageCell.image = nil
+            }
+            
         }
         brandLabel.text = model.brand
         modelLabel.text = model.model

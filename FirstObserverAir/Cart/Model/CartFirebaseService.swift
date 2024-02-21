@@ -47,6 +47,7 @@ private extension CartFirebaseService {
         }
     }
     
+    ///получаем список моделей для мужчин и женщин
     func getProductModels(from cartProducts: [ProductItem]) -> ProductModels {
         /// если мы ишем по id то можем не привязываться к gender
         let manModels: [String] = cartProducts.compactMap {
@@ -68,29 +69,40 @@ private extension CartFirebaseService {
         return ProductModels(manModels: manModels, womanModels: womanModels)
     }
     
-    func updateUI(cartProduct: [ProductItem], with actualProducts: [ProductItem], currentModels: [String]) {
+    ///получаем список устаревшие модели
+    ///тут нужно продумать возврат [] если outdatedModels уже product.isNotAvailable != nil
+    ///тогда не будет лишний раз обновлятся UI
+    func getOutdatedModels(with actualProducts: [ProductItem], currentModels: [String]) -> [String] {
+
         let actualModels: [String] = actualProducts.compactMap { $0.model }
         
         let currentModelsSet = Set(currentModels)
         let actualModelsSet = Set(actualModels)
-        let missingModels = currentModelsSet.subtracting(actualModelsSet)
+        let outdatedModels = currentModelsSet.subtracting(actualModelsSet)
         
-        print("missingModels - \(missingModels)")
-        print("models - \(actualModels)")
+        print("outdatedModels - \(outdatedModels)")
+        print("actualModels - \(actualModels)")
+        return Array(outdatedModels)
+    }
+    
+    func updateUI(cartProduct: [ProductItem], outdatedModels: [String]) {
         
-        if !missingModels.isEmpty {
-            let (updateCartProducts, updatedAvailable)  = updateCartProducts(products: cartProduct, with: Array(missingModels))
-            addItemsForCartProducts(updatedAvailable: updatedAvailable)
-            self.output?.updateOutdatedProducts(products: updateCartProducts)
+        if !outdatedModels.isEmpty {
+            let (updateCartProducts, modifiedProducts)  = changeOutdatedProducts(products: cartProduct, with: outdatedModels)
             serviceFB.currentCartProducts = updateCartProducts
+            output?.updateOutdatedProducts(products: updateCartProducts)
+            addItemsToRemoteCartProducts(modifiedProducts: modifiedProducts)
+        } else {
+            print("all cartProduct actual")
         }
     }
     
-    func updateCartProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
+    ///изменяем поля для устревших продуктов
+    func changeOutdatedProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
         /// что если available пустой?
         var cartProducts = products
         // Находим устаревшие продукты, которые есть в models
-        let available = cartProducts.filter { product in
+        let outdatedProducts = cartProducts.filter { product in
             guard let model = product.model, product.isNotAvailoble == nil  else { return false }
             return models.contains(model)
         }
@@ -103,7 +115,7 @@ private extension CartFirebaseService {
         
         /// сравнение для активации addedButton должно быть по id
         // Обновляем поля продуктов в устаревших продуктах
-        let updatedAvailable = available.map { product -> ProductItem in
+        let modifiedProducts = outdatedProducts.map { product -> ProductItem in
             var dict = product.dictionaryRepresentation
             dict["category"] = nil
             dict["strengthIndex"] = nil
@@ -121,13 +133,13 @@ private extension CartFirebaseService {
         }
         
         // Добавляем обновленные продукты обратно в cartProducts
-        cartProducts.append(contentsOf: updatedAvailable)
-        return (cartProducts, updatedAvailable)
+        cartProducts.append(contentsOf: modifiedProducts)
+        return (cartProducts, modifiedProducts)
     }
     
-    func addItemsForCartProducts(updatedAvailable: [ProductItem]) {
+    func addItemsToRemoteCartProducts(modifiedProducts: [ProductItem]) {
 
-        updatedAvailable.forEach { product in
+        modifiedProducts.forEach { product in
             let dict = product.dictionaryRepresentation.compactMapValues { $0 }
             guard let model = product.model, !model.isEmpty else { return }
             serviceFB.addItemForCartProduct(item: dict, nameDocument: model)
@@ -139,7 +151,7 @@ private extension CartFirebaseService {
 extension CartFirebaseService: CartModelInput {
     
   
-    
+    ///делаем запрос в CloudFirestore на актуальность товаров в корзине
     func checkingActualCurrentCartProducts(cartProducts: [ProductItem]) {
         var actualProducts: [ProductItem] = []
         var currentModels: [String] = []
@@ -174,7 +186,8 @@ extension CartFirebaseService: CartModelInput {
                     semaphore.wait()
                     
                     DispatchQueue.main.async {
-                        self.updateUI(cartProduct: cartProducts, with: actualProducts, currentModels: currentModels)
+                        let outdatedModels = self.getOutdatedModels(with: actualProducts, currentModels: currentModels)
+                        self.updateUI(cartProduct: cartProducts, outdatedModels: outdatedModels)
                     }
                 }
             }

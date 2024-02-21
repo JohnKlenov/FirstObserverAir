@@ -25,9 +25,9 @@ final class FirebaseService {
     }
     var currentCartProducts:[ProductItem]? {
         didSet {
-//            currentCartProducts?.forEach({ item in
-//                print("product - \(String(describing: item.model))")
-//            })
+            currentCartProducts?.forEach({ item in
+                print("product - \(String(describing: item.model))")
+            })
 //            updateCartProducts()
         }
     }

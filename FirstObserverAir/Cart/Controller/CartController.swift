@@ -147,6 +147,10 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let product = cartProducts[indexPath.row]
+        guard product.isNotAvailoble == nil else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
         let productVC = BuilderViewController.buildProductController(product: product)
         navigationController?.pushViewController(productVC, animated: true)
     }
@@ -156,6 +160,7 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
 extension CartController:CartModelOutput {
     func updateOutdatedProducts(products: [ProductItem]) {
         cartProducts = products
+        tableView.reloadData()
     }
     
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {

@@ -30,26 +30,18 @@ extension ProductFirebaseService: ProductModelInput {
 
     func addItemForCartProduct(_ productItem: ProductItem) {
         
-        serviceFB.currentCartProducts?.append(productItem)
+//        serviceFB.currentCartProducts?.append(productItem)
+        if let index = serviceFB.currentCartProducts?.firstIndex(where: { $0.model == productItem.model && $0.gender == productItem.gender }) {
+            // Элемент найден, заменяем его
+            print("addItemForCartProduct - Элемент найден, заменяем его в currentCartProducts")
+            serviceFB.currentCartProducts?[index] = productItem
+        } else {
+            // Элемент не найден, добавляем его
+            print("addItemForCartProduct - Элемент не найден, добавляем его в currentCartProducts")
+            serviceFB.currentCartProducts?.append(productItem)
+        }
+
         guard let model = productItem.model, !model.isEmpty else { return }
-        
-//        // Преобразуйте ваш объект ProductItem в словарь
-//        let data: [String: Any?] = [
-//            "brand": productItem.brand,
-//            "model": productItem.model,
-//            "category": productItem.category,
-//            "priorityIndex": productItem.priorityIndex,
-//            "strengthIndex": productItem.strengthIndex,
-//            "season": productItem.season,
-//            "color": productItem.color,
-//            "material": productItem.material,
-//            "description": productItem.description,
-//            "price": productItem.price,
-//            "refImage": productItem.refImage,
-//            "shops": productItem.shops,
-//            "originalContent": productItem.originalContent,
-//            "gender": productItem.gender
-//        ]
 
         // Удалите из словаря все пары ключ-значение, где значение равно nil
 //        let filteredData = data.compactMapValues { $0 }
@@ -88,7 +80,7 @@ private extension ProductFirebaseService {
             print("Returned message for analytic FB Crashlytics error ProductFirebaseService func addItemToCart(currentModel:String) -> Bool")
             return false
         }
-        return cartProduct.contains { $0.model == currentModel && $0.gender == gender}
+        return cartProduct.contains { $0.model == currentModel && $0.gender == gender && $0.isNotAvailoble == nil}
     }
     
     func createUniqueMallArray(from shops: [Shop]) -> [String] {

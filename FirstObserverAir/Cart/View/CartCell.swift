@@ -28,6 +28,7 @@ final class CartCell: UITableViewCell {
         image.layer.cornerRadius = 4
         image.backgroundColor = .tertiarySystemBackground
         image.clipsToBounds = true
+        image.tintColor = R.Colors.label
         return image
     }()
     
@@ -114,7 +115,8 @@ private extension CartCell {
 extension CartCell {
     
     func configureCell(model: ProductItem) {
-        let placeholderImage = UIImage(systemName: "xmark")
+        let configuration = UIImage.SymbolConfiguration(weight: .ultraLight)
+        let placeholderImage = UIImage(systemName: "xmark", withConfiguration: configuration)
         placeholderImage?.withRenderingMode(.alwaysTemplate)
 
         if let firstRef = model.refImage?.first {
@@ -126,7 +128,6 @@ extension CartCell {
             } else {
                 imageCell.image = nil
             }
-            
         }
         brandLabel.text = model.brand
         modelLabel.text = model.model

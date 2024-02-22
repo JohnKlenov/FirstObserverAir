@@ -80,15 +80,18 @@ private extension CartFirebaseService {
         let actualModelsSet = Set(actualModels)
         let outdatedModels = currentModelsSet.subtracting(actualModelsSet)
         
-        print("outdatedModels - \(outdatedModels)")
         print("actualModels - \(actualModels)")
+        print("outdatedModels - \(outdatedModels)")
         return Array(outdatedModels)
     }
     
     func updateUI(cartProduct: [ProductItem], outdatedModels: [String]) {
         
         if !outdatedModels.isEmpty {
+            print("!outdatedModels.isEmpty")
             let (updateCartProducts, modifiedProducts)  = changeOutdatedProducts(products: cartProduct, with: outdatedModels)
+            print("updateCartProducts - \(updateCartProducts.count)")
+            print("modifiedProducts - \(modifiedProducts.count)")
             serviceFB.currentCartProducts = updateCartProducts
             output?.updateOutdatedProducts(products: updateCartProducts)
             addItemsToRemoteCartProducts(modifiedProducts: modifiedProducts)
@@ -127,7 +130,6 @@ private extension CartFirebaseService {
             dict["refImage"] = nil
             dict["shops"] = ["Нет в наличии"]
             dict["originalContent"] = nil
-            dict["gender"] = nil
             dict["isNotAvailoble"] = true
             return ProductItem(dict: dict)
         }

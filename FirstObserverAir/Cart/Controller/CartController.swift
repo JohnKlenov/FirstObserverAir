@@ -116,17 +116,6 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    ///создаем контекстное меню которое появляется при долгом нажатии
-//    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-//        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-//            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
-//                self.removeCartProduct(tableView: tableView, indexPath: indexPath)
-//            }
-//            return UIMenu(title: "", children: [deleteAction])
-//        }
-//        return configuration
-//    }
-    
     /// добавляем действие по свайпу
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // действие удаления
@@ -138,13 +127,6 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
         return actions
     }
 
-    /// был объявлен устаревшим с ios13
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            removeCartProduct(tableView: tableView, indexPath: indexPath)
-//        }
-//    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let product = cartProducts[indexPath.row]
         guard product.isNotAvailoble == nil else {
@@ -158,6 +140,7 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
 
 // MARK: - CartModelOutput
 extension CartController:CartModelOutput {
+    
     func updateOutdatedProducts(products: [ProductItem]) {
         cartProducts = products
         tableView.reloadData()
@@ -189,42 +172,15 @@ extension CartController: CartViewDelegate {
 
 
 
-// MARK: - Trash
 
-//    func updateCartProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
-//        var cartProducts = products
-//        // Находим устаревшие продукты, которые есть в models
-//        let available = cartProducts.filter { product in
-//            guard let model = product.model else { return false }
-//            return models.contains(model)
+// MARK: - Feature
+///создаем контекстное меню которое появляется при долгом нажатии
+//    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+//        let configuration = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+//            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { _ in
+//                self.removeCartProduct(tableView: tableView, indexPath: indexPath)
+//            }
+//            return UIMenu(title: "", children: [deleteAction])
 //        }
-//
-//        // Удаляем устаревшие продукты из cartProducts
-//        cartProducts.removeAll { product in
-//            guard let model = product.model else { return false }
-//            return models.contains(model)
-//        }
-//
-//        /// сравнение для активации addedButton должно быть по id
-//        // Обновляем поля продуктов в устаревших продуктах
-//        let updatedAvailable = available.map { product -> ProductItem in
-//            var dict = product.dictionaryRepresentation
-//            dict["category"] = nil
-//            dict["strengthIndex"] = nil
-//            dict["season"] = nil
-//            dict["color"] = nil
-//            dict["material"] = nil
-//            dict["description"] = nil
-//            dict["price"] = nil
-//            dict["refImage"] = nil
-//            dict["shops"] = ["Нет в наличии"]
-//            dict["originalContent"] = nil
-//            dict["gender"] = nil
-//            dict["isNotAvailoble"] = true
-//            return ProductItem(dict: dict)
-//        }
-//
-//        // Добавляем обновленные продукты обратно в cartProducts
-//        cartProducts.append(contentsOf: updatedAvailable)
-//        return (cartProducts, updatedAvailable)
+//        return configuration
 //    }

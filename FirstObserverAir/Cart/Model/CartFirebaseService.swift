@@ -34,13 +34,11 @@ final class CartFirebaseService {
     }
 }
 
+// MARK: - Setting
 private extension CartFirebaseService {
     
     func fetchActualCurrentCartProducts(for models: [String], at path: String, completion: @escaping ([ProductItem]?, Error?) -> Void) {
-        guard !models.isEmpty else {
-            print("!models.isEmpty - \(models)")
-            return
-        }
+        guard !models.isEmpty else { return }
         
         checkingProduct.fetchActualCurrentCartProducts(path: path, models: models) { products, error in
             completion(products, error)
@@ -70,8 +68,6 @@ private extension CartFirebaseService {
     }
     
     ///получаем список устаревшие модели
-    ///тут нужно продумать возврат [] если outdatedModels уже product.isNotAvailable != nil
-    ///тогда не будет лишний раз обновлятся UI
     func getOutdatedModels(with actualProducts: [ProductItem], currentModels: [String]) -> [String] {
 
         let actualModels: [String] = actualProducts.compactMap { $0.model }
@@ -79,30 +75,28 @@ private extension CartFirebaseService {
         let currentModelsSet = Set(currentModels)
         let actualModelsSet = Set(actualModels)
         let outdatedModels = currentModelsSet.subtracting(actualModelsSet)
-        
-        print("actualModels - \(actualModels)")
-        print("outdatedModels - \(outdatedModels)")
         return Array(outdatedModels)
     }
-    
+
+
+    ///если outdatedModel появится на сервере снова в корзине он не обновится
     func updateUI(cartProduct: [ProductItem], outdatedModels: [String]) {
         
         if !outdatedModels.isEmpty {
-            print("!outdatedModels.isEmpty")
             let (updateCartProducts, modifiedProducts)  = changeOutdatedProducts(products: cartProduct, with: outdatedModels)
-            print("updateCartProducts - \(updateCartProducts.count)")
-            print("modifiedProducts - \(modifiedProducts.count)")
-            serviceFB.currentCartProducts = updateCartProducts
-            output?.updateOutdatedProducts(products: updateCartProducts)
-            addItemsToRemoteCartProducts(modifiedProducts: modifiedProducts)
-        } else {
-            print("all cartProduct actual")
+            
+            if !modifiedProducts.isEmpty {
+                serviceFB.currentCartProducts = updateCartProducts
+                output?.updateOutdatedProducts(products: updateCartProducts)
+                addItemsToRemoteCartProducts(modifiedProducts: modifiedProducts)
+            }
         }
     }
     
-    ///изменяем поля для устревших продуктов
+    ///изменяем поля для устревших продуктов + заменяем эти объекты в cartProducts
+    ///возвращаем общий cartProducts и измененные продукты
     func changeOutdatedProducts(products: [ProductItem], with models: [String]) -> ([ProductItem], [ProductItem]) {
-        /// что если available пустой?
+       
         var cartProducts = products
         // Находим устаревшие продукты, которые есть в models
         let outdatedProducts = cartProducts.filter { product in
@@ -139,6 +133,7 @@ private extension CartFirebaseService {
         return (cartProducts, modifiedProducts)
     }
     
+    ///перезаписываем в Cloud Firestore устаревшие продукты
     func addItemsToRemoteCartProducts(modifiedProducts: [ProductItem]) {
 
         modifiedProducts.forEach { product in
@@ -149,10 +144,10 @@ private extension CartFirebaseService {
     }
 }
 
-// реализовать метод проверки актуальности добавленных в корзину продуктов на сервере
+
+// MARK: - CartModelInput
 extension CartFirebaseService: CartModelInput {
     
-  
     ///делаем запрос в CloudFirestore на актуальность товаров в корзине
     func checkingActualCurrentCartProducts(cartProducts: [ProductItem]) {
         var actualProducts: [ProductItem] = []
@@ -164,7 +159,6 @@ extension CartFirebaseService: CartModelInput {
             let productModels = self.getProductModels(from: cartProducts)
             
             if productModels.manModels.count + productModels.womanModels.count != cartProducts.count {
-                print("Сумма элементов в manModels и womanModels не равна cartProducts.count")
                 return
             }
             currentModels = productModels.manModels + productModels.womanModels
@@ -208,104 +202,3 @@ extension CartFirebaseService: CartModelInput {
         serviceFB.removeItemFromCartProduct(model)
     }
 }
-
-
-
-// MARK: - Trash
-
-//    func checkingActualCurrentCartProducts(cartProducts: [ProductItem]) {
-//
-//        var actualManProducts: [ProductItem]?
-//        var actualWomanProducts: [ProductItem]?
-//        var actualProducts: [ProductItem] = []
-//        var currentModels: [String] = []
-//
-//        DispatchQueue.global().async { [weak self] in
-//
-//            guard let self = self else {
-//                print("CartFirebaseService guard let self = self else ")
-//                return
-//            }
-//
-//            let manModels: [String] = cartProducts.compactMap {
-//                if $0.gender == "Мужские", let model = $0.model {
-//                    return model
-//                } else {
-//                    return nil
-//                }
-//            }
-//
-//            let womanModels: [String] = cartProducts.compactMap {
-//                if $0.gender == "Женские", let model = $0.model {
-//                    return model
-//                } else {
-//                    return nil
-//                }
-//            }
-//
-//            if manModels.count + womanModels.count != cartProducts.count {
-//                print("Сумма элементов в manModels и womanModels не равна cartProducts.count")
-//                return
-//            }
-//
-//            currentModels = manModels + womanModels
-//
-//
-//            let semaphore = DispatchSemaphore(value: 0)
-//
-//            if !manModels.isEmpty {
-//                self.checkingProduct.fetchActualCurrentCartProducts(path: "productsMan", models: manModels) { products, error in
-//                    print("fetchActualCurrentCartProducts(path: productsMan")
-//                    // code ..
-//                    if let products = products, error == nil {
-//                        actualManProducts = products
-//                    }
-//                    semaphore.signal()
-//                }
-//                semaphore.wait()
-//            }
-//
-//            if !womanModels.isEmpty {
-//                self.checkingProduct.fetchActualCurrentCartProducts(path: "productsWoman", models: womanModels) { products, error in
-//                    print("fetchActualCurrentCartProducts(path: productsWoman")
-//                    // code ..
-//                    if let products = products, error == nil {
-//                        actualWomanProducts = products
-//                    }
-//                    semaphore.signal()
-//                }
-//                semaphore.wait()
-//            }
-//
-//            DispatchQueue.main.async {
-//                // обновить UI
-//                if let actualWomanProducts = actualWomanProducts {
-//                    actualProducts += actualWomanProducts
-//                }
-//
-//                if let actualManProducts = actualManProducts {
-//                    actualProducts += actualManProducts
-//                }
-//
-//                let actualModels: [String] = actualProducts.compactMap {
-//                    if let model = $0.model {
-//                        return model
-//                    } else {
-//                        return nil
-//                    }
-//                }
-//
-//                ///В missingModels теперь будут элементы, которые есть в currentModels, но отсутствуют в actualModels.
-//                let currentModelsSet = Set(currentModels)
-//                let actualModelsSet = Set(actualModels)
-//                let missingModels = currentModelsSet.subtracting(actualModelsSet)
-//
-//                print("missingModels - \(missingModels)")
-//                print("models - \(actualModels)")
-//
-//                if !missingModels.isEmpty {
-//                    self.output?.markProductsDepricated(models: Array(missingModels))
-//                }
-//            }
-//        }
-//    }

@@ -6,7 +6,6 @@
 //
 
 import UIKit
-//import FirebaseStorage
 import FirebaseStorageUI
 
 class ShopCell: UICollectionViewCell {
@@ -18,7 +17,6 @@ class ShopCell: UICollectionViewCell {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.contentMode = .scaleAspectFit
-//        image.backgroundColor = .tertiarySystemBackground
         image.tintColor = R.Colors.label
         return image
     }()
@@ -70,15 +68,12 @@ private extension ShopCell {
 // MARK: - Setting
 extension ShopCell {
     func configureCell(model: Item) {
-        let placeholderImage = UIImage(systemName: "photo")
-        
         if let urlString = model.shop?.refImage {
             let urlRef = storage.reference(forURL: urlString)
-            imageView.sd_setImage(with: urlRef, placeholderImage: placeholderImage) { (image, error, cacheType, url) in
+            imageView.sd_setImage(with: urlRef, placeholderImage: nil) { (image, error, cacheType, url) in
                 guard let image = image, error == nil else {
-                    
                     // Обработка ошибок
-                    self.imageView.image = placeholderImage
+                    self.imageView.image = nil
                     print("Returned message for analytic FB Crashlytics error ShopCell - \(String(describing: error?.localizedDescription))")
                     return
                 }

@@ -128,3 +128,22 @@ extension UIViewController {
     }
 }}
 
+// а что если несколько VC подписанных будут в памяти какое будет поведение?
+
+// MARK: - UIAdaptivePresentationControllerDelegate
+extension UIViewController: UIAdaptivePresentationControllerDelegate {
+    ///В iOS 13 и более новых версиях, методы viewWillDisappear(_:) и viewWillAppear(_:) действительно не вызываются автоматически при появлении или исчезновении модального представления. Ваш код с UIAdaptivePresentationControllerDelegate обходит это ограничение, позволяя вам выполнить необходимую логику при закрытии модального представления.
+    
+    ///вызывается, когда контроллер презентации закрывается.
+    ///Внутри этого метода, если версия iOS равна или больше 13, вызываются методы viewWillDisappear(_:) и viewWillAppear(_:). Это может быть полезно, если вы хотите выполнить определенные действия, когда представление исчезает или появляется, например, обновить данные или изменить состояние интерфейса.
+    ///Однако, стоит отметить, что обычно методы viewWillDisappear(_:) и viewWillAppear(_:) вызываются автоматически системой в определенные моменты жизненного цикла представления, и их не рекомендуется вызывать вручную. В данном случае, они вызываются вручную, чтобы имитировать поведение, которое было до iOS 13, когда эти методы вызывались автоматически при закрытии модального представления.
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        if #available(iOS 13, *) {
+            //Call viewWillAppear only in iOS 13
+            viewWillDisappear(true)
+            viewWillAppear(true)
+        }
+    }
+}
+
+

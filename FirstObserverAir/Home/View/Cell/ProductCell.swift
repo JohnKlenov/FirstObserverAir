@@ -6,7 +6,6 @@
 //
 
 import UIKit
-//import FirebaseStorage
 import FirebaseStorageUI
 
 class ProductCell: UICollectionViewCell {
@@ -136,9 +135,6 @@ extension ProductCell {
     }
     
     func configureCell(model: ProductItem) {
-       
-//        let placeholderImage = UIImage(systemName: "photo")
-//        placeholderImage?.withRenderingMode(.alwaysTemplate)
         
         if let firstRef = model.refImage?.first {
             let urlRef = storage.reference(forURL: firstRef)
@@ -151,8 +147,6 @@ extension ProductCell {
         shopLabel.text = model.shops?.first
         priceLabel.text = "\(model.price ?? 0) BYN"
     }
-    //        let configuration = UIImage.SymbolConfiguration(pointSize: 0.5, weight: .ultraLight, scale: .default)
-    //        let imageSymbo = placeholderImage?.withConfiguration(configuration)
 }
 
 // MARK: - Layout
@@ -188,22 +182,3 @@ private extension ProductCell {
 }
 
 
-
-
-
-
-
-// MARK: Trash
-//    func configureCell(model: Item) {
-//
-//        if let firstRef = model.popularProduct?.refImage?.first {
-//            let urlRef = storage.reference(forURL: firstRef)
-//            self.imageView.sd_setImage(with: urlRef, placeholderImage: UIImage(named: "DefaultImage"))
-//        } else {
-//            imageView.image = UIImage(named: "DefaultImage")
-//        }
-//        brandLabel.text = model.popularProduct?.brand
-//        modelLabel.text = model.popularProduct?.model
-//        shopLabel.text = model.popularProduct?.shops?.first
-//        priceLabel.text = "\(model.popularProduct?.price ?? 0) BYN"
-//    }

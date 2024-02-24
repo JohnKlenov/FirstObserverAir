@@ -11,7 +11,6 @@ import Foundation
 protocol ProductModelInput: AnyObject {
     func fetchPinAndShopForProduct(shops: [String]?, model: String?, gender:String?)
     func addItemForCartProduct(_ productItem: ProductItem)
-    //    func addItemForCartProduct(_ productItem: ProductItem, completion: @escaping (Error?) -> Void)
 }
 
 final class ProductFirebaseService {
@@ -30,7 +29,6 @@ extension ProductFirebaseService: ProductModelInput {
 
     func addItemForCartProduct(_ productItem: ProductItem) {
         
-//        serviceFB.currentCartProducts?.append(productItem)
         if let index = serviceFB.currentCartProducts?.firstIndex(where: { $0.model == productItem.model && $0.gender == productItem.gender }) {
             // Элемент найден, заменяем его
             print("addItemForCartProduct - Элемент найден, заменяем его в currentCartProducts")
@@ -44,7 +42,6 @@ extension ProductFirebaseService: ProductModelInput {
         guard let model = productItem.model, !model.isEmpty else { return }
 
         // Удалите из словаря все пары ключ-значение, где значение равно nil
-//        let filteredData = data.compactMapValues { $0 }
         let filteredData = productItem.dictionaryRepresentation.compactMapValues { $0 }
         serviceFB.addItemForCartProduct(item: filteredData, nameDocument: model)
     }
@@ -132,38 +129,3 @@ private extension ProductFirebaseService {
     }
 }
 
-
-
-
-// MARK: - Trash
-
-//    func addItemForCartProduct(_ productItem: ProductItem, completion: @escaping (Error?) -> Void) {
-//
-//        guard let model = productItem.model, !model.isEmpty else { return }
-//
-//        // Преобразуйте ваш объект ProductItem в словарь
-//        let data: [String: Any?] = [
-//            "brand": productItem.brand,
-//            "model": productItem.model,
-//            "category": productItem.category,
-//            "priorityIndex": productItem.priorityIndex,
-//            "strengthIndex": productItem.strengthIndex,
-//            "season": productItem.season,
-//            "color": productItem.color,
-//            "material": productItem.material,
-//            "description": productItem.description,
-//            "price": productItem.price,
-//            "refImage": productItem.refImage,
-//            "shops": productItem.shops,
-//            "originalContent": productItem.originalContent,
-//            "gender": productItem.gender
-//        ]
-//
-//        // Удалите из словаря все пары ключ-значение, где значение равно nil
-//        let filteredData = data.compactMapValues { $0 }
-//        serviceFB.addItemForCartProduct(item: filteredData, nameDocument: model) { error in
-//            completion(error)
-//        }
-//
-//    }
-    

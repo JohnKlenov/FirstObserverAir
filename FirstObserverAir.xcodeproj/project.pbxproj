@@ -70,6 +70,12 @@
 		5E8813562AF4D8180044F299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5E8813552AF4D8180044F299 /* Assets.xcassets */; };
 		5E8813672AF4DB7A0044F299 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5E8813662AF4DB7A0044F299 /* GoogleService-Info.plist */; };
 		5E8C4CB32B6E81E100756DDA /* HeaderCatalogSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8C4CB22B6E81E100756DDA /* HeaderCatalogSection.swift */; };
+		5E8D30DB2B8A7800009402BD /* MarkRefactoring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30DA2B8A7800009402BD /* MarkRefactoring.swift */; };
+		5E8D30E12B8A7A5D009402BD /* Validators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E02B8A7A5D009402BD /* Validators.swift */; };
+		5E8D30E32B8A7B2B009402BD /* EyeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E22B8A7B2B009402BD /* EyeButton.swift */; };
+		5E8D30E52B8A7B61009402BD /* AuthTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E42B8A7B61009402BD /* AuthTextField.swift */; };
+		5E8D30E72B8A7B94009402BD /* AlertTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E62B8A7B94009402BD /* AlertTopView.swift */; };
+		5E8D30E92B8A7BF1009402BD /* SignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E82B8A7BF1009402BD /* SignInController.swift */; };
 		5E99AB5C2B358B7C00FA9FD4 /* HomeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E99AB5B2B358B7C00FA9FD4 /* HomeCollectionView.swift */; };
 		5E9B52222B5121E400F907B6 /* FullScreenImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B52212B5121E400F907B6 /* FullScreenImageController.swift */; };
 		5E9B52242B51222C00F907B6 /* FullScreenImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B52232B51222C00F907B6 /* FullScreenImageCell.swift */; };
@@ -160,6 +166,12 @@
 		5E88135A2AF4D8180044F299 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5E8813662AF4DB7A0044F299 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5E8C4CB22B6E81E100756DDA /* HeaderCatalogSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCatalogSection.swift; sourceTree = "<group>"; };
+		5E8D30DA2B8A7800009402BD /* MarkRefactoring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkRefactoring.swift; sourceTree = "<group>"; };
+		5E8D30E02B8A7A5D009402BD /* Validators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validators.swift; sourceTree = "<group>"; };
+		5E8D30E22B8A7B2B009402BD /* EyeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeButton.swift; sourceTree = "<group>"; };
+		5E8D30E42B8A7B61009402BD /* AuthTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTextField.swift; sourceTree = "<group>"; };
+		5E8D30E62B8A7B94009402BD /* AlertTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTopView.swift; sourceTree = "<group>"; };
+		5E8D30E82B8A7BF1009402BD /* SignInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInController.swift; sourceTree = "<group>"; };
 		5E99AB5B2B358B7C00FA9FD4 /* HomeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionView.swift; sourceTree = "<group>"; };
 		5E9B52212B5121E400F907B6 /* FullScreenImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageController.swift; sourceTree = "<group>"; };
 		5E9B52232B51222C00F907B6 /* FullScreenImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageCell.swift; sourceTree = "<group>"; };
@@ -280,6 +292,7 @@
 		5E1148F42B5BC57C0073B2E8 /* ExploreNewFeature  */ = {
 			isa = PBXGroup;
 			children = (
+				5E8D30D92B8A77D1009402BD /* MarkRefactoring */,
 				5E7DE9D42B723D68007B44CC /* Pattern */,
 				5E1148F82B5BC6070073B2E8 /* Date */,
 				5E1148F52B5BC59B0073B2E8 /* View */,
@@ -328,6 +341,7 @@
 				5E1A35302B13DE8A0076FDC1 /* Resources.swift */,
 				5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */,
 				5EFAC99C2B69313300B8A824 /* BuilderViewController.swift */,
+				5E8D30E02B8A7A5D009402BD /* Validators.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -664,6 +678,7 @@
 		5E88134B2AF4D8110044F299 /* FirstObserverAir */ = {
 			isa = PBXGroup;
 			children = (
+				5E8D30DC2B8A78BF009402BD /* SignInController */,
 				5E1148F42B5BC57C0073B2E8 /* ExploreNewFeature  */,
 				5E1148E42B5907180073B2E8 /* MallController */,
 				5E0DE9082B458F7E00F3387C /* MapController */,
@@ -744,6 +759,49 @@
 				5E8813662AF4DB7A0044F299 /* GoogleService-Info.plist */,
 			);
 			path = "Supporting files";
+			sourceTree = "<group>";
+		};
+		5E8D30D92B8A77D1009402BD /* MarkRefactoring */ = {
+			isa = PBXGroup;
+			children = (
+				5E8D30DA2B8A7800009402BD /* MarkRefactoring.swift */,
+			);
+			path = MarkRefactoring;
+			sourceTree = "<group>";
+		};
+		5E8D30DC2B8A78BF009402BD /* SignInController */ = {
+			isa = PBXGroup;
+			children = (
+				5E8D30DF2B8A78EC009402BD /* Controller */,
+				5E8D30DE2B8A78E4009402BD /* Model */,
+				5E8D30DD2B8A78DE009402BD /* View */,
+			);
+			path = SignInController;
+			sourceTree = "<group>";
+		};
+		5E8D30DD2B8A78DE009402BD /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5E8D30E22B8A7B2B009402BD /* EyeButton.swift */,
+				5E8D30E42B8A7B61009402BD /* AuthTextField.swift */,
+				5E8D30E62B8A7B94009402BD /* AlertTopView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5E8D30DE2B8A78E4009402BD /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5E8D30DF2B8A78EC009402BD /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5E8D30E82B8A7BF1009402BD /* SignInController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		5E9B521D2B51218600F907B6 /* FullScreenImage */ = {
@@ -985,8 +1043,11 @@
 				5E7DE9E02B73BBF2007B44CC /* FieldFilterFlowLayout.swift in Sources */,
 				5E22B13F2B3C0B0000CDD18A /* ListProductController.swift in Sources */,
 				5E7D7E702B44ABD80009B8E8 /* ImageNumber.swift in Sources */,
+				5E8D30DB2B8A7800009402BD /* MarkRefactoring.swift in Sources */,
 				5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */,
 				5E1A35352B13DFED0076FDC1 /* UIColor + ext.swift in Sources */,
+				5E8D30E52B8A7B61009402BD /* AuthTextField.swift in Sources */,
+				5E8D30E12B8A7A5D009402BD /* Validators.swift in Sources */,
 				5E22B1392B3AE91700CDD18A /* AllShopCell.swift in Sources */,
 				5E1A355D2B15FF720076FDC1 /* LaunchScreenController.swift in Sources */,
 				5E1A35552B14D2760076FDC1 /* PresentController.swift in Sources */,
@@ -996,6 +1057,7 @@
 				5E1148FE2B5BCDB60073B2E8 /* MallService.swift in Sources */,
 				5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */,
 				5EFAC9A62B6BD29400B8A824 /* CatalogFirebaseService.swift in Sources */,
+				5E8D30E92B8A7BF1009402BD /* SignInController.swift in Sources */,
 				5E1A35592B14D2E70076FDC1 /* ChildContentController.swift in Sources */,
 				5E7DE9D62B723D88007B44CC /* Patterns.swift in Sources */,
 				5EFAC99F2B6A5D6800B8A824 /* ShopCellIntoMall.swift in Sources */,
@@ -1006,6 +1068,7 @@
 				5E7DE9E82B751699007B44CC /* FilterTabBar.swift in Sources */,
 				5E1148FC2B5BC6EA0073B2E8 /* UIApplication + ext.swift in Sources */,
 				5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */,
+				5E8D30E72B8A7B94009402BD /* AlertTopView.swift in Sources */,
 				5E0DE9052B45479700F3387C /* AddToCartAnimationView.swift in Sources */,
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
 				5E1148F72B5BC5BA0073B2E8 /* CustomNavigationBar.swift in Sources */,
@@ -1023,6 +1086,7 @@
 				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
 				5E9B522B2B52ADDE00F907B6 /* MapController.swift in Sources */,
 				5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */,
+				5E8D30E32B8A7B2B009402BD /* EyeButton.swift in Sources */,
 				5EFAC9A12B6A602E00B8A824 /* MapHelper.swift in Sources */,
 				5E1A354E2B13E8700076FDC1 /* ProfileController.swift in Sources */,
 				5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */,

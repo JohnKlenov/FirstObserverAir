@@ -158,17 +158,42 @@ extension CartController:CartModelOutput {
 // MARK: - CartViewDelegate
 extension CartController: CartViewDelegate {
     func didTaplogInButton() {
-//        let signInVC = NewSignInViewController()
-////        signInVC.cartProducts = cartProducts
-//        signInVC.delegate = self
-//        signInVC.presentationController?.delegate = self
-//        present(signInVC, animated: true, completion: nil)
+        let signInVC = NewSignInViewController()
+//        signInVC.cartProducts = cartProducts
+        signInVC.delegate = self
+        signInVC.presentationController?.delegate = self
+        present(signInVC, animated: true, completion: nil)
     }
     
     func didTapCatalogButton() {
         tabBarController?.selectedIndex = 1
     }
 }
+
+extension CartController: SignInViewControllerDelegate {
+    func userIsPermanent() {
+        print("userIsPermanent()")
+        // refactor getCartObservser
+//        managerFB.removeObserverForCartProductsUser()
+        
+//        configureActivityView() ?????
+        
+//        getData` без активного подключения к сети вернет error
+        // ref.observe(.value) or think about it
+        
+        
+//        managerFB.getCartProductOnce { cartProducts in
+//            self.managerFB.userIsAnonymously { [weak self] (isAnonymously) in
+//                self?.isAnonymouslyUser = isAnonymously
+//                self?.cartProducts = cartProducts
+////                self?.activityView.stopAnimating() ?????
+////                self?.activityView.removeFromSuperview() ?????
+//                self?.tableView.reloadData()
+//            }
+//        }
+    }
+}
+
 
 
 

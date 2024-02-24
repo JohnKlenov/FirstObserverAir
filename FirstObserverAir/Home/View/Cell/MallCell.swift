@@ -68,20 +68,13 @@ private extension MallCell {
 // MARK: - Setting
 extension MallCell {
     func configureCell(model:Item, isHiddenTitle:Bool) {
+        
         nameMall.isHidden = isHiddenTitle
-//        let placeholderImage = UIImage(systemName: "photo")
-//        placeholderImage?.withRenderingMode(.alwaysTemplate)
-        
-        let placeholderImage = UIImage(systemName: "photo")
-        placeholderImage?.withRenderingMode(.alwaysTemplate)
-        let configuration = UIImage.SymbolConfiguration(pointSize: 0.5, weight: .ultraLight, scale: .default)
-        let imageSymbo = placeholderImage?.withConfiguration(configuration)
-        
         if let firstRef = model.mall?.refImage {
             let urlRef = storage.reference(forURL: firstRef)
-            self.imageView.sd_setImage(with: urlRef, placeholderImage: imageSymbo)
+            self.imageView.sd_setImage(with: urlRef, placeholderImage: nil)
         } else {
-            imageView.image = imageSymbo
+            imageView.image = nil
         }
         nameMall.text = model.mall?.name
     }

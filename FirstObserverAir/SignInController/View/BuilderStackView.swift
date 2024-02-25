@@ -9,7 +9,7 @@ import UIKit
 
 class BuilderStackView {
     
-    static func build(title: String, textFieldPlaceholder: String, textContentType: UITextContentType, eyeButton: UIButton?, actionForTextField: UIAction, delegate: UITextFieldDelegate) -> (UIStackView, AuthTextField, UIView) {
+    static func build(title: String, textFieldPlaceholder: String, textContentType: UITextContentType, isSecureTextEntry:Bool, eyeButton: UIButton?, actionForTextField: UIAction, delegate: UITextFieldDelegate) -> (UIStackView, AuthTextField, UIView) {
         
         let label = UILabel()
         label.text = title
@@ -20,6 +20,7 @@ class BuilderStackView {
 
         let textField = AuthTextField(placeholder: textFieldPlaceholder)
         textField.textContentType = textContentType
+        textField.isSecureTextEntry = isSecureTextEntry
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.delegate = delegate
         textField.addAction(actionForTextField, for: .editingChanged)

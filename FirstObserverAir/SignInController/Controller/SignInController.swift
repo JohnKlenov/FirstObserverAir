@@ -16,24 +16,13 @@ protocol SignInViewControllerDelegate : AnyObject {
 final class NewSignInViewController: UIViewController {
     
     var emailTextField: AuthTextField!
-    
-    var passwordTextField: AuthTextField = {
-        let textField = AuthTextField(placeholder: R.Strings.AuthControllers.SignIn.placeholderPasswordTextField)
-        textField.textContentType = .password
-        textField.isSecureTextEntry = true
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
+    var passwordTextField: AuthTextField!
     
     var separatorEmailView: UIView!
+    var separatorPasswordView: UIView!
     
-    let separatorPasswordView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        view.backgroundColor = R.Colors.separator
-        return view
-    }()
+    var authEmailStackView: UIStackView!
+    var authPasswordStackView: UIStackView!
     
     let exitTopView: UIView = {
         let view = UIView()
@@ -42,17 +31,6 @@ final class NewSignInViewController: UIViewController {
         view.backgroundColor = R.Colors.opaqueSeparator
         view.layer.cornerRadius = 2
         return view
-    }()
-    
-    var authEmailStackView: UIStackView!
-    
-    let authPasswordStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.spacing = 0
-        return stackView
     }()
     
     let signUpStackView: UIStackView = {
@@ -71,16 +49,6 @@ final class NewSignInViewController: UIViewController {
         stackView.distribution = .fill
         stackView.spacing = 10
         return stackView
-    }()
-    
-    let passwordLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = R.Strings.AuthControllers.SignIn.passwordLabel
-        label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
-        label.textColor = R.Colors.label
-        return label
     }()
     
     let signInLabel: UILabel = {
@@ -161,15 +129,8 @@ final class NewSignInViewController: UIViewController {
     // MARK: - override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-//        myAction = UIAction(handler: emailHandler)
-//        myAction = UIAction(handler: { [weak self] action in
-//                    self?.emailHandler(action: action)
-//                })
         view.backgroundColor = R.Colors.systemBackground
-        passwordTextField.delegate = self
-//        emailTextField.delegate = self
         setupView()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -190,7 +151,29 @@ final class NewSignInViewController: UIViewController {
     
     func textFieldHandler(_ textField: UITextField?) {
             // Ваш код здесь
+        guard let textField = textField else { return }
         print("textFieldHandler")
+        switch textField {
+        case emailTextField:
+            print("emailTextField")
+            separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
+        case passwordTextField:
+            print("passwordTextField")
+            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
+//            Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "")
+        default:
+            break
+        }
+//        separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
+        
+//        separatorPasswordView.backgroundColor = Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
+        
+        guard let email = emailTextField.text,
+              let password = passwordTextField.text else {return}
+//        !(email.isEmpty)
+//        Validators.isValidEmailAddr(strToValidate: email)
+        let isValid = !(email.isEmpty) && !(password.isEmpty)
+        isEnabledSignInButton(enabled: isValid)
         }
     
     @objc private func displayBookMarks() {
@@ -326,27 +309,27 @@ final class NewSignInViewController: UIViewController {
     
 
     
-    @IBAction func signInTextFieldChanged(_ sender: UITextField) {
-        switch sender {
-        case emailTextField:
-            separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
-        case passwordTextField:
-            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
-//            Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "")
-        default:
-            break
-        }
-//        separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
-        
-//        separatorPasswordView.backgroundColor = Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
-        
-        guard let email = emailTextField.text,
-              let password = passwordTextField.text else {return}
-//        !(email.isEmpty)
-//        Validators.isValidEmailAddr(strToValidate: email)
-        let isValid = !(email.isEmpty) && !(password.isEmpty)
-        isEnabledSignInButton(enabled: isValid)
-    }
+//    @IBAction func signInTextFieldChanged(_ sender: UITextField) {
+//        switch sender {
+//        case emailTextField:
+//            separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
+//        case passwordTextField:
+//            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
+////            Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "")
+//        default:
+//            break
+//        }
+////        separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
+//
+////        separatorPasswordView.backgroundColor = Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
+//
+//        guard let email = emailTextField.text,
+//              let password = passwordTextField.text else {return}
+////        !(email.isEmpty)
+////        Validators.isValidEmailAddr(strToValidate: email)
+//        let isValid = !(email.isEmpty) && !(password.isEmpty)
+//        isEnabledSignInButton(enabled: isValid)
+//    }
     
     // этот селектор вызывается даже когда поднимается keyboard в SignUpVC(SignInVC не умерает когда поверх него ложится SignUpVC)
     @objc func keyboardWillHideSignIn(notification: Notification) {
@@ -377,7 +360,6 @@ final class NewSignInViewController: UIViewController {
 private extension NewSignInViewController {
     func setupView() {
         assemblyStackView()
-        setupPasswordTF()
         addActions()
         setupStackView()
         addSubViews()
@@ -398,9 +380,14 @@ private extension NewSignInViewController {
 private extension NewSignInViewController {
     
     func assemblyStackView() {
-         (authEmailStackView, emailTextField, separatorEmailView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderEmailTextField, textContentType: .emailAddress, eyeButton: nil, actionForTextField: UIAction { [weak emailTextField] _ in
-            self.textFieldHandler(emailTextField)
+        (authEmailStackView, emailTextField, separatorEmailView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderEmailTextField, textContentType: .emailAddress, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction {_ in
+            self.textFieldHandler(self.emailTextField)
         }, delegate: self)
+
+        (authPasswordStackView, passwordTextField, separatorPasswordView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.passwordLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderPasswordTextField, textContentType: .password, isSecureTextEntry: true, eyeButton: eyeButton, actionForTextField: UIAction { _ in
+            self.textFieldHandler(self.passwordTextField)
+       }, delegate: self)
+
     }
     
     func addSubViews() {
@@ -419,7 +406,7 @@ private extension NewSignInViewController {
         signInButton.addTarget(self, action: #selector(didTapSignInButton(_:)), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(didTapSignUpButton(_:)), for: .touchUpInside)
         forgotPasswordButton.addTarget(self, action: #selector(didTapForgotPasswordButton(_:)), for: .touchUpInside)
-        passwordTextField.addTarget(self, action: #selector(signInTextFieldChanged), for: .editingChanged)
+//        passwordTextField.addTarget(self, action: #selector(signInTextFieldChanged), for: .editingChanged)
 //        emailTextField.addTarget(self, action: #selector(signInTextFieldChanged), for: .editingChanged)
         
         signInButton.configurationUpdateHandler = { [weak self] button in
@@ -449,9 +436,9 @@ private extension NewSignInViewController {
 //        authEmailStackView.addArrangedSubview(emailTextField)
 //        authEmailStackView.addArrangedSubview(separatorEmailView)
         
-        authPasswordStackView.addArrangedSubview(passwordLabel)
-        authPasswordStackView.addArrangedSubview(passwordTextField)
-        authPasswordStackView.addArrangedSubview(separatorPasswordView)
+//        authPasswordStackView.addArrangedSubview(passwordLabel)
+//        authPasswordStackView.addArrangedSubview(passwordTextField)
+//        authPasswordStackView.addArrangedSubview(separatorPasswordView)
         
         signUpStackView.addArrangedSubview(signUpButton)
         signUpStackView.addArrangedSubview(forgotPasswordButton)

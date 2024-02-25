@@ -89,6 +89,7 @@
 		5EC492402B3079250061C71F /* HeaderTitleSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC4923F2B3079250061C71F /* HeaderTitleSection.swift */; };
 		5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492412B307A950061C71F /* HeaderShopSection.swift */; };
 		5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492432B307CF90061C71F /* HeaderMallSection.swift */; };
+		5EC72F162B8B96E2007DF7D6 /* BuilderStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */; };
 		5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */; };
 		5EFAC9992B665F7F00B8A824 /* NavigationMallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */; };
 		5EFAC99B2B666C8100B8A824 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99A2B666C8100B8A824 /* MapCell.swift */; };
@@ -185,6 +186,7 @@
 		5EC4923F2B3079250061C71F /* HeaderTitleSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderTitleSection.swift; sourceTree = "<group>"; };
 		5EC492412B307A950061C71F /* HeaderShopSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderShopSection.swift; sourceTree = "<group>"; };
 		5EC492432B307CF90061C71F /* HeaderMallSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderMallSection.swift; sourceTree = "<group>"; };
+		5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderStackView.swift; sourceTree = "<group>"; };
 		5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeLayoutCollectionAsMallVC.swift; sourceTree = "<group>"; };
 		5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMallCell.swift; sourceTree = "<group>"; };
 		5EFAC99A2B666C8100B8A824 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
@@ -785,6 +787,7 @@
 				5E8D30E22B8A7B2B009402BD /* EyeButton.swift */,
 				5E8D30E42B8A7B61009402BD /* AuthTextField.swift */,
 				5E8D30E62B8A7B94009402BD /* AlertTopView.swift */,
+				5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1055,6 +1058,7 @@
 				5E7DE9E22B73BD57007B44CC /* FilterCell.swift in Sources */,
 				5E7DE9EE2B7517F0007B44CC /* FilterController.swift in Sources */,
 				5E1148FE2B5BCDB60073B2E8 /* MallService.swift in Sources */,
+				5EC72F162B8B96E2007DF7D6 /* BuilderStackView.swift in Sources */,
 				5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */,
 				5EFAC9A62B6BD29400B8A824 /* CatalogFirebaseService.swift in Sources */,
 				5E8D30E92B8A7BF1009402BD /* SignInController.swift in Sources */,

@@ -15,15 +15,6 @@ protocol SignInViewControllerDelegate : AnyObject {
 // class final - это ускоряет диспетчеризация от него никто не будет в дальнейшем наследоваться.
 final class NewSignInViewController: UIViewController {
     
-    var emailTextField: AuthTextField!
-    var passwordTextField: AuthTextField!
-    
-    var separatorEmailView: UIView!
-    var separatorPasswordView: UIView!
-    
-    var authEmailStackView: UIStackView!
-    var authPasswordStackView: UIStackView!
-    
     let exitTopView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -31,24 +22,6 @@ final class NewSignInViewController: UIViewController {
         view.backgroundColor = R.Colors.opaqueSeparator
         view.layer.cornerRadius = 2
         return view
-    }()
-    
-    let signUpStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.spacing = 5
-        return stackView
-    }()
-    
-    let allStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.spacing = 10
-        return stackView
     }()
     
     let signInLabel: UILabel = {
@@ -61,21 +34,34 @@ final class NewSignInViewController: UIViewController {
         return label
     }()
     
-    var signingIn = false {
-        didSet {
-            signInButton.setNeedsUpdateConfiguration()
-        }
-    }
+    var emailTextField: AuthTextField!
+    var passwordTextField: AuthTextField!
     
-    let signInButton: UIButton = {
-        
-        var configuration = UIButton.Configuration.gray()
-        configuration.titleAlignment = .center
-        configuration.buttonSize = .large
-        configuration.baseBackgroundColor = R.Colors.systemPurple
-        var grayButton = UIButton(configuration: configuration)
-        return grayButton
+    var separatorEmailView: UIView!
+    var separatorPasswordView: UIView!
+    
+    var authEmailStackView: UIStackView!
+    var authPasswordStackView: UIStackView!
+    
+    let allStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.spacing = 10
+        return stackView
     }()
+    
+    let signUpStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.spacing = 5
+        return stackView
+    }()
+    
+    let signInButton: SignInUpProcessButton = SignInUpProcessButton(titleButtonProcess: R.Strings.AuthControllers.SignIn.signInButtonProcess, titleButtonStart: R.Strings.AuthControllers.SignIn.signInButtonStart)
     
     let signUpButton: UIButton = {
         
@@ -152,21 +138,15 @@ final class NewSignInViewController: UIViewController {
     func textFieldHandler(_ textField: UITextField?) {
             // Ваш код здесь
         guard let textField = textField else { return }
-        print("textFieldHandler")
         switch textField {
         case emailTextField:
-            print("emailTextField")
             separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
         case passwordTextField:
-            print("passwordTextField")
             separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
 //            Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "")
         default:
             break
         }
-//        separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
-        
-//        separatorPasswordView.backgroundColor = Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
         
         guard let email = emailTextField.text,
               let password = passwordTextField.text else {return}
@@ -179,11 +159,6 @@ final class NewSignInViewController: UIViewController {
     @objc private func displayBookMarks() {
         let imageName = isPrivateEye ? R.Strings.AuthControllers.SignIn.imageSystemNameEye : R.Strings.AuthControllers.SignIn.imageSystemNameEyeSlash
         passwordTextField.isSecureTextEntry.toggle()
-//        if let image = UIImage(named: imageName) {
-//            let tintableImage = image.withRenderingMode(.alwaysTemplate)
-//            eyeButton.setImage(tintableImage, for: .normal)
-//        }
-//        eyeButton.tintColor = R.Colors.label
         eyeButton.setImage(UIImage(systemName: imageName), for: .normal)
         isPrivateEye.toggle()
     }
@@ -197,7 +172,7 @@ final class NewSignInViewController: UIViewController {
     }
     
     @objc func didTapSignInButton(_ sender: UIButton) {
-        
+        self.dismiss(animated: true)
 //        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         
         //  signingIn - flag changed configuration button
@@ -307,30 +282,6 @@ final class NewSignInViewController: UIViewController {
         }
     }
     
-
-    
-//    @IBAction func signInTextFieldChanged(_ sender: UITextField) {
-//        switch sender {
-//        case emailTextField:
-//            separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
-//        case passwordTextField:
-//            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
-////            Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "")
-//        default:
-//            break
-//        }
-////        separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
-//
-////        separatorPasswordView.backgroundColor = Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "") ? .black : .red.withAlphaComponent(0.8)
-//
-//        guard let email = emailTextField.text,
-//              let password = passwordTextField.text else {return}
-////        !(email.isEmpty)
-////        Validators.isValidEmailAddr(strToValidate: email)
-//        let isValid = !(email.isEmpty) && !(password.isEmpty)
-//        isEnabledSignInButton(enabled: isValid)
-//    }
-    
     // этот селектор вызывается даже когда поднимается keyboard в SignUpVC(SignInVC не умерает когда поверх него ложится SignUpVC)
     @objc func keyboardWillHideSignIn(notification: Notification) {
         signInButton.center = buttonCentre
@@ -345,12 +296,12 @@ final class NewSignInViewController: UIViewController {
         signInButton.center = CGPoint(x: view.center.x, y: view.frame.height - keyboardFrame.height - 15 - signInButton.frame.height/2)
     }
     
-//    deinit {
-//        print("Deinit NewSignInViewController")
+    deinit {
+        print("Deinit SignInController")
 //        if isInvalidSignIn {
 //            saveCartProductFBNew()
 //        }
-//    }
+    }
     
 }
 
@@ -380,12 +331,12 @@ private extension NewSignInViewController {
 private extension NewSignInViewController {
     
     func assemblyStackView() {
-        (authEmailStackView, emailTextField, separatorEmailView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderEmailTextField, textContentType: .emailAddress, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction {_ in
-            self.textFieldHandler(self.emailTextField)
+        (authEmailStackView, emailTextField, separatorEmailView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderEmailTextField, textContentType: .emailAddress, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.emailTextField)
         }, delegate: self)
 
-        (authPasswordStackView, passwordTextField, separatorPasswordView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.passwordLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderPasswordTextField, textContentType: .password, isSecureTextEntry: true, eyeButton: eyeButton, actionForTextField: UIAction { _ in
-            self.textFieldHandler(self.passwordTextField)
+        (authPasswordStackView, passwordTextField, separatorPasswordView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.passwordLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderPasswordTextField, textContentType: .password, isSecureTextEntry: true, eyeButton: eyeButton, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.passwordTextField)
        }, delegate: self)
 
     }
@@ -406,26 +357,24 @@ private extension NewSignInViewController {
         signInButton.addTarget(self, action: #selector(didTapSignInButton(_:)), for: .touchUpInside)
         signUpButton.addTarget(self, action: #selector(didTapSignUpButton(_:)), for: .touchUpInside)
         forgotPasswordButton.addTarget(self, action: #selector(didTapForgotPasswordButton(_:)), for: .touchUpInside)
-//        passwordTextField.addTarget(self, action: #selector(signInTextFieldChanged), for: .editingChanged)
-//        emailTextField.addTarget(self, action: #selector(signInTextFieldChanged), for: .editingChanged)
         
-        signInButton.configurationUpdateHandler = { [weak self] button in
-            
-            guard let signingIn = self?.signingIn else {return}
-            var config = button.configuration
-            config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-                var outgoing = incoming
-                outgoing.foregroundColor = R.Colors.label
-                outgoing.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-                return outgoing
-            }
-            config?.imagePadding = 10
-            config?.imagePlacement = .trailing
-            config?.showsActivityIndicator = signingIn
-            config?.title = signingIn ? R.Strings.AuthControllers.SignIn.signInButtonProcess : R.Strings.AuthControllers.SignIn.signInButtonStart
-            button.isUserInteractionEnabled = !signingIn
-            button.configuration = config
-        }
+//        signInButton.configurationUpdateHandler = { [weak self] button in
+//
+//            guard let signingIn = self?.signingIn else {return}
+//            var config = button.configuration
+//            config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+//                var outgoing = incoming
+//                outgoing.foregroundColor = R.Colors.label
+//                outgoing.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+//                return outgoing
+//            }
+//            config?.imagePadding = 10
+//            config?.imagePlacement = .trailing
+//            config?.showsActivityIndicator = signingIn
+//            config?.title = signingIn ? R.Strings.AuthControllers.SignIn.signInButtonProcess : R.Strings.AuthControllers.SignIn.signInButtonStart
+//            button.isUserInteractionEnabled = !signingIn
+//            button.configuration = config
+//        }
         
         
     }

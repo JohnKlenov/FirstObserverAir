@@ -40,6 +40,7 @@
 		5E1A35612B161CF60076FDC1 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35602B161CF60076FDC1 /* AppSettings.swift */; };
 		5E1A35652B17246E0076FDC1 /* ActivityContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35642B17246D0076FDC1 /* ActivityContainerView.swift */; };
 		5E1A35672B1734A90076FDC1 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A35662B1734A80076FDC1 /* PlaceholderView.swift */; };
+		5E1C91182B8D2D6400B43619 /* SignInUpButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1C91172B8D2D6400B43619 /* SignInUpButton.swift */; };
 		5E22B1372B3AE59300CDD18A /* AllShops.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B1362B3AE59300CDD18A /* AllShops.swift */; };
 		5E22B1392B3AE91700CDD18A /* AllShopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B1382B3AE91700CDD18A /* AllShopCell.swift */; };
 		5E22B13F2B3C0B0000CDD18A /* ListProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22B13E2B3C0B0000CDD18A /* ListProductController.swift */; };
@@ -135,6 +136,7 @@
 		5E1A35602B161CF60076FDC1 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		5E1A35642B17246D0076FDC1 /* ActivityContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityContainerView.swift; sourceTree = "<group>"; };
 		5E1A35662B1734A80076FDC1 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
+		5E1C91172B8D2D6400B43619 /* SignInUpButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInUpButton.swift; sourceTree = "<group>"; };
 		5E22B1362B3AE59300CDD18A /* AllShops.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllShops.swift; sourceTree = "<group>"; };
 		5E22B1382B3AE91700CDD18A /* AllShopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllShopCell.swift; sourceTree = "<group>"; };
 		5E22B13E2B3C0B0000CDD18A /* ListProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListProductController.swift; sourceTree = "<group>"; };
@@ -788,6 +790,7 @@
 				5E8D30E42B8A7B61009402BD /* AuthTextField.swift */,
 				5E8D30E62B8A7B94009402BD /* AlertTopView.swift */,
 				5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */,
+				5E1C91172B8D2D6400B43619 /* SignInUpButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1086,6 +1089,7 @@
 				5E7DE9EA2B7516D9007B44CC /* RangeView.swift in Sources */,
 				5E1A35522B14AE980076FDC1 /* UITabBarController + ext.swift in Sources */,
 				5EC4923A2B3063370061C71F /* ProductCell.swift in Sources */,
+				5E1C91182B8D2D6400B43619 /* SignInUpButton.swift in Sources */,
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
 				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
 				5E9B522B2B52ADDE00F907B6 /* MapController.swift in Sources */,

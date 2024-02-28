@@ -21,7 +21,7 @@ class SignInUpProcessButton: UIButton {
         self.titleButtonProcess = titleButtonProcess
         self.titleButtonStart = titleButtonStart
         super.init(frame: .zero)
-
+        translatesAutoresizingMaskIntoConstraints = false
         var configuration = UIButton.Configuration.gray()
         configuration.titleAlignment = .center
         configuration.buttonSize = .large

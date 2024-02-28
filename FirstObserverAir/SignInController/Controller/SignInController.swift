@@ -103,10 +103,11 @@ final class NewSignInViewController: UIViewController {
         return gesture
     }()
     
-//    var myAction: UIAction?
     private let eyeButton = EyeButton()
     private var isPrivateEye = true
-    private var buttonCentre: CGPoint!
+    
+    var isEmailValid = false
+    var isPasswordValid = false
     
 //    var isInvalidSignIn = false
 //    let managerFB = FBManager.shared
@@ -121,26 +122,9 @@ final class NewSignInViewController: UIViewController {
         setupView()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        addKeyboardObserver()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        removeKeyboardObserver()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        print("signInButton.frame.origin - \(signInButton.frame.origin)")
-        
-    }
-    
     deinit {
         print("Deinit SignInController")
     }
-    
 }
 
 
@@ -207,31 +191,31 @@ private extension NewSignInViewController {
         }
     }
     
-    func createTopView(textWarning:String, color: UIColor, comletionHandler: (AlertTopView) -> Void) {
-        let alert = AlertTopView(frame: CGRect(origin: CGPoint(x: 0, y: -64), size: CGSize(width: self.view.frame.width, height: 64)))
-        alert.setupAlertTopView(labelText: textWarning, backgroundColor: color)
-        self.view.addSubview(alert)
-        comletionHandler(alert)
+    func createTopView(textWarning:String, color: UIColor, comletionHandler: @escaping (AlertTopView) -> Void) {
+        DispatchQueue.main.async {
+            let alert = AlertTopView(frame: CGRect(origin: CGPoint(x: 0, y: -64), size: CGSize(width: self.view.frame.width, height: 64)))
+            alert.setupAlertTopView(labelText: textWarning, backgroundColor: color)
+            self.view.addSubview(alert)
+            comletionHandler(alert)
+        }
     }
-    
+
     func showTopView(title: String, backgroundColor: UIColor) {
         self.createTopView(textWarning: title, color: backgroundColor) { (alertView) in
-            
-            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.1, options: .curveEaseIn, animations: {alertView.frame.origin = CGPoint(x: 0, y: -20)}) { (isFinished) in
-                if isFinished {
-                    UIView.animate(withDuration: 0.5, delay: 5, options: .curveEaseOut, animations: {alertView.frame.origin = CGPoint(x: 0, y: -64)}, completion: nil)
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.1, options: .curveEaseIn, animations: {
+                    alertView.frame.origin = CGPoint(x: 0, y: -20)
+                }) { (isFinished) in
+                    if isFinished {
+                        UIView.animate(withDuration: 0.5, delay: 5, options: .curveEaseOut, animations: {
+                            alertView.frame.origin = CGPoint(x: 0, y: -64)
+                        }) { _ in
+                            alertView.removeFromSuperview()
+                        }
+                    }
                 }
             }
         }
-    }
-    
-    func addKeyboardObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowSignIn), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideSignIn), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    func removeKeyboardObserver() {
-        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -239,11 +223,6 @@ private extension NewSignInViewController {
 // MARK: - Layout
 private extension NewSignInViewController {
     func setupLayout() {
-        
-        signInButton.frame = CGRect(x: 0, y: 0, width: view.frame.width * 0.7, height: 50)
-        /// для размера экранов iPhone 8 (view.frame.height - 100) для iPhone XR (view.frame.height - 150)
-        signInButton.center = CGPoint(x: view.center.x, y: view.frame.height - 100)
-        buttonCentre = signInButton.center
         
         exitTopView.topAnchor.constraint(equalTo: view.topAnchor, constant: 5).isActive = true
         exitTopView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
@@ -258,39 +237,45 @@ private extension NewSignInViewController {
         authStackView.bottomAnchor.constraint(equalTo: signUpStackView.topAnchor, constant: -20).isActive = true
         
         signUpStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        NSLayoutConstraint.activate([
+            signInButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            signInButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            signInButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            signInButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
 }
 
 // MARK: - Actions
 private extension NewSignInViewController {
+    
     func textFieldHandler(_ textField: UITextField?) {
-        // Ваш код здесь
         guard let textField = textField else { return }
+        
         switch textField {
         case emailTextField:
-            warningTextEmail.text = Validators.isValidEmail(emailTextField.text ?? "") ? "" : "Invalid email format"
-            separatorEmailView.backgroundColor = Validators.isValidEmail(emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
+            isEmailValid = Validators.isValidEmail(emailTextField.text ?? "")
+            warningTextEmail.text = isEmailValid ? "" : "Invalid email format"
+            separatorEmailView.backgroundColor = isEmailValid ? R.Colors.separator : R.Colors.systemRed
         case passwordTextField:
             let passwordValidationResult = Validators.validatePassword(passwordTextField.text ?? "")
-                    if passwordValidationResult == "success" {
-                        separatorPasswordView.backgroundColor = R.Colors.separator
-                        warningTextPassword.text = ""
-                    } else {
-                        separatorPasswordView.backgroundColor = R.Colors.systemRed
-                        warningTextPassword.text = passwordValidationResult.replacingOccurrences(of: "failed: ", with: "")
-                    }
+            isPasswordValid = passwordValidationResult == "success"
+            if isPasswordValid {
+                separatorPasswordView.backgroundColor = R.Colors.separator
+                warningTextPassword.text = ""
+            } else {
+                separatorPasswordView.backgroundColor = R.Colors.systemRed
+                warningTextPassword.text = passwordValidationResult.replacingOccurrences(of: "failed: ", with: "")
+            }
         default:
             break
         }
-        
-        guard let email = emailTextField.text,
-              let password = passwordTextField.text else {return}
-        //        !(email.isEmpty)
-        //        Validators.isValidEmailAddr(strToValidate: email)
-        let isValid = !(email.isEmpty) && !(password.isEmpty)
-        isEnabledSignInButton(enabled: isValid)
+        isEnabledSignInButton(enabled: isEmailValid && isPasswordValid)
     }
-    //            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
+
+
+    
     @objc private func displayBookMarks() {
         let imageName = isPrivateEye ? R.Strings.AuthControllers.SignIn.imageSystemNameEye : R.Strings.AuthControllers.SignIn.imageSystemNameEyeSlash
         passwordTextField.isSecureTextEntry.toggle()
@@ -301,10 +286,6 @@ private extension NewSignInViewController {
     @objc func gestureDidTap() {
         view.endEditing(true)
     }
-    
-//    @objc func didTapDeleteImage(_ gestureRcognizer: UITapGestureRecognizer) {
-//        self.dismiss(animated: true, completion: nil)
-//    }
     
     @objc func didTapSignInButton(_ sender: UIButton) {
         self.dismiss(animated: true)
@@ -405,25 +386,8 @@ private extension NewSignInViewController {
         //            }
         //        }
     }
-    
-    // этот селектор вызывается даже когда поднимается keyboard в SignUpVC(SignInVC не умерает когда поверх него ложится SignUpVC)
-    
-    ///исходная высота
-    @objc func keyboardWillHideSignIn(notification: Notification) {
-        signInButton.center = buttonCentre
-    }
-    
-    // этот селектор вызывается даже когда поднимается keyboard в SignUpVC
-    
-    ///расчет высоты при поднятой keyboard
-    @objc func keyboardWillShowSignIn(notification: Notification) {
-        
-        let userInfo = notification.userInfo!
-        let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        
-        signInButton.center = CGPoint(x: view.center.x, y: view.frame.height - keyboardFrame.height - 15 - signInButton.frame.height/2)
-    }
 }
+
 // MARK: - UITextFieldDelegate
 extension NewSignInViewController: UITextFieldDelegate {
     
@@ -507,6 +471,87 @@ private extension NewSignInViewController {
 
 
 
+// MARK: - Trash
+
+//    func isEnabledSignInButton(enabled: Bool) {
+//        if enabled {
+//            signInButton.isEnabled = true
+//        } else {
+//            signInButton.isEnabled = false
+//        }
+//    }
+
+//    func textFieldHandler(_ textField: UITextField?) {
+//        // Ваш код здесь
+//        guard let textField = textField else { return }
+//        switch textField {
+//        case emailTextField:
+//            warningTextEmail.text = Validators.isValidEmail(emailTextField.text ?? "") ? "" : "Invalid email format"
+//            separatorEmailView.backgroundColor = Validators.isValidEmail(emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
+//        case passwordTextField:
+//            let passwordValidationResult = Validators.validatePassword(passwordTextField.text ?? "")
+//                    if passwordValidationResult == "success" {
+//                        separatorPasswordView.backgroundColor = R.Colors.separator
+//                        warningTextPassword.text = ""
+//                    } else {
+//                        separatorPasswordView.backgroundColor = R.Colors.systemRed
+//                        warningTextPassword.text = passwordValidationResult.replacingOccurrences(of: "failed: ", with: "")
+//                    }
+//        default:
+//            break
+//        }
+//
+//        guard let email = emailTextField.text,
+//              let password = passwordTextField.text else {return}
+//        let isValid = !(email.isEmpty) && !(password.isEmpty)
+//        isEnabledSignInButton(enabled: isValid)
+//    }
+
+//func createTopView(textWarning:String, color: UIColor, comletionHandler: (AlertTopView) -> Void) {
+//        let alert = AlertTopView(frame: CGRect(origin: CGPoint(x: 0, y: -64), size: CGSize(width: self.view.frame.width, height: 64)))
+//        alert.setupAlertTopView(labelText: textWarning, backgroundColor: color)
+//        self.view.addSubview(alert)
+//        comletionHandler(alert)
+//    }
+//
+//    func showTopView(title: String, backgroundColor: UIColor) {
+//        self.createTopView(textWarning: title, color: backgroundColor) { (alertView) in
+//
+//            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.1, options: .curveEaseIn, animations: {alertView.frame.origin = CGPoint(x: 0, y: -20)}) { (isFinished) in
+//                if isFinished {
+//                    UIView.animate(withDuration: 0.5, delay: 5, options: .curveEaseOut, animations: {alertView.frame.origin = CGPoint(x: 0, y: -64)}, completion: nil)
+//                }
+//            }
+//        }
+//    }
+
+/// new size
+//func createTopView(textWarning:String, color: UIColor, comletionHandler: @escaping (AlertTopView) -> Void) {
+//    DispatchQueue.main.async {
+//        let alert = AlertTopView(frame: CGRect(origin: CGPoint(x: 0, y: -self.view.safeAreaInsets.top), size: CGSize(width: self.view.frame.width, height: self.view.safeAreaInsets.top)))
+//        alert.setupAlertTopView(labelText: textWarning, backgroundColor: color)
+//        self.view.addSubview(alert)
+//        comletionHandler(alert)
+//    }
+//}
+
+//func showTopView(title: String, backgroundColor: UIColor) {
+//    self.createTopView(textWarning: title, color: backgroundColor) { (alertView) in
+//        DispatchQueue.main.async {
+//            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.1, options: .curveEaseIn, animations: {
+//                alertView.frame.origin = CGPoint(x: 0, y: 0)
+//            }) { (isFinished) in
+//                if isFinished {
+//                    UIView.animate(withDuration: 0.5, delay: 5, options: .curveEaseOut, animations: {
+//                        alertView.frame.origin = CGPoint(x: 0, y: -self.view.safeAreaInsets.top)
+//                    }) { _ in
+//                        alertView.removeFromSuperview()
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 // MARK: - Copy class
 

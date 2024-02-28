@@ -43,7 +43,10 @@ final class NewSignInViewController: UIViewController {
     var authEmailStackView: UIStackView!
     var authPasswordStackView: UIStackView!
     
-    let allStackView: UIStackView = {
+    var warningTextEmail: UILabel!
+    var warningTextPassword: UILabel!
+    
+    let authStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -115,47 +118,179 @@ final class NewSignInViewController: UIViewController {
     // MARK: - override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = R.Colors.systemBackground
         setupView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowSignIn), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideSignIn), name: UIResponder.keyboardWillHideNotification, object: nil)
+        addKeyboardObserver()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
+        removeKeyboardObserver()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        print("signInButton.frame.origin - \(signInButton.frame.origin)")
+        
+    }
     
+    deinit {
+        print("Deinit SignInController")
+    }
     
-    // MARK: - Actions
+}
+
+
+// MARK: - Setting Views
+// Что бы не делать все методы private мы сделаем private extension.
+private extension NewSignInViewController {
+    func setupView() {
+        view.backgroundColor = R.Colors.systemBackground
+        assemblyStackView()
+        addActions()
+        setupStackView()
+        addSubViews()
+        setupLayout()
+        isEnabledSignInButton(enabled: false)
+    }
+}
+
+
+// MARK: - Setting
+private extension NewSignInViewController {
     
+    func assemblyStackView() {
+        (authEmailStackView, emailTextField, separatorEmailView, warningTextEmail) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderEmailTextField, textContentType: .emailAddress, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.emailTextField)
+        }, delegate: self)
+
+        (authPasswordStackView, passwordTextField, separatorPasswordView, warningTextPassword) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.passwordLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderPasswordTextField, textContentType: .password, isSecureTextEntry: true, eyeButton: eyeButton, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.passwordTextField)
+       }, delegate: self)
+
+    }
+    
+    func addSubViews() {
+        view.addGestureRecognizer(tapRootViewGestureRecognizer)
+        view.addSubview(exitTopView)
+        view.addSubview(signInLabel)
+        view.addSubview(authStackView)
+        view.addSubview(signUpStackView)
+        view.addSubview(signInButton)
+    }
+    
+    func addActions() {
+        eyeButton.addTarget(self, action: #selector(displayBookMarks ), for: .touchUpInside)
+        tapRootViewGestureRecognizer.addTarget(self, action: #selector(gestureDidTap))
+        signInButton.addTarget(self, action: #selector(didTapSignInButton(_:)), for: .touchUpInside)
+        signUpButton.addTarget(self, action: #selector(didTapSignUpButton(_:)), for: .touchUpInside)
+        forgotPasswordButton.addTarget(self, action: #selector(didTapForgotPasswordButton(_:)), for: .touchUpInside)
+    }
+    
+    func setupStackView() {
+        signUpStackView.addArrangedSubview(signUpButton)
+        signUpStackView.addArrangedSubview(forgotPasswordButton)
+        
+        authStackView.addArrangedSubview(authEmailStackView)
+        authStackView.addArrangedSubview(authPasswordStackView)
+    }
+    
+    func isEnabledSignInButton(enabled: Bool) {
+        
+        if enabled {
+            signInButton.isEnabled = true
+        } else {
+            signInButton.isEnabled = false
+        }
+    }
+    
+    func createTopView(textWarning:String, color: UIColor, comletionHandler: (AlertTopView) -> Void) {
+        let alert = AlertTopView(frame: CGRect(origin: CGPoint(x: 0, y: -64), size: CGSize(width: self.view.frame.width, height: 64)))
+        alert.setupAlertTopView(labelText: textWarning, backgroundColor: color)
+        self.view.addSubview(alert)
+        comletionHandler(alert)
+    }
+    
+    func showTopView(title: String, backgroundColor: UIColor) {
+        self.createTopView(textWarning: title, color: backgroundColor) { (alertView) in
+            
+            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.1, options: .curveEaseIn, animations: {alertView.frame.origin = CGPoint(x: 0, y: -20)}) { (isFinished) in
+                if isFinished {
+                    UIView.animate(withDuration: 0.5, delay: 5, options: .curveEaseOut, animations: {alertView.frame.origin = CGPoint(x: 0, y: -64)}, completion: nil)
+                }
+            }
+        }
+    }
+    
+    func addKeyboardObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowSignIn), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideSignIn), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    func removeKeyboardObserver() {
+        NotificationCenter.default.removeObserver(self)
+    }
+}
+
+
+// MARK: - Layout
+private extension NewSignInViewController {
+    func setupLayout() {
+        
+        signInButton.frame = CGRect(x: 0, y: 0, width: view.frame.width * 0.7, height: 50)
+        /// для размера экранов iPhone 8 (view.frame.height - 100) для iPhone XR (view.frame.height - 150)
+        signInButton.center = CGPoint(x: view.center.x, y: view.frame.height - 100)
+        buttonCentre = signInButton.center
+        
+        exitTopView.topAnchor.constraint(equalTo: view.topAnchor, constant: 5).isActive = true
+        exitTopView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        exitTopView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.2).isActive = true
+        
+        signInLabel.topAnchor.constraint(equalTo: exitTopView.bottomAnchor, constant: 45).isActive = true
+        signInLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        
+        authStackView.topAnchor.constraint(equalTo: signInLabel.bottomAnchor, constant: 20).isActive = true
+        authStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        authStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
+        authStackView.bottomAnchor.constraint(equalTo: signUpStackView.topAnchor, constant: -20).isActive = true
+        
+        signUpStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+}
+
+// MARK: - Actions
+private extension NewSignInViewController {
     func textFieldHandler(_ textField: UITextField?) {
-            // Ваш код здесь
+        // Ваш код здесь
         guard let textField = textField else { return }
         switch textField {
         case emailTextField:
-            separatorEmailView.backgroundColor = Validators.isValidEmailAddr(strToValidate: emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
+            warningTextEmail.text = Validators.isValidEmail(emailTextField.text ?? "") ? "" : "Invalid email format"
+            separatorEmailView.backgroundColor = Validators.isValidEmail(emailTextField.text ?? "") ? R.Colors.separator : R.Colors.systemRed
         case passwordTextField:
-            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
-//            Validators.isValidEmailAddr(strToValidate: passwordTextField.text ?? "")
+            let passwordValidationResult = Validators.validatePassword(passwordTextField.text ?? "")
+                    if passwordValidationResult == "success" {
+                        separatorPasswordView.backgroundColor = R.Colors.separator
+                        warningTextPassword.text = ""
+                    } else {
+                        separatorPasswordView.backgroundColor = R.Colors.systemRed
+                        warningTextPassword.text = passwordValidationResult.replacingOccurrences(of: "failed: ", with: "")
+                    }
         default:
             break
         }
         
         guard let email = emailTextField.text,
               let password = passwordTextField.text else {return}
-//        !(email.isEmpty)
-//        Validators.isValidEmailAddr(strToValidate: email)
+        //        !(email.isEmpty)
+        //        Validators.isValidEmailAddr(strToValidate: email)
         let isValid = !(email.isEmpty) && !(password.isEmpty)
         isEnabledSignInButton(enabled: isValid)
-        }
-    
+    }
+    //            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
     @objc private func displayBookMarks() {
         let imageName = isPrivateEye ? R.Strings.AuthControllers.SignIn.imageSystemNameEye : R.Strings.AuthControllers.SignIn.imageSystemNameEyeSlash
         passwordTextField.isSecureTextEntry.toggle()
@@ -167,127 +302,120 @@ final class NewSignInViewController: UIViewController {
         view.endEditing(true)
     }
     
-    @objc func didTapDeleteImage(_ gestureRcognizer: UITapGestureRecognizer) {
-        self.dismiss(animated: true, completion: nil)
-    }
+//    @objc func didTapDeleteImage(_ gestureRcognizer: UITapGestureRecognizer) {
+//        self.dismiss(animated: true, completion: nil)
+//    }
     
     @objc func didTapSignInButton(_ sender: UIButton) {
         self.dismiss(animated: true)
-//        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        //        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         
         //  signingIn - flag changed configuration button
-//        signingIn = true
-//        managerFB.signIn(email: email, password: password) { [weak self] (stateAuthError) in
-//
-//            switch stateAuthError {
-//            case .success:
-//                self?.signingIn = false
-//                self?.isEnabledSignInButton(enabled: false)
-//                self?.userDidRegisteredNew()
-//                self?.presentingViewController?.dismiss(animated: true, completion: nil)
-//            case .failed:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
-////                    self?.isInvalidSignIn = true
-//                })
-//            case .invalidEmail:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "Invalid email", comletionHandler: {
-//                    self?.separatorEmailView.backgroundColor = R.Colors.systemRed
-////                    self?.isInvalidSignIn = true
-//                })
-//            case .wrongPassword:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "Wrong password!", comletionHandler: {
-//                    self?.separatorPasswordView.backgroundColor = R.Colors.systemRed
-////                    self?.isInvalidSignIn = true
-//                })
-//            case .userTokenExpired:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
-////                    self?.isInvalidSignIn = true
-//                })
-//            case .invalidUserToken:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
-////                    self?.isInvalidSignIn = true
-//                })
-//            case .requiresRecentLogin:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
-////                    self?.isInvalidSignIn = true
-//                })
-//            case .tooManyRequests:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "Try again later!", comletionHandler: {
-////                    self?.isInvalidSignIn = true
-//                })
-//            default:
-//                self?.signingIn = false
-//                self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
-////                    self?.isInvalidSignIn = true
-//                })
-//            }
-//        }
+        //        signingIn = true
+        //        managerFB.signIn(email: email, password: password) { [weak self] (stateAuthError) in
+        //
+        //            switch stateAuthError {
+        //            case .success:
+        //                self?.signingIn = false
+        //                self?.isEnabledSignInButton(enabled: false)
+        //                self?.userDidRegisteredNew()
+        //                self?.presentingViewController?.dismiss(animated: true, completion: nil)
+        //            case .failed:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            case .invalidEmail:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "Invalid email", comletionHandler: {
+        //                    self?.separatorEmailView.backgroundColor = R.Colors.systemRed
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            case .wrongPassword:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "Wrong password!", comletionHandler: {
+        //                    self?.separatorPasswordView.backgroundColor = R.Colors.systemRed
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            case .userTokenExpired:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            case .invalidUserToken:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            case .requiresRecentLogin:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            case .tooManyRequests:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "Try again later!", comletionHandler: {
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            default:
+        //                self?.signingIn = false
+        //                self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
+        ////                    self?.isInvalidSignIn = true
+        //                })
+        //            }
+        //        }
     }
     
     @objc func didTapSignUpButton(_ sender: UIButton) {
         
-//        let signUpVC = NewSignUpViewController()
-//        signUpVC.signInDelegate = self
-////        signUpVC.isInvalidSignIn = isInvalidSignIn
-//        signUpVC.presentationController?.delegate = self
-//        present(signUpVC, animated: true, completion: nil)
-////        self.dismiss(animated: true, completion: nil)
+        //        let signUpVC = NewSignUpViewController()
+        //        signUpVC.signInDelegate = self
+        ////        signUpVC.isInvalidSignIn = isInvalidSignIn
+        //        signUpVC.presentationController?.delegate = self
+        //        present(signUpVC, animated: true, completion: nil)
+        ////        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func didTapForgotPasswordButton(_ sender: UIButton) {
-
-//        sendPasswordResetAlert(title: "We will send you a link to reset your password", placeholder: "Enter your email") { [weak self] (enteredEmail) in
-//            self?.managerFB.sendPasswordReset(email: enteredEmail) { [weak self] stateAuthError in
-//                switch stateAuthError {
-//                case .success:
-//                    self?.showTopView(title: "Password was reset. Please check you email.", backgroundColor: R.Colors.systemGreen)
-//                case .failed:
-//                    self?.showTopView(title: "Something went wrong! Try again!", backgroundColor: R.Colors.systemRed)
-//                case .userTokenExpired:
-//                    self?.showTopView(title: "You need to re-login to your account!", backgroundColor: R.Colors.systemRed)
-//                case .invalidUserToken:
-//                    self?.showTopView(title: "You need to re-login to your account!", backgroundColor: R.Colors.systemRed)
-//                case .requiresRecentLogin:
-//                    self?.showTopView(title: "You need to re-login to your account!", backgroundColor: R.Colors.systemRed)
-//                case .tooManyRequests:
-//                    self?.showTopView(title: "Try again later!", backgroundColor: R.Colors.systemRed)
-//                case .invalidRecipientEmail:
-//                    self?.showTopView(title: "Incorrect email. Please try again!", backgroundColor: R.Colors.systemRed)
-//                case .missingEmail:
-//                    self?.showTopView(title: "Email was not provided!", backgroundColor: R.Colors.systemRed)
-//                case .invalidEmail:
-//                    self?.showTopView(title: "Email has an invalid format!", backgroundColor: R.Colors.systemRed)
-//                default:
-//                    self?.showTopView(title: "Something went wrong! Try again!", backgroundColor: R.Colors.systemRed)
-//                }
-//            }
-//        }
-    }
-    
-    private func showTopView(title: String, backgroundColor: UIColor) {
-        self.createTopView(textWarning: title, color: backgroundColor) { (alertView) in
-
-            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.1, options: .curveEaseIn, animations: {alertView.frame.origin = CGPoint(x: 0, y: -20)}) { (isFinished) in
-                if isFinished {
-                    UIView.animate(withDuration: 0.5, delay: 5, options: .curveEaseOut, animations: {alertView.frame.origin = CGPoint(x: 0, y: -64)}, completion: nil)
-                }
-            }
-        }
+        
+        //        sendPasswordResetAlert(title: "We will send you a link to reset your password", placeholder: "Enter your email") { [weak self] (enteredEmail) in
+        //            self?.managerFB.sendPasswordReset(email: enteredEmail) { [weak self] stateAuthError in
+        //                switch stateAuthError {
+        //                case .success:
+        //                    self?.showTopView(title: "Password was reset. Please check you email.", backgroundColor: R.Colors.systemGreen)
+        //                case .failed:
+        //                    self?.showTopView(title: "Something went wrong! Try again!", backgroundColor: R.Colors.systemRed)
+        //                case .userTokenExpired:
+        //                    self?.showTopView(title: "You need to re-login to your account!", backgroundColor: R.Colors.systemRed)
+        //                case .invalidUserToken:
+        //                    self?.showTopView(title: "You need to re-login to your account!", backgroundColor: R.Colors.systemRed)
+        //                case .requiresRecentLogin:
+        //                    self?.showTopView(title: "You need to re-login to your account!", backgroundColor: R.Colors.systemRed)
+        //                case .tooManyRequests:
+        //                    self?.showTopView(title: "Try again later!", backgroundColor: R.Colors.systemRed)
+        //                case .invalidRecipientEmail:
+        //                    self?.showTopView(title: "Incorrect email. Please try again!", backgroundColor: R.Colors.systemRed)
+        //                case .missingEmail:
+        //                    self?.showTopView(title: "Email was not provided!", backgroundColor: R.Colors.systemRed)
+        //                case .invalidEmail:
+        //                    self?.showTopView(title: "Email has an invalid format!", backgroundColor: R.Colors.systemRed)
+        //                default:
+        //                    self?.showTopView(title: "Something went wrong! Try again!", backgroundColor: R.Colors.systemRed)
+        //                }
+        //            }
+        //        }
     }
     
     // этот селектор вызывается даже когда поднимается keyboard в SignUpVC(SignInVC не умерает когда поверх него ложится SignUpVC)
+    
+    ///исходная высота
     @objc func keyboardWillHideSignIn(notification: Notification) {
         signInButton.center = buttonCentre
     }
     
     // этот селектор вызывается даже когда поднимается keyboard в SignUpVC
+    
+    ///расчет высоты при поднятой keyboard
     @objc func keyboardWillShowSignIn(notification: Notification) {
         
         let userInfo = notification.userInfo!
@@ -295,150 +423,7 @@ final class NewSignInViewController: UIViewController {
         
         signInButton.center = CGPoint(x: view.center.x, y: view.frame.height - keyboardFrame.height - 15 - signInButton.frame.height/2)
     }
-    
-    deinit {
-        print("Deinit SignInController")
-//        if isInvalidSignIn {
-//            saveCartProductFBNew()
-//        }
-    }
-    
 }
-
-
-// MARK: - Setting Views
-// Что бы не делать все методы private мы сделаем private extension.
-private extension NewSignInViewController {
-    func setupView() {
-        assemblyStackView()
-        addActions()
-        setupStackView()
-        addSubViews()
-        setupLayout()
-        isEnabledSignInButton(enabled: false)
-    }
-    
-    func createTopView(textWarning:String, color: UIColor, comletionHandler: (AlertTopView) -> Void) {
-        let alert = AlertTopView(frame: CGRect(origin: CGPoint(x: 0, y: -64), size: CGSize(width: self.view.frame.width, height: 64)))
-        alert.setupAlertTopView(labelText: textWarning, backgroundColor: color)
-        self.view.addSubview(alert)
-        comletionHandler(alert)
-    }
-}
-
-
-// MARK: - Setting
-private extension NewSignInViewController {
-    
-    func assemblyStackView() {
-        (authEmailStackView, emailTextField, separatorEmailView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderEmailTextField, textContentType: .emailAddress, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction { [weak self] _ in
-            self?.textFieldHandler(self?.emailTextField)
-        }, delegate: self)
-
-        (authPasswordStackView, passwordTextField, separatorPasswordView) = BuilderStackView.build(title: R.Strings.AuthControllers.SignIn.passwordLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignIn.placeholderPasswordTextField, textContentType: .password, isSecureTextEntry: true, eyeButton: eyeButton, actionForTextField: UIAction { [weak self] _ in
-            self?.textFieldHandler(self?.passwordTextField)
-       }, delegate: self)
-
-    }
-    
-    func addSubViews() {
-        view.addGestureRecognizer(tapRootViewGestureRecognizer)
-        view.addSubview(signInButton)
-        view.addSubview(exitTopView)
-        view.addSubview(signInLabel)
-        view.addSubview(allStackView)
-        view.addSubview(signUpStackView)
-    }
-    
-    func addActions() {
-        
-        eyeButton.addTarget(self, action: #selector(displayBookMarks ), for: .touchUpInside)
-        tapRootViewGestureRecognizer.addTarget(self, action: #selector(gestureDidTap))
-        signInButton.addTarget(self, action: #selector(didTapSignInButton(_:)), for: .touchUpInside)
-        signUpButton.addTarget(self, action: #selector(didTapSignUpButton(_:)), for: .touchUpInside)
-        forgotPasswordButton.addTarget(self, action: #selector(didTapForgotPasswordButton(_:)), for: .touchUpInside)
-        
-//        signInButton.configurationUpdateHandler = { [weak self] button in
-//
-//            guard let signingIn = self?.signingIn else {return}
-//            var config = button.configuration
-//            config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-//                var outgoing = incoming
-//                outgoing.foregroundColor = R.Colors.label
-//                outgoing.font = UIFont.systemFont(ofSize: 17, weight: .bold)
-//                return outgoing
-//            }
-//            config?.imagePadding = 10
-//            config?.imagePlacement = .trailing
-//            config?.showsActivityIndicator = signingIn
-//            config?.title = signingIn ? R.Strings.AuthControllers.SignIn.signInButtonProcess : R.Strings.AuthControllers.SignIn.signInButtonStart
-//            button.isUserInteractionEnabled = !signingIn
-//            button.configuration = config
-//        }
-        
-        
-    }
-    
-    func setupStackView() {
-        
-//        authEmailStackView.addArrangedSubview(emailLabel)
-//        authEmailStackView.addArrangedSubview(emailTextField)
-//        authEmailStackView.addArrangedSubview(separatorEmailView)
-        
-//        authPasswordStackView.addArrangedSubview(passwordLabel)
-//        authPasswordStackView.addArrangedSubview(passwordTextField)
-//        authPasswordStackView.addArrangedSubview(separatorPasswordView)
-        
-        signUpStackView.addArrangedSubview(signUpButton)
-        signUpStackView.addArrangedSubview(forgotPasswordButton)
-        
-        allStackView.addArrangedSubview(authEmailStackView)
-        allStackView.addArrangedSubview(authPasswordStackView)
-    }
-    
-    func setupPasswordTF() {
-        passwordTextField.rightView = eyeButton
-        ///.always означает, что rightView будет видимым всегда, независимо от того, редактируется ли текстовое поле или нет.
-        passwordTextField.rightViewMode = .always
-//        eyeButton.setImage(UIImage(systemName: "eye.slash"), for: .normal)
-    }
-    
-    func isEnabledSignInButton(enabled: Bool) {
-        
-        if enabled {
-            signInButton.isEnabled = true
-        } else {
-            signInButton.isEnabled = false
-        }
-    }
-}
-
-
-// MARK: - Layout
-private extension NewSignInViewController {
-    func setupLayout() {
-        
-        signInButton.frame = CGRect(x: 0, y: 0, width: view.frame.width * 0.7, height: 50)
-        signInButton.center = CGPoint(x: view.center.x, y: view.frame.height - 150)
-        buttonCentre = signInButton.center
-        
-        exitTopView.topAnchor.constraint(equalTo: view.topAnchor, constant: 5).isActive = true
-        exitTopView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        exitTopView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.2).isActive = true
-        
-        signInLabel.topAnchor.constraint(equalTo: exitTopView.bottomAnchor, constant: 45).isActive = true
-        signInLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        
-        allStackView.topAnchor.constraint(equalTo: signInLabel.bottomAnchor, constant: 20).isActive = true
-        allStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
-        allStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
-        allStackView.bottomAnchor.constraint(equalTo: signUpStackView.topAnchor, constant: -20).isActive = true
-        
-        signUpStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-    }
-}
-
-
 // MARK: - UITextFieldDelegate
 extension NewSignInViewController: UITextFieldDelegate {
     

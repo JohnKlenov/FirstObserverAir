@@ -9,7 +9,7 @@ import UIKit
 
 class BuilderStackView {
     
-    static func build(title: String, textFieldPlaceholder: String, textContentType: UITextContentType, isSecureTextEntry:Bool, eyeButton: UIButton?, actionForTextField: UIAction, delegate: UITextFieldDelegate) -> (UIStackView, AuthTextField, UIView) {
+    static func build(title: String, textFieldPlaceholder: String, textContentType: UITextContentType, isSecureTextEntry:Bool, eyeButton: UIButton?, actionForTextField: UIAction, delegate: UITextFieldDelegate) -> (UIStackView, AuthTextField, UIView, UILabel) {
         
         let label = UILabel()
         label.text = title
@@ -33,6 +33,11 @@ class BuilderStackView {
         separatorView.translatesAutoresizingMaskIntoConstraints = false
         separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         separatorView.backgroundColor = R.Colors.separator
+        
+        let warningLabel = UILabel()
+        warningLabel.text = ""
+        warningLabel.numberOfLines = 0
+        warningLabel.textColor = R.Colors.systemRed
 
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -42,7 +47,8 @@ class BuilderStackView {
         stackView.addArrangedSubview(label)
         stackView.addArrangedSubview(textField)
         stackView.addArrangedSubview(separatorView)
+        stackView.addArrangedSubview(warningLabel)
 
-        return (stackView, textField, separatorView)
+        return (stackView, textField, separatorView, warningLabel)
     }
 }

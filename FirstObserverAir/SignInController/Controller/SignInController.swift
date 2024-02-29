@@ -175,11 +175,8 @@ private extension NewSignInViewController {
     }
     
     func setupStackView() {
-        signUpStackView.addArrangedSubview(signUpButton)
-        signUpStackView.addArrangedSubview(forgotPasswordButton)
-        
-        authStackView.addArrangedSubview(authEmailStackView)
-        authStackView.addArrangedSubview(authPasswordStackView)
+        [signUpButton, forgotPasswordButton].forEach { signUpStackView.addArrangedSubview($0)}
+        [authEmailStackView, authPasswordStackView].forEach { authStackView.addArrangedSubview($0)}
     }
     
     func isEnabledSignInButton(enabled: Bool) {
@@ -228,7 +225,7 @@ private extension NewSignInViewController {
         exitTopView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
         exitTopView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.2).isActive = true
         
-        signInLabel.topAnchor.constraint(equalTo: exitTopView.bottomAnchor, constant: 45).isActive = true
+        signInLabel.topAnchor.constraint(equalTo: exitTopView.bottomAnchor, constant: 35).isActive = true
         signInLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
         
         authStackView.topAnchor.constraint(equalTo: signInLabel.bottomAnchor, constant: 20).isActive = true
@@ -288,6 +285,7 @@ private extension NewSignInViewController {
     }
     
     @objc func didTapSignInButton(_ sender: UIButton) {
+//        showTopView(title: "Password was reset. Please check you email.", backgroundColor: R.Colors.systemGreen)
         self.dismiss(animated: true)
         //        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         
@@ -349,12 +347,12 @@ private extension NewSignInViewController {
     
     @objc func didTapSignUpButton(_ sender: UIButton) {
         
-        //        let signUpVC = NewSignUpViewController()
-        //        signUpVC.signInDelegate = self
-        ////        signUpVC.isInvalidSignIn = isInvalidSignIn
-        //        signUpVC.presentationController?.delegate = self
-        //        present(signUpVC, animated: true, completion: nil)
-        ////        self.dismiss(animated: true, completion: nil)
+                let signUpVC = NewSignUpViewController()
+                signUpVC.signInDelegate = self
+        //        signUpVC.isInvalidSignIn = isInvalidSignIn
+                signUpVC.presentationController?.delegate = self
+                present(signUpVC, animated: true, completion: nil)
+        //        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func didTapForgotPasswordButton(_ sender: UIButton) {
@@ -414,18 +412,18 @@ extension NewSignInViewController: UITextFieldDelegate {
 
 
 // MARK: - SignUpViewControllerDelegate
-//extension NewSignInViewController: NewSignUpViewControllerDelegate {
-//    
-////    func saveCartProductFBNew() {
-////        managerFB.saveDeletedFromCart(products: cartProducts)
-////        self.isInvalidSignIn = false
-////    }
-//    
-//    func userDidRegisteredNew() {
-//        // это свойство не nil только из ProfileVC
-//        delegate?.userIsPermanent()
+extension NewSignInViewController: NewSignUpViewControllerDelegate {
+    
+//    func saveCartProductFBNew() {
+//        managerFB.saveDeletedFromCart(products: cartProducts)
+//        self.isInvalidSignIn = false
 //    }
-//}
+    
+    func userDidRegisteredNew() {
+        // это свойство не nil только из ProfileVC
+        delegate?.userIsPermanent()
+    }
+}
 
 
 

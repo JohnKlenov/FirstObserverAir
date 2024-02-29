@@ -166,8 +166,8 @@ enum R {
                 static let imageSystemNameEye = "eye"
                 static let imageSystemNameEyeSlash = "eye.slash"
                 
-                static let signUpButtonStart = "Sign In"
-                static let signUpButtonProcess = "Signing In..."
+                static let signUpButtonStart = "Sign Up"
+                static let signUpButtonProcess = "Signing Up..."
             }
         }
         

@@ -64,6 +64,15 @@ class Validators {
         // Если все проверки пройдены
         return "success"
     }
+    
+    static func validateName(_ name:String) -> String {
+        
+        if name.count < 2 {
+            return "failed: Поле должно содержать минимум 2 символа."
+        }
+        // Если все проверки пройдены
+        return "success"
+    }
 }
 
 

@@ -16,87 +16,25 @@ import UIKit
 
 final class NewSignUpViewController: UIViewController {
    
-    var nameLabel: UILabel!
-    var emailLabel: UILabel!
-    
-    let passwordLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = R.Strings.AuthControllers.SignUP.passwordLabel
-        label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
-        label.textColor = R.Colors.label
-        return label
-    }()
-    
-    let reEnterPasswordLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = R.Strings.AuthControllers.SignUP.reEnterPasswordLabel
-        label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
-        label.textColor = R.Colors.label
-        return label
-    }()
-    
     var nameTextField: AuthTextField!
     var emailTextField: AuthTextField!
-    
-    let passwordTextField: AuthTextField = {
-        let textField = AuthTextField(placeholder: R.Strings.AuthControllers.SignUP.placeholderPasswordTextField)
-        textField.textContentType = .newPassword
-        textField.isSecureTextEntry = true
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
-    
-    let reEnterTextField: AuthTextField = {
-        let textField = AuthTextField(placeholder: R.Strings.AuthControllers.SignUP.placeholderReEnterTextField)
-        textField.textContentType = .newPassword
-        textField.isSecureTextEntry = true
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
-    }()
+    var passwordTextField: AuthTextField!
+    var reEnterTextField: AuthTextField!
     
     var separatorNameView: UIView!
     var separatorEmailView: UIView!
-    
-    let separatorPasswordView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        view.backgroundColor = R.Colors.separator
-        return view
-    }()
-    
-    let separatorReEnterPasswordView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        view.backgroundColor = R.Colors.separator
-        return view
-    }()
+    var separatorPasswordView: UIView!
+    var separatorReEnterPasswordView: UIView!
     
     var nameStackView: UIStackView!
     var emailStackView: UIStackView!
+    var passwordStackView: UIStackView!
+    var reEnterPasswordStackView: UIStackView!
     
-    let passwordStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.spacing = 0
-        return stackView
-    }()
-    
-    let reEnterPasswordStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.spacing = 0
-        return stackView
-    }()
+    var warningTextName: UILabel!
+    var warningTextEmail: UILabel!
+    var warningTextPassword: UILabel!
+    var warningTextRePassword: UILabel!
     
     let allStackView: UIStackView = {
         let stackView = UIStackView()
@@ -106,9 +44,6 @@ final class NewSignUpViewController: UIViewController {
         stackView.spacing = 10
         return stackView
     }()
-    
-    var warningTextName: UILabel!
-    var warningTextEmail: UILabel!
     
     let signUpLabel: UILabel = {
         let label = UILabel()
@@ -141,6 +76,12 @@ final class NewSignUpViewController: UIViewController {
     private let eyeRePassswordButton = EyeButton()
     private var isPrivateEye = true
     
+    var isNameValid = false
+    var isEmailValid = false
+    var isPasswordValid = false
+    var isRePasswordValid = false
+    
+    
 //    var isInvalidSignIn = false
     weak var signInDelegate:NewSignUpViewControllerDelegate?
     
@@ -148,77 +89,172 @@ final class NewSignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = R.Colors.systemBackground
-        passwordTextField.delegate = self
-        reEnterTextField.delegate = self
         setupView()
     }
     
-    // MARK: - Actions
+    deinit {
+        print("deinit NewSignUpViewController")
+    }
+}
+
+
+// MARK: - Setting Views
+private extension NewSignUpViewController {
+    func setupView() {
+        view.backgroundColor = R.Colors.systemBackground
+        assemblyStackView()
+        addActions()
+        setupStackView()
+        addSubViews()
+        setupLayout()
+        isEnabledSignUpButton(enabled: false)
+    }
+}
+
+// MARK: - Setting
+private extension NewSignUpViewController {
     
-    func textFieldHandler(_ textField: UITextField?) {
-//        guard let textField = textField else { return }
+    func assemblyStackView() {
+        (nameStackView, nameTextField, separatorNameView, warningTextName) = BuilderStackView.build(title: R.Strings.AuthControllers.SignUP.nameLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignUP.placeholderNameTextField, textContentType: .name, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.nameTextField)
+        }, delegate: self)
         
-//        switch textField {
-//        case emailTextField:
-//            isEmailValid = Validators.isValidEmail(emailTextField.text ?? "")
-//            warningTextEmail.text = isEmailValid ? "" : "Invalid email format"
-//            separatorEmailView.backgroundColor = isEmailValid ? R.Colors.separator : R.Colors.systemRed
-//        case passwordTextField:
-//            let passwordValidationResult = Validators.validatePassword(passwordTextField.text ?? "")
-//            isPasswordValid = passwordValidationResult == "success"
-//            if isPasswordValid {
-//                separatorPasswordView.backgroundColor = R.Colors.separator
-//                warningTextPassword.text = ""
-//            } else {
-//                separatorPasswordView.backgroundColor = R.Colors.systemRed
-//                warningTextPassword.text = passwordValidationResult.replacingOccurrences(of: "failed: ", with: "")
-//            }
-//        default:
-//            break
-//        }
-//        isEnabledSignInButton(enabled: isEmailValid && isPasswordValid)
+        (emailStackView, emailTextField, separatorEmailView, warningTextEmail) = BuilderStackView.build(title: R.Strings.AuthControllers.SignUP.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignUP.placeholderEmailTextField, textContentType: .emailAddress, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.emailTextField)
+        }, delegate: self)
+        
+        (passwordStackView, passwordTextField, separatorPasswordView, warningTextPassword) = BuilderStackView.build(title: R.Strings.AuthControllers.SignUP.passwordLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignUP.placeholderPasswordTextField, textContentType: .newPassword, isSecureTextEntry: true, eyeButton: eyePassswordButton, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.passwordTextField)
+       }, delegate: self)
+        
+        (reEnterPasswordStackView, reEnterTextField, separatorReEnterPasswordView, warningTextRePassword) = BuilderStackView.build(title: R.Strings.AuthControllers.SignUP.reEnterPasswordLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignUP.placeholderReEnterTextField, textContentType: .newPassword, isSecureTextEntry: true, eyeButton: eyeRePassswordButton, actionForTextField: UIAction { [weak self] _ in
+            self?.textFieldHandler(self?.reEnterTextField)
+       }, delegate: self)
     }
     
-    @IBAction func signUpTextFieldChanged(_ sender: UITextField) {
-       
-        switch sender {
-        case emailTextField:
-            separatorEmailView.backgroundColor = emailTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
-        case nameTextField:
-            separatorNameView.backgroundColor = nameTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
-        case passwordTextField:
-            separatorPasswordView.backgroundColor = passwordTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
-        case reEnterTextField:
-            separatorReEnterPasswordView.backgroundColor = reEnterTextField.text?.isEmpty ?? true ? R.Colors.systemRed : R.Colors.separator
-        default:
-            return
+    func addSubViews() {
+        view.addGestureRecognizer(tapRootViewGestureRecognizer)
+        view.addSubview(exitTopView)
+        view.addSubview(signUpLabel)
+        view.addSubview(allStackView)
+        view.addSubview(signUpButton)
+    }
+    
+    func addActions() {
+        eyePassswordButton.addTarget(self, action: #selector(displayBookMarksSignUp), for: .touchUpInside)
+        eyeRePassswordButton.addTarget(self, action: #selector(displayBookMarksSignUp), for: .touchUpInside)
+        tapRootViewGestureRecognizer.addTarget(self, action: #selector(gestureSignUpDidTap))
+        signUpButton.addTarget(self, action: #selector(didTapSignUpButton(_:)), for: .touchUpInside)
+    }
+    
+    
+    func setupStackView() {
+        [nameStackView, emailStackView, passwordStackView, reEnterPasswordStackView].forEach {allStackView.addArrangedSubview($0)}
+    }
+    
+    func isEnabledSignUpButton(enabled: Bool) {
+        if enabled {
+            signUpButton.isEnabled = true
+        } else {
+            signUpButton.isEnabled = false
         }
-        
-        guard let name = nameTextField.text, let email = emailTextField.text, let password = passwordTextField.text, let rePassword = reEnterTextField.text else {return}
-        
-        let isValid = !(name.isEmpty) && !(email.isEmpty) && !(password.isEmpty) && password == rePassword
-        isEnabledSignUpButton(enabled: isValid)
     }
-    
-    @objc private func displayBookMarksSignUp() {
+}
+
+// MARK: - Layout
+private extension NewSignUpViewController {
+    func setupLayout() {
         
-        let imageName = isPrivateEye ? R.Strings.AuthControllers.SignUP.imageSystemNameEye : R.Strings.AuthControllers.SignUP.imageSystemNameEyeSlash
-        passwordTextField.isSecureTextEntry.toggle()
-        eyePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
+        exitTopView.topAnchor.constraint(equalTo: view.topAnchor, constant: 5).isActive = true
+        exitTopView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        exitTopView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.2).isActive = true
         
-        reEnterTextField.isSecureTextEntry.toggle()
-        eyeRePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
-        isPrivateEye.toggle()
+        signUpLabel.topAnchor.constraint(equalTo: exitTopView.bottomAnchor, constant: 35).isActive = true
+        signUpLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        
+        allStackView.topAnchor.constraint(equalTo: signUpLabel.bottomAnchor, constant: 20).isActive = true
+        allStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        allStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
+        
+        NSLayoutConstraint.activate([
+            signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            signUpButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            signUpButton.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
+}
+
+// MARK: - Actions
+
+private extension NewSignUpViewController {
+func textFieldHandler(_ textField: UITextField?) {
+        guard let textField = textField else { return }
     
-    @objc func gestureSignUpDidTap() {
-        view.endEditing(true)
-    }
+        switch textField {
+        case nameTextField:
+            let nameValidationResult = Validators.validateName(nameTextField.text ?? "")
+            isNameValid = nameValidationResult == "success"
+            if isNameValid {
+                separatorNameView.backgroundColor = R.Colors.separator
+                warningTextName.text = ""
+            } else {
+                separatorNameView.backgroundColor = R.Colors.systemRed
+                warningTextName.text = nameValidationResult.replacingOccurrences(of: "failed: ", with: "")
+            }
+        case emailTextField:
+            isEmailValid = Validators.isValidEmail(emailTextField.text ?? "")
+            warningTextEmail.text = isEmailValid ? "" : "Invalid email format"
+            separatorEmailView.backgroundColor = isEmailValid ? R.Colors.separator : R.Colors.systemRed
+        case passwordTextField:
+            let passwordValidationResult = Validators.validateCountPassword(passwordTextField.text ?? "")
+            isPasswordValid = passwordValidationResult == "success"
+            if isPasswordValid {
+                separatorPasswordView.backgroundColor = R.Colors.separator
+                warningTextPassword.text = ""
+            } else {
+                separatorPasswordView.backgroundColor = R.Colors.systemRed
+                warningTextPassword.text = passwordValidationResult.replacingOccurrences(of: "failed: ", with: "")
+            }
+        case reEnterTextField:
+            let rePasswordValidationResult = Validators.validateCountPassword(reEnterTextField.text ?? "")
+            isRePasswordValid = rePasswordValidationResult == "success"
+            if isRePasswordValid {
+                        // Дополнительная проверка на совпадение паролей
+                        if passwordTextField.text != reEnterTextField.text {
+                            isRePasswordValid = false
+                            warningTextRePassword.text = "Проверка пароля не совпадает"
+                        } else {
+                            separatorReEnterPasswordView.backgroundColor = R.Colors.separator
+                            warningTextRePassword.text =  ""
+                        }
+                    } else {
+                        separatorReEnterPasswordView.backgroundColor = R.Colors.systemRed
+                        warningTextRePassword.text = rePasswordValidationResult.replacingOccurrences(of: "failed: ", with: "")
+                    }
+        default:
+            break
+        }
+    isEnabledSignUpButton(enabled: isNameValid && isEmailValid && isPasswordValid && isRePasswordValid)
+}
+
+@objc private func displayBookMarksSignUp() {
     
-    @objc func didTapSignUpButton(_ sender: UIButton) {
-        
+    let imageName = isPrivateEye ? R.Strings.AuthControllers.SignUP.imageSystemNameEye : R.Strings.AuthControllers.SignUP.imageSystemNameEyeSlash
+    passwordTextField.isSecureTextEntry.toggle()
+    eyePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
+    
+    reEnterTextField.isSecureTextEntry.toggle()
+    eyeRePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
+    isPrivateEye.toggle()
+}
+
+@objc func gestureSignUpDidTap() {
+    view.endEditing(true)
+}
+
+@objc func didTapSignUpButton(_ sender: UIButton) {
+    print("didTapSignUpButton")
 
 //        guard let name = nameTextField.text, let email = emailTextField.text, let password = passwordTextField.text else { return }
 //
@@ -291,127 +327,7 @@ final class NewSignUpViewController: UIViewController {
 //                self?.registerShowAlert(title: "Error", message: "Something went wrong! Try again!")
 //            }
 //        }
-    }
-    
-//    @objc func keyboardWillHideSignUp(notification: Notification) {
-//        signUpButton.center = buttonCentre
-//    }
-    
-//    @objc func keyboardWillShowSignUp(notification: Notification) {
-//
-//        let userInfo = notification.userInfo!
-//        let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-//
-//        signUpButton.center = CGPoint(x: view.center.x, y: view.frame.height - keyboardFrame.height - 15 - signUpButton.frame.height/2)
-//    }
-
-    deinit {
-        print("deinit NewSignUpViewController")
-    }
 }
-
-
-// MARK: - Setting Views
-private extension NewSignUpViewController {
-    func setupView() {
-        assemblyStackView()
-        setupPasswordTF()
-        addActions()
-        setupStackView()
-        addSubViews()
-        setupLayout()
-        isEnabledSignUpButton(enabled: false)
-    }
-}
-
-// MARK: - Setting
-private extension NewSignUpViewController {
-    
-    func assemblyStackView() {
-        (nameStackView, nameTextField, separatorNameView, warningTextName) = BuilderStackView.build(title: R.Strings.AuthControllers.SignUP.nameLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignUP.placeholderNameTextField, textContentType: .name, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction { [weak self] _ in
-            self?.textFieldHandler(self?.nameTextField)
-        }, delegate: self)
-        
-        (emailStackView, emailTextField, separatorEmailView, warningTextEmail) = BuilderStackView.build(title: R.Strings.AuthControllers.SignUP.emailLabel, textFieldPlaceholder: R.Strings.AuthControllers.SignUP.placeholderEmailTextField, textContentType: .emailAddress, isSecureTextEntry: false, eyeButton: nil, actionForTextField: UIAction { [weak self] _ in
-            self?.textFieldHandler(self?.emailTextField)
-        }, delegate: self)
-    }
-    
-    func addSubViews() {
-        view.addGestureRecognizer(tapRootViewGestureRecognizer)
-        view.addSubview(exitTopView)
-        view.addSubview(signUpLabel)
-        view.addSubview(allStackView)
-        view.addSubview(signUpButton)
-    }
-    func addActions() {
-
-        passwordTextField.addTarget(self, action: #selector(signUpTextFieldChanged), for: .editingChanged)
-        reEnterTextField.addTarget(self, action: #selector(signUpTextFieldChanged), for: .editingChanged)
-        
-        eyePassswordButton.addTarget(self, action: #selector(displayBookMarksSignUp), for: .touchUpInside)
-        eyeRePassswordButton.addTarget(self, action: #selector(displayBookMarksSignUp), for: .touchUpInside)
-        tapRootViewGestureRecognizer.addTarget(self, action: #selector(gestureSignUpDidTap))
-        signUpButton.addTarget(self, action: #selector(didTapSignUpButton(_:)), for: .touchUpInside)
-    }
-    
-    
-    func setupStackView() {
-        
-        passwordStackView.addArrangedSubview(passwordLabel)
-        passwordStackView.addArrangedSubview(passwordTextField)
-        passwordStackView.addArrangedSubview(separatorPasswordView)
-        
-        reEnterPasswordStackView.addArrangedSubview(reEnterPasswordLabel)
-        reEnterPasswordStackView.addArrangedSubview(reEnterTextField)
-        reEnterPasswordStackView.addArrangedSubview(separatorReEnterPasswordView)
-        
-        allStackView.addArrangedSubview(nameStackView)
-        allStackView.addArrangedSubview(emailStackView)
-        allStackView.addArrangedSubview(passwordStackView)
-        allStackView.addArrangedSubview(reEnterPasswordStackView)
-    }
-    
-    func setupPasswordTF() {
-        passwordTextField.rightView = eyePassswordButton
-        passwordTextField.rightViewMode = .always
-        
-        reEnterTextField.rightView = eyeRePassswordButton
-        reEnterTextField.rightViewMode = .always
-    }
-    
-    func isEnabledSignUpButton(enabled: Bool) {
-        
-        if enabled {
-            signUpButton.isEnabled = true
-        } else {
-            signUpButton.isEnabled = false
-        }
-    }
-}
-
-// MARK: - Layout
-private extension NewSignUpViewController {
-    func setupLayout() {
-        
-        exitTopView.topAnchor.constraint(equalTo: view.topAnchor, constant: 5).isActive = true
-        exitTopView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        exitTopView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.2).isActive = true
-        
-        signUpLabel.topAnchor.constraint(equalTo: exitTopView.bottomAnchor, constant: 35).isActive = true
-        signUpLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        
-        allStackView.topAnchor.constraint(equalTo: signUpLabel.bottomAnchor, constant: 20).isActive = true
-        allStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
-        allStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
-        
-        NSLayoutConstraint.activate([
-            signUpButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            signUpButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            signUpButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            signUpButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
-    }
 }
 
 // MARK: - UITextFieldDelegate

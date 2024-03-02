@@ -73,9 +73,16 @@ class Validators {
         // Если все проверки пройдены
         return "success"
     }
+    
+    static func validateCountPassword(_ password: String) -> String {
+        // Проверка длины пароля
+        if password.count < 8 {
+            return "failed: Пароль должен содержать не менее 8 символов."
+        }
+        // Если все проверки пройдены
+        return "success"
+    }
 }
-
-
 
 
 // MARK: - Feature

@@ -145,7 +145,7 @@ private extension NewSignUpViewController {
             self?.textFieldHandler(self?.reEnterTextField)
        }, delegate: self)
     }
-
+    
     func addSubViews() {
         view.addGestureRecognizer(tapRootViewGestureRecognizer)
         view.addSubview(exitTopView)
@@ -160,7 +160,7 @@ private extension NewSignUpViewController {
     func addActions() {
         eyePassswordButton.addTarget(self, action: #selector(displayBookMarksSignUp), for: .touchUpInside)
         eyeRePassswordButton.addTarget(self, action: #selector(displayBookMarksSignUp), for: .touchUpInside)
-        tapRootViewGestureRecognizer.addTarget(self, action: #selector(gestureSignUpDidTap))
+        tapRootViewGestureRecognizer.addTarget(self, action: #selector(dismissKeyboard))
         signUpButton.addTarget(self, action: #selector(didTapSignUpButton(_:)), for: .touchUpInside)
     }
 
@@ -242,6 +242,11 @@ private extension NewSignUpViewController {
                 let scrollPoint = CGPoint(x: 0, y: diff)
                 scrollView.setContentOffset(scrollPoint, animated: true)
             }
+        } else {
+            ///Смещение scrollView не равно .zero
+            if scrollView.contentOffset != .zero {
+                resetScrollViewInsetsAndOffset()
+            }
         }
     }
     
@@ -311,7 +316,7 @@ func textFieldHandler(_ textField: UITextField?) {
     isPrivateEye.toggle()
 }
 
-@objc func gestureSignUpDidTap() {
+@objc func dismissKeyboard() {
     print("gestureSignUpDidTap")
     view.endEditing(true)
 }

@@ -414,7 +414,7 @@ extension NewSignUpViewController: UITextFieldDelegate {
         case reEnterTextField:
             textField.resignFirstResponder()
         default:
-            textField.resignFirstResponder()
+            break
         }
         return true
     }

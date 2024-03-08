@@ -189,6 +189,7 @@ extension CartFirebaseService: CartModelInput {
             }
     
     func fetchData() {
+        ///вот тут мы можем инициализировать повторный вызов serviceFB.fetchCartProducts() если currentCartProducts == nil
         serviceFB.userIsAnonymously { [weak self] isAnonymous in
             let product = self?.serviceFB.currentCartProducts ?? []
             let isAnonymousUser = isAnonymous ?? true

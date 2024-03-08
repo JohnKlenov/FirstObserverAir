@@ -155,6 +155,7 @@ final class FirebaseService {
         // Создайте ссылку на документ
         let docRef = db.collection("users").document(uid).collection("cartProducts").document(nameDocument)
         // Добавьте данные в Firestore
+        ///перезапишет данные с таким же nameDocument
         docRef.setData(item)
     }
     
@@ -230,13 +231,27 @@ final class FirebaseService {
     
         userListener { user in
             if let _ = user {
-                // можем делать его пустым currentCartProducts = []
-                // потому что его состояние контролируется.
+                /// !!! currentCartProducts = nil эта строка нужна чтобы иметь барьер при первом запуске listener
                 self.currentCartProducts = nil
+                /// может имеет смысл сдесь removeListenerForCardProducts()
+                /// ведь если мы к примеру signIn, signUp, signOut
+                /// setupCartProducts  может вернуть error и тогда если это не превый старт мы не оповестим об это user
+                /// и останемся без cartProduct + у нас будет висеть observer for cartProduct
+                /// то есть мы можем остаться без cartProduct если у нас setupCartProducts с error или fetchCartProducts с error
+                /// при первом старте эти ошибки обрабатываются через Notification а потом уже нет
+                /// как мы можем обработать? - всегда товара нет в корзине? сможем ли добавить его в корзину если нет места по пути(setupCartProducts error)?
+                ///можно signIn, signUp, signOut оповещать о success как и с первым стартом
+                
+                ///мы создали setupCartProducts что бы создать явно путь если его не существует в консоли
+                ///для того видимо, что бы гарантировать что наблюдатель в fetchCartProducts() сработал.
+                /// !!! но есть гипотеза что listener сработает и при не существующем пути и при его появлении вернет данные
+                ///  !!! значит можно убрать setupCartProducts ???
                 self.setupCartProducts { error, state in
                     completion(error, state)
                 }
             } else {
+                ///signOut снова приведет сюда?
+                /// ???тогда после firesStart мы не сможем обработать ошибку и останемся без user
                 self.signInAnonymously { error, state in
                     guard let error = error else { return }
                     completion(error,state)
@@ -279,10 +294,24 @@ final class FirebaseService {
         }
     }
     
+    /// Из CartController + ProfileController мы можем при удачном SignIn, SignUp, SignOut инициализировать вызов fetchCartProducts()
+    /// и как возможное следствие получить error
+    /// !!! если при SecondFetchListener получаем error то у нас нет listener
+    /// как его обрабатывать???
+    
+    /// !!! индикатор того что нет listener это currentCartProducts == nil
+    
+    /// когда мы переходим на CartController мы можем снова вызыать serviceFB.fetchCartProducts() если currentCartProducts == nil
+    
+    
+    
+    
     func fetchCartProducts() {
         fetchData { cartProducts, error, state in
-            guard let error = error, let state = state else {
             
+            guard let error = error, let state = state else {
+                /// firstStartApp
+                /// этот NotificationCenter.default.post работает один раз для HomeController потом после успеха NotificationCenter.default.removeObserver
                     NotificationCenter.default.post(name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
                 self.currentCartProducts = cartProducts
                 return
@@ -290,13 +319,20 @@ final class FirebaseService {
         
             guard let _ = self.currentCartProducts else {
                 let userInfo: [String: Any] = ["error": error, "enumValue": state]
+                /// firstStartApp
+                /// этот NotificationCenter.default.post работает один раз для HomeController потом после успеха NotificationCenter.default.removeObserver
                 NotificationCenter.default.post(name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil, userInfo: userInfo)
                 return
             }
         }
     }
     
+    ///Если путь collectionRef не существует, то код будет работать без ошибок. В Firestore, если вы делаете запрос к коллекции или документу, который не существует, он просто вернет пустой результат, а не ошибку.
+    ///В вашем коде, если collectionRef не существует (то есть, нет такой коллекции или документа), то querySnapshot будет пустым, и код просто выполнит completion([], nil, nil), возвращая пустой массив.
+    ///Когда вы добавите документ в collectionRef, слушатель обнаружит это изменение и выполнит код внутри блока addSnapshotListener. Это означает, что он снова выполнит запрос, получит новые данные и вернет их через completion.
+    
     func fetchData(completion: @escaping ([ProductItem]?, Error?, ListenerErrorState?) -> Void) {
+        ///если мы используем этот метод только внутри if let _ = user { .. } можем убрать проверку
         guard let user = currentUser else {
             let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
             completion(nil, error, .restartObserveUser)
@@ -308,18 +344,25 @@ final class FirebaseService {
         
         let collectionRef = db.collection("users").document(user.uid).collection("cartProducts")
         
+        ///вот это для теста нужно будет убрать
         let quary = collectionRef.order(by: "priorityIndex", descending: false)
         
         /// если в момент прослушивание пропадет инет придет error и те данные которые мы пропусти
         /// после подключения инета мы не получим
         /// получим только те данные которые придут после нового прослушивание
+        
+        /// ???  вы не получите ошибку, если путь к коллекции не существует.
+        /// ???слушатель listener будет работать. Если в какой-то момент вы добавите документ в коллекцию по пути collectionRef, слушатель обнаружит эту изменение и сработает.
+        /// если произошла ошибка при  создании listener, то он не будет автоматически восстановлен. В таких случаях вам нужно будет явно повторно установить слушатель.
         let listener = quary.addSnapshotListener { (querySnapshot, error) in
             
             if let error = error {
                 completion(nil, error, .restartFetchCartProducts)
                 return
             }
+            ///если collectionRef не существует то querySnapshot не будет равен nil
             guard let querySnapshot = querySnapshot else {
+                let error = NSError(domain: "com.yourapp.error", code: 404, userInfo: [NSLocalizedDescriptionKey: "QuerySnapshot is nil."])
                 completion(nil, error, .restartFetchCartProducts)
                 return
             }
@@ -362,6 +405,114 @@ final class FirebaseService {
         }
     }
 }
+
+
+
+
+
+
+// MARK: - New Implemintation func observeUserAndCardProducts()
+
+//func observeUserAndCardProducts() {
+//
+//    updateUser { error, state in
+//        if let error = error, let state = state  {
+//
+//            let userInfo: [String: Any] = ["error": error, "enumValue": state]
+//            NotificationCenter.default.post(name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil, userInfo: userInfo)
+//        } else {
+//            self.fetchCartProducts()
+//        }
+//    }
+//}
+//
+//func updateUser(completion: @escaping (Error?, ListenerErrorState?) -> Void) {
+//
+//    userListener { user in
+//        if let _ = user {
+//            self.currentCartProducts = nil
+//            completion(nil, nil)
+//        } else {
+//            ///signOut снова приведет сюда?
+//            /// ???тогда после firesStart мы не сможем обработать ошибку и останемся без user
+//            self.signInAnonymously { error, state in
+//                guard let error = error else { return }
+//                completion(error,state)
+//            }
+//        }
+//    }
+//}
+//
+//func fetchCartProducts() {
+//    fetchData { cartProducts, error, state in
+//
+//        guard let error = error, let state = state else {
+//            /// firstStartApp
+//            /// этот NotificationCenter.default.post работает один раз для HomeController потом после успеха NotificationCenter.default.removeObserver
+//                NotificationCenter.default.post(name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
+//            self.currentCartProducts = cartProducts
+//            return
+//        }
+//
+//        guard let _ = self.currentCartProducts else {
+//            let userInfo: [String: Any] = ["error": error, "enumValue": state]
+//            /// firstStartApp
+//            /// этот NotificationCenter.default.post работает один раз для HomeController потом после успеха NotificationCenter.default.removeObserver
+//            NotificationCenter.default.post(name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil, userInfo: userInfo)
+//            return
+//        }
+//    }
+//}
+//
+//func fetchData(completion: @escaping ([ProductItem]?, Error?, ListenerErrorState?) -> Void) {
+//    ///если мы используем этот метод только внутри if let _ = user { .. } можем убрать проверку
+//    guard let user = currentUser else {
+//        let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+//        completion(nil, error, .restartObserveUser)
+//        return
+//    }
+//
+//    removeListenerForCardProducts()
+//    currentUserID = user.uid
+//
+//    let collectionRef = db.collection("users").document(user.uid).collection("cartProducts")
+//
+//    let listener = collectionRef.addSnapshotListener { (querySnapshot, error) in
+//
+//        if let error = error {
+//            completion(nil, error, .restartFetchCartProducts)
+//            return
+//        }
+//        ///если collectionRef не существует то querySnapshot не будет равен nil
+//        guard let querySnapshot = querySnapshot else {
+//            let error = NSError(domain: "com.yourapp.error", code: 404, userInfo: [NSLocalizedDescriptionKey: "QuerySnapshot is nil."])
+//            completion(nil, error, .restartFetchCartProducts)
+//            return
+//        }
+//
+//        if querySnapshot.isEmpty {
+//            completion([], nil, nil)
+//            return
+//        }
+//        var documents = [[String : Any]]()
+//
+//        for document in querySnapshot.documents {
+//            let documentData = document.data()
+//            documents.append(documentData)
+//        }
+//        do {
+//            let response = try FetchProductsDataResponse(documents: documents)
+//            completion(response.items, nil, nil)
+//        } catch {
+//            completion(nil, error, .restartFetchCartProducts)
+//        }
+//    }
+//    listeners[user.uid] = listener
+//}
+
+
+
+
 
 
 // MARK: - Trash

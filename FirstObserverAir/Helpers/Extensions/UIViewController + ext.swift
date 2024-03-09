@@ -140,8 +140,9 @@ extension UIViewController: UIAdaptivePresentationControllerDelegate {
     public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if #available(iOS 13, *) {
             //Call viewWillAppear only in iOS 13
-            viewWillDisappear(true)
-            viewWillAppear(true)
+            ///в каком порядке указать в таком они и работают???
+//            viewWillDisappear(true)
+//            viewWillAppear(true)
         }
     }
 }

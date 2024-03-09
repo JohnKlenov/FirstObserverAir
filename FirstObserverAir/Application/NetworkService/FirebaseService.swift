@@ -17,6 +17,7 @@ final class FirebaseService {
     private let db = Firestore.firestore()
     private var handle: AuthStateDidChangeListenerHandle?
     private var listeners: [String:ListenerRegistration] = [:]
+    var isOnListenerForCartProduct:Bool?
     
     /// currentUserID - может не неужен рас есть computer property currentUser
     var currentUserID:String?
@@ -29,7 +30,7 @@ final class FirebaseService {
             currentCartProducts?.forEach({ item in
                 print("currentCartProducts - \(String(describing: item.model))")
             })
-//            updateCartProducts()
+            updateCartProducts()
         }
     }
     var shops:[String:[Shop]] = [:]
@@ -40,7 +41,7 @@ final class FirebaseService {
     }
     
     func updateCartProducts() {
-        NotificationCenter.default.post(name: Notification.Name("UpdateCartProducts"), object: nil)
+        NotificationCenter.default.post(name: Notification.Name("UpdateCartProductNotification"), object: nil)
     }
     
     // MARK: - UserDefaults
@@ -177,6 +178,7 @@ final class FirebaseService {
     func userIsAnonymously(completionHandler: @escaping (Bool?) -> Void) {
         if let user = currentUser {
             if user.isAnonymous {
+                print("user.isAnonymous - true")
                 completionHandler(true)
             } else {
                 completionHandler(false)
@@ -254,7 +256,7 @@ final class FirebaseService {
     /// и как возможное следствие получить error
     /// !!! если при SecondFetchListener получаем error то у нас нет listener
     /// как его обрабатывать???
-    /// !!! индикатор того что нет listener это currentCartProducts == nil
+    /// !!! индикатор того что нет listener это currentCartProducts == nil Нет!!!! ведь при addProduct он уже не nill
     /// когда мы переходим на CartController мы можем снова вызыать serviceFB.fetchCartProducts() если currentCartProducts == nil
     
     func fetchCartProducts() {
@@ -265,6 +267,7 @@ final class FirebaseService {
                 /// этот NotificationCenter.default.post работает один раз для HomeController потом после успеха NotificationCenter.default.removeObserver
                     NotificationCenter.default.post(name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
                 self.currentCartProducts = cartProducts
+                self.isOnListenerForCartProduct = true
                 return
             }
         
@@ -292,6 +295,7 @@ final class FirebaseService {
 
         removeListenerForCardProducts()
         currentUserID = user.uid
+        isOnListenerForCartProduct = nil
 
         let collectionRef = db.collection("users").document(user.uid).collection("cartProducts")
 

@@ -122,6 +122,16 @@ final class NewSignInViewController: UIViewController {
         setupView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("SignInController viewWillAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("SignInController viewWillDisappear")
+    }
+    
     deinit {
         print("Deinit SignInController")
     }

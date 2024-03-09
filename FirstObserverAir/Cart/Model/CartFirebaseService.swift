@@ -15,8 +15,10 @@ struct ProductModels {
 // Протокол для модели данных
 protocol CartModelInput: AnyObject {
     func fetchData()
+    func restartFetchCartProducts()
     func removeCartProduct(model:String, index:Int)
     func checkingActualCurrentCartProducts(cartProducts: [ProductItem])
+    func checkListenerStatus() -> Bool
 }
     
 final class CartFirebaseService {
@@ -197,9 +199,18 @@ extension CartFirebaseService: CartModelInput {
         }
     }
     
+    func restartFetchCartProducts() {
+        serviceFB.fetchCartProducts()
+    }
+    
     func removeCartProduct(model:String, index:Int) {
         /// если не получится удалить - нет сети
         serviceFB.currentCartProducts?.remove(at: index)
         serviceFB.removeItemFromCartProduct(model)
+    }
+    
+    func checkListenerStatus() -> Bool {
+
+        return serviceFB.isOnListenerForCartProduct != nil
     }
 }

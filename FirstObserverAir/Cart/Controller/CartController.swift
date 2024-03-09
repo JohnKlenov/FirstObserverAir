@@ -47,10 +47,18 @@ final class CartController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        print("CartController viewWillAppear")
         cartModel?.fetchData()
         resetBadgeValue()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("CartController viewWillDisappear")
+        removeObserverNotification()
+    }
 }
+
 
 // MARK: - Setting Views
 private extension CartController {
@@ -98,6 +106,22 @@ private extension CartController {
         ///Когда вы заканчиваете внесение изменений, вы вызываете tableView.endUpdates(), и все ваши изменения будут анимированы одновременно.
         tableView.endUpdates()
     }
+
+    func reloadData(products:[ProductItem], isAnonymous:Bool) {
+        isAnonymouslyUser = isAnonymous
+        cartProducts = products
+        tableView.reloadData()
+    }
+    
+    func addObserverNotification() {
+        /// !!! Если вы дважды вызовете addObserver, то ваш селектор будет вызван дважды при каждом уведомлении
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateCartProductNotification(_:)), name: NSNotification.Name("UpdateCartProductNotification"), object: nil)
+    }
+    
+    func removeObserverNotification() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name("UpdateCartProductNotification"), object: nil)
+    }
+    
 }
 
 // MARK: - Layout
@@ -124,6 +148,7 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // действие удаления
         let actionDelete = UIContextualAction(style: .destructive, title: "Delete") { _,_,_ in
+            self.removeObserverNotification()
             self.removeCartProduct(tableView: tableView, indexPath: indexPath)
         }
         // формируем экземпляр, описывающий доступные действия
@@ -151,13 +176,25 @@ extension CartController:CartModelOutput {
     }
     
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
-        isAnonymouslyUser = isAnonymousUser
-        cartProducts = cartProduct
-        cartModel?.checkingActualCurrentCartProducts(cartProducts: cartProducts)
-        tableView.reloadData()
+        reloadData(products: cartProduct, isAnonymous: isAnonymousUser)
+        if let cartModel = cartModel, cartModel.checkListenerStatus() {
+            cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)
+        } else {
+            print("cartModel?.restartFetchCartProducts()")
+            ///addObserverNotification() ???
+            cartModel?.restartFetchCartProducts()
+        }
     }
 }
 
+// MARK: - Selectors
+private extension CartController {
+    @objc func handleUpdateCartProductNotification(_ notification: NSNotification) {
+        print("handleUpdateCartProductNotification")
+        removeObserverNotification()
+        cartModel?.fetchData()
+    }
+}
 
 // MARK: - CartViewDelegate
 extension CartController: CartViewDelegate {
@@ -167,6 +204,8 @@ extension CartController: CartViewDelegate {
         signInVC.delegate = self
         signInVC.presentationController?.delegate = self
         present(signInVC, animated: true, completion: nil)
+        removeObserverNotification()
+        addObserverNotification()
     }
     
     func didTapCatalogButton() {
@@ -176,6 +215,7 @@ extension CartController: CartViewDelegate {
 
 extension CartController: SignInViewControllerDelegate {
     func userIsPermanent() {
+        reloadData(products: [], isAnonymous: false)
         print("userIsPermanent()")
         // refactor getCartObservser
 //        managerFB.removeObserverForCartProductsUser()

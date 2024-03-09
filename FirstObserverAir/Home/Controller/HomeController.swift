@@ -35,6 +35,8 @@ final class HomeController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleFailedFetchPersonalDataNotification(_:)), name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil)
         setupView()
         //         navigationItem.setHidesBackButton(true, animated: true) - скрывает BackButton
         setBackButtonWithoutTitle("")
@@ -53,9 +55,6 @@ final class HomeController: UIViewController {
         } else {
             switchGender()
         }
-        
-        /// можно переместить его во viewDidLoad
-        NotificationCenter.default.addObserver(self, selector: #selector(handleFailedFetchPersonalDataNotification(_:)), name: NSNotification.Name("FailedFetchPersonalDataNotification"), object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -246,6 +245,7 @@ extension HomeController:HomeModelOutput {
                 }
                 return
             }
+            ///сюда перенести remuveNatification ???
             navController?.hiddenPlaceholder()
             stateDataSource = .followingDataUpdate
             

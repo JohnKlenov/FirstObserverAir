@@ -13,6 +13,10 @@ protocol CartModelOutput:AnyObject {
     func updateOutdatedProducts(products: [ProductItem])
 }
 
+/// need implimentation two strategy
+/// First viewWillAppear - if currentCartProducts == nil that currentCartProducts = [] and fetchCartProducts() (у нас natificationPost в didSet currentCartProducts для dissmiss SignInController мы observerNatificatinAdd в viewWillAppear)
+/// Second для dissmiss SignInController 
+///
 final class CartController: UIViewController {
     
     private var cartModel: CartModelInput?

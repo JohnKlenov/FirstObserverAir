@@ -212,7 +212,9 @@ final class FirebaseService {
         }
         
         Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
-            if let error = error {
+            if let error = error, let authError = error as? AuthErrorCode {
+                print("error - \(error.localizedDescription)")
+                print("authError - \(authError.code.rawValue)")
                 completion(error)
             } else {
                 self.deleteDataAnonUser(user: user)
@@ -228,7 +230,7 @@ final class FirebaseService {
             deleteAccountUser(user: user) { error in
                 ///group.leave()
                 if let error = error {
-                    print("Returne message for analitic FB Crashlystics error - \(error.localizedDescription) ")
+                    print("deleteAccountUser Returne message for analitic FB Crashlystics error - \(error.localizedDescription) ")
                 }
             }
             deleteCartProductUser(uid: user.uid)
@@ -246,13 +248,95 @@ final class FirebaseService {
           let docRef = db.collection("users").document(uid).collection("cartProducts")
           docRef.getDocuments() { (querySnapshot, err) in
               if let err = err {
-                  print("Returne message for analitic FB Crashlystics error - \(err.localizedDescription) ")
+                  print("deleteCartProductUser Returne message for analitic FB Crashlystics error - \(err.localizedDescription) ")
               } else {
                   for document in querySnapshot!.documents {
                       document.reference.delete()
                   }
               }
           }
+    }
+    
+    func signUp(email: String, password: String, name: String, completion: @escaping (Error?, Bool) -> Void) {
+        
+        guard let user = currentUser else {
+            ///need created build Error
+            let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+            completion(error, true)
+            return
+        }
+        
+        if user.isAnonymous {
+            
+            let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+            user.link(with: credential) { [weak self] (result, error) in
+                
+                if let error = error, let authError = error as? AuthErrorCode {
+                    print("user.link localizedDescription  - \(error.localizedDescription)")
+                    print("user.link code  - \(authError.code.rawValue)")
+                    completion(error, true)
+                } else {
+                        self?.createProfileChangeRequest(name: name, { error in
+                            if error != nil {
+                                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+                            }
+                            self?.verificationEmailSignUp()
+                            completion(nil, true)
+                        })
+                }
+            }
+        } else {
+            Auth.auth().createUser(withEmail: email, password: password) { [weak self] (result, error) in
+                
+                if let error = error, let authError = error as? AuthErrorCode {
+                    print("user.link localizedDescription  - \(error.localizedDescription)")
+                    print("user.link code  - \(authError.code.rawValue)")
+                    completion(error, false)
+                } else {
+                        self?.createProfileChangeRequest(name: name, { error in
+                            if error != nil {
+                                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+                            }
+                            self?.verificationEmailSignUp()
+                            completion(nil, false)
+                        })
+                    
+                }
+            }
+        }
+    }
+    
+    // Отправить пользователю электронное письмо с подтверждением регистрации
+    func verificationEmailSignUp() {
+        Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
+            if error != nil {
+                print("Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+            }
+        })
+    }
+    
+    // если callback: ((StateProfileInfo, Error?) -> ())? = nil) closure не пометить как @escaping (зачем он нам не обязательный?)
+    // if error == nil этот callBack не будет вызван(вызов проигнорируется) - callBack: ((Error?) -> Void)? = nil // callBack?(error)
+    func createProfileChangeRequest(name: String? = nil, photoURL: URL? = nil,_ completion: @escaping (Error?) -> Void) {
+
+        if let request = currentUser?.createProfileChangeRequest() {
+            if let name = name {
+                request.displayName = name
+            }
+
+            if let photoURL = photoURL {
+                request.photoURL = photoURL
+            }
+
+            request.commitChanges { error in
+                print("request.commitChanges error - \(String(describing: error)) ")
+                completion(error)
+            }
+        } else {
+            ///need created build Error
+            let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+            completion(error)
+        }
     }
     
     
@@ -319,6 +403,7 @@ final class FirebaseService {
                 /// firstStartApp
                 /// этот NotificationCenter.default.post работает один раз для HomeController потом после успеха NotificationCenter.default.removeObserver
                     NotificationCenter.default.post(name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
+                NotificationCenter.default.post(name: NSNotification.Name("UpdateCartProductNotification"), object: nil)
                 self.currentCartProducts = cartProducts
                 self.isOnListenerForCartProduct = true
                 return

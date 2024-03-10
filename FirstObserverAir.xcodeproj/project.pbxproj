@@ -17,6 +17,7 @@
 		5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9092B458FFC00F3387C /* MapViewModel.swift */; };
 		5E0DE90C2B459B9000F3387C /* ProductFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */; };
 		5E0E824C2B9DB546000B5C79 /* SignInFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0E824B2B9DB546000B5C79 /* SignInFirebaseService.swift */; };
+		5E0E824E2B9DEE9A000B5C79 /* SignUpFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0E824D2B9DEE9A000B5C79 /* SignUpFirebaseService.swift */; };
 		5E1148E32B57D8C10073B2E8 /* SettingScreenOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */; };
 		5E1148E92B5907680073B2E8 /* MallController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148E82B5907680073B2E8 /* MallController.swift */; };
 		5E1148F72B5BC5BA0073B2E8 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148F62B5BC5BA0073B2E8 /* CustomNavigationBar.swift */; };
@@ -116,6 +117,7 @@
 		5E0DE9092B458FFC00F3387C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFirebaseService.swift; sourceTree = "<group>"; };
 		5E0E824B2B9DB546000B5C79 /* SignInFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInFirebaseService.swift; sourceTree = "<group>"; };
+		5E0E824D2B9DEE9A000B5C79 /* SignUpFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpFirebaseService.swift; sourceTree = "<group>"; };
 		5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingScreenOrientation.swift; sourceTree = "<group>"; };
 		5E1148E82B5907680073B2E8 /* MallController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallController.swift; sourceTree = "<group>"; };
 		5E1148F62B5BC5BA0073B2E8 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
@@ -511,6 +513,7 @@
 		5E1C911D2B90873200B43619 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5E0E824D2B9DEE9A000B5C79 /* SignUpFirebaseService.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1089,6 +1092,7 @@
 				5E1A353D2B13E6E30076FDC1 /* HomeController.swift in Sources */,
 				5E7DE9E02B73BBF2007B44CC /* FieldFilterFlowLayout.swift in Sources */,
 				5E22B13F2B3C0B0000CDD18A /* ListProductController.swift in Sources */,
+				5E0E824E2B9DEE9A000B5C79 /* SignUpFirebaseService.swift in Sources */,
 				5E7D7E702B44ABD80009B8E8 /* ImageNumber.swift in Sources */,
 				5E8D30DB2B8A7800009402BD /* MarkRefactoring.swift in Sources */,
 				5E1A35372B13E1770076FDC1 /* TabBarController.swift in Sources */,

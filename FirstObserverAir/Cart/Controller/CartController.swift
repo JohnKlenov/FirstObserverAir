@@ -190,7 +190,7 @@ extension CartController:CartModelOutput {
 // MARK: - Selectors
 private extension CartController {
     @objc func handleUpdateCartProductNotification(_ notification: NSNotification) {
-        print("handleUpdateCartProductNotification")
+        print("CartController handleUpdateCartProductNotification")
         removeObserverNotification()
         cartModel?.fetchData()
     }
@@ -214,9 +214,15 @@ extension CartController: CartViewDelegate {
 }
 
 extension CartController: SignInViewControllerDelegate {
+    /// нужно сюда передовать isAnon потому что если мы  link с Anon addStateDidChangeListener не сработает
+    /// и нам нужно указать что reloadData(products: cartProducts, isAnonymous: false)
+    /// cartProducts останется прежний ведь мы link а если cartProducts был пустым мы isAnonymous установим в false
+    /// что бы указать что мы уже signUp
     func userIsPermanent() {
+        /// !!!! если мы из SignUpController будучи анонимным успешно signUp addStateDidChangeListener не сработает
+        /// и мы затрем наш cartProduct если там есть данные
         reloadData(products: [], isAnonymous: false)
-        print("userIsPermanent()")
+        print("CartController userIsPermanent()")
         // refactor getCartObservser
 //        managerFB.removeObserverForCartProductsUser()
         

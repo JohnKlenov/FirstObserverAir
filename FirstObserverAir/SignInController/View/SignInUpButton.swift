@@ -8,7 +8,7 @@
 import UIKit
 
 class SignInUpProcessButton: UIButton {
-    var isSignInProcessActive = false {
+    var isProcessActive = false {
         didSet {
             self.setNeedsUpdateConfiguration()
         }
@@ -29,7 +29,7 @@ class SignInUpProcessButton: UIButton {
         self.configuration = configuration
 
         self.configurationUpdateHandler = { [weak self] button in
-            guard let isSignInProcessActive = self?.isSignInProcessActive else {return}
+            guard let isSignInProcessActive = self?.isProcessActive else {return}
             var config = button.configuration
             config?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
                 var outgoing = incoming

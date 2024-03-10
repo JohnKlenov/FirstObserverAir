@@ -295,15 +295,15 @@ private extension NewSignInViewController {
     }
     
     @objc func didTapSignInButton(_ sender: UIButton) {
-
-                guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         
-        signInButton.isSignInProcessActive = true
+        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+        
+        signInButton.isProcessActive = true
         signInModel?.signIn(email: email, password: password, completion: { error in
-            self.signInButton.isSignInProcessActive = false
+            self.signInButton.isProcessActive = false
             if let error = error {
                 self.signInAlert(title: "Error", message: error.localizedDescription, comletionHandler: {
-//                    self?.isInvalidSignIn = true
+                    //                    self?.isInvalidSignIn = true
                 })
             } else {
                 self.isEnabledSignInButton(enabled: false)

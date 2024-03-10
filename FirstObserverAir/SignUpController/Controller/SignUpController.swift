@@ -96,6 +96,7 @@ final class NewSignUpViewController: UIViewController {
     var isRePasswordValid = false
 
 //    var isInvalidSignIn = false
+    private var signUpModel: SignUpModelInput?
     weak var signInDelegate:NewSignUpViewControllerDelegate?
 
     // MARK: - Methods
@@ -125,6 +126,7 @@ final class NewSignUpViewController: UIViewController {
 private extension NewSignUpViewController {
     func setupView() {
         view.backgroundColor = R.Colors.systemBackground
+        signUpModel = SignUpFirebaseService()
         observeKeyboardNotifications()
         assemblyStackView()
         addActions()
@@ -330,82 +332,99 @@ func textFieldHandler(_ textField: UITextField?) {
     print("gestureSignUpDidTap")
     view.endEditing(true)
 }
-
-@objc func didTapSignUpButton(_ sender: UIButton) {
-    print("didTapSignUpButton")
-
-//        guard let name = nameTextField.text, let email = emailTextField.text, let password = passwordTextField.text else { return }
-//
-//        self.signingIn = true
-////
-////        if isInvalidSignIn {
-////            signInDelegate?.saveCartProductFBNew?()
-////            isInvalidSignIn = false
-////        }
-//
-//        managerFB.registerUserSignUpVC(email: email, password: password, name: name) { [weak self] stateAuthError in
-//
-//            self?.signingIn = false
-//            switch stateAuthError {
-//            case .success:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                // это нужно для ProfileVC и CartVC что бы обновить UI
-//                self?.signInDelegate?.userDidRegisteredNew?()
-//                self?.registerShowAlert(title: "Success", message: "An email has been sent to \(email), please confirm your email address.") {
-//                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-//                }
-//            case .failed:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "Something went wrong! Try again!")
-//            case .providerAlreadyLinked:
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "Attempt to associate a provider already associated with this account!")
-//            case .credentialAlreadyInUse:
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "You are trying to associate credentials that have already been associated with another account!")
-//            case .userTokenExpired:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
-//            case .invalidUserToken:
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
-//            case .requiresRecentLogin:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
-//            case .networkError:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "Server connection problems. Try again!")
-//            case .tooManyRequests:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "Try again later!")
-//            case .invalidEmail:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.separatorEmailView.backgroundColor = R.Colors.systemRed
-//                self?.registerShowAlert(title: "Error", message: "Email address is not in the correct format!")
-//            case .emailAlreadyInUse:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.separatorEmailView.backgroundColor = R.Colors.systemRed
-//                self?.registerShowAlert(title: "Error", message: "The email address used to attempt registration already exists!")
-//            case .weakPassword:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.separatorPasswordView.backgroundColor = R.Colors.systemRed
-//                self?.registerShowAlert(title: "Error", message: "The entered password is too weak!")
-//            default:
-////                self?.signingIn = false
-//                self?.isEnabledSignUpButton(enabled: false)
-//                self?.registerShowAlert(title: "Error", message: "Something went wrong! Try again!")
-//            }
-//        }
-}
+    //
+    //        self.signingIn = true
+    ////
+    ////        if isInvalidSignIn {
+    ////            signInDelegate?.saveCartProductFBNew?()
+    ////            isInvalidSignIn = false
+    ////        }
+    //
+    //        managerFB.registerUserSignUpVC(email: email, password: password, name: name) { [weak self] stateAuthError in
+    //
+    //            self?.signingIn = false
+    //            switch stateAuthError {
+    //            case .success:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                // это нужно для ProfileVC и CartVC что бы обновить UI
+    //                self?.signInDelegate?.userDidRegisteredNew?()
+    //                self?.registerShowAlert(title: "Success", message: "An email has been sent to \(email), please confirm your email address.") {
+    //                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+    //                }
+    //            case .failed:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "Something went wrong! Try again!")
+    //            case .providerAlreadyLinked:
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "Attempt to associate a provider already associated with this account!")
+    //            case .credentialAlreadyInUse:
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "You are trying to associate credentials that have already been associated with another account!")
+    //            case .userTokenExpired:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+//                    self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
+    //            case .invalidUserToken:
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
+    //            case .requiresRecentLogin:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
+    //            case .networkError:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "Server connection problems. Try again!")
+    //            case .tooManyRequests:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "Try again later!")
+    //            case .invalidEmail:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.separatorEmailView.backgroundColor = R.Colors.systemRed
+    //                self?.registerShowAlert(title: "Error", message: "Email address is not in the correct format!")
+    //            case .emailAlreadyInUse:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.separatorEmailView.backgroundColor = R.Colors.systemRed
+    //                self?.registerShowAlert(title: "Error", message: "The email address used to attempt registration already exists!")
+    //            case .weakPassword:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.separatorPasswordView.backgroundColor = R.Colors.systemRed
+    //                self?.registerShowAlert(title: "Error", message: "The entered password is too weak!")
+    //            default:
+    ////                self?.signingIn = false
+    //                self?.isEnabledSignUpButton(enabled: false)
+    //                self?.registerShowAlert(title: "Error", message: "Something went wrong! Try again!")
+    //            }
+    //        }
+    @objc func didTapSignUpButton(_ sender: UIButton) {
+        print("didTapSignUpButton")
+        
+        guard let name = nameTextField.text, let email = emailTextField.text, let password = passwordTextField.text else { return }
+        
+        signUpButton.isProcessActive = true
+        signUpModel?.signUp(email: email, password: password, name: name, completion: { error, isAnon in
+            self.signUpButton.isProcessActive = false
+            if let error = error {
+                self.registerShowAlert(title: "Error", message: error.localizedDescription)
+            } else {
+                self.isEnabledSignUpButton(enabled: false)
+                if !isAnon {
+                    print("!isAnon")
+                    self.signInDelegate?.userDidRegisteredNew?()
+                } else {
+                    print("isAnon")
+                }
+               
+                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+            }
+        })
+    }
 }
 
 // MARK: - UITextFieldDelegate

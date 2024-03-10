@@ -5,7 +5,7 @@
 //  Created by Evgenyi on 10.03.24.
 //
 
-import UIKit
+import Foundation
 
 // Протокол для модели данных
 protocol SignInModelInput: AnyObject {

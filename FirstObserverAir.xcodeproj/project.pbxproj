@@ -16,6 +16,7 @@
 		5E0DE9072B458ABA00F3387C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9062B458ABA00F3387C /* MapView.swift */; };
 		5E0DE90A2B458FFC00F3387C /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE9092B458FFC00F3387C /* MapViewModel.swift */; };
 		5E0DE90C2B459B9000F3387C /* ProductFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */; };
+		5E0E824C2B9DB546000B5C79 /* SignInFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0E824B2B9DB546000B5C79 /* SignInFirebaseService.swift */; };
 		5E1148E32B57D8C10073B2E8 /* SettingScreenOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */; };
 		5E1148E92B5907680073B2E8 /* MallController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148E82B5907680073B2E8 /* MallController.swift */; };
 		5E1148F72B5BC5BA0073B2E8 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1148F62B5BC5BA0073B2E8 /* CustomNavigationBar.swift */; };
@@ -114,6 +115,7 @@
 		5E0DE9062B458ABA00F3387C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		5E0DE9092B458FFC00F3387C /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		5E0DE90B2B459B9000F3387C /* ProductFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFirebaseService.swift; sourceTree = "<group>"; };
+		5E0E824B2B9DB546000B5C79 /* SignInFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInFirebaseService.swift; sourceTree = "<group>"; };
 		5E1148E22B57D8C10073B2E8 /* SettingScreenOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingScreenOrientation.swift; sourceTree = "<group>"; };
 		5E1148E82B5907680073B2E8 /* MallController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallController.swift; sourceTree = "<group>"; };
 		5E1148F62B5BC5BA0073B2E8 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
@@ -836,6 +838,7 @@
 		5E8D30DE2B8A78E4009402BD /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				5E0E824B2B9DB546000B5C79 /* SignInFirebaseService.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1130,6 +1133,7 @@
 				5EC4923A2B3063370061C71F /* ProductCell.swift in Sources */,
 				5E1C91182B8D2D6400B43619 /* SignInUpButton.swift in Sources */,
 				5E1A355F2B161B3D0076FDC1 /* FirebaseService.swift in Sources */,
+				5E0E824C2B9DB546000B5C79 /* SignInFirebaseService.swift in Sources */,
 				5E07018D2B27209A00517EA0 /* HomeFirebaseService.swift in Sources */,
 				5E9B522B2B52ADDE00F907B6 /* MapController.swift in Sources */,
 				5E0701862B25D4C400517EA0 /* NetworkMonitor.swift in Sources */,

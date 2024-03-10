@@ -44,6 +44,7 @@ class SignInUpProcessButton: UIButton {
             button.isUserInteractionEnabled = !isSignInProcessActive
             button.configuration = config
         }
+        tintColor = R.Colors.label
     }
 
     required init?(coder: NSCoder) {

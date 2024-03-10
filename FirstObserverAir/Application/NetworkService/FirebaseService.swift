@@ -202,6 +202,59 @@ final class FirebaseService {
         }
     }
     
+    func signIn(email: String, password: String, completion: @escaping (Error?) -> Void) {
+        
+        guard let user = currentUser else {
+            ///need created build Error
+            let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+            completion(error)
+            return
+        }
+        
+        Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+            if let error = error {
+                completion(error)
+            } else {
+                self.deleteDataAnonUser(user: user)
+                completion(error)
+            }
+        }
+    }
+    
+    func deleteDataAnonUser(user:User) {
+        if user.isAnonymous {
+            ///let group = DispatchGroup() можно использовать перед тем как completion(error)
+            ///group.enter()
+            deleteAccountUser(user: user) { error in
+                ///group.leave()
+                if let error = error {
+                    print("Returne message for analitic FB Crashlystics error - \(error.localizedDescription) ")
+                }
+            }
+            deleteCartProductUser(uid: user.uid)
+        }
+    }
+    
+    func deleteAccountUser(user:User, completion: @escaping (Error?) -> Void) {
+        user.delete { error in
+            completion(error)
+        }
+    }
+    
+    func deleteCartProductUser(uid:String) {
+        // Удаляем корзину анонимного пользователя
+          let docRef = db.collection("users").document(uid).collection("cartProducts")
+          docRef.getDocuments() { (querySnapshot, err) in
+              if let err = err {
+                  print("Returne message for analitic FB Crashlystics error - \(err.localizedDescription) ")
+              } else {
+                  for document in querySnapshot!.documents {
+                      document.reference.delete()
+                  }
+              }
+          }
+    }
+    
     
     // MARK: UserListener + FetchCartProducts
 
@@ -302,6 +355,7 @@ final class FirebaseService {
         /// вы не получите ошибку, если путь к коллекции не существует.
         /// слушатель listener будет работать. Если в какой-то момент вы добавите документ в коллекцию по пути collectionRef, слушатель обнаружит эту изменение и сработает.
         /// если произошла ошибка при  создании listener, то он не будет автоматически восстановлен. В таких случаях вам нужно будет явно повторно установить слушатель.
+        /// !!!! можно удалить принудительную запсиь в ProductController. Важно отметить, что благодаря функции “компенсации задержки” локальные изменения в вашем приложении немедленно вызывают слушателей снимков1. Это означает, что при выполнении записи ваши слушатели будут уведомлены о новых данных до того, как данные будут отправлены на сервер.
         let listener = collectionRef.addSnapshotListener { (querySnapshot, error) in
 
             if let error = error {

@@ -110,10 +110,9 @@ final class NewSignInViewController: UIViewController {
     var isPasswordValid = false
     
 //    var isInvalidSignIn = false
-//    let managerFB = FBManager.shared
-//    var cartProducts: [PopularProduct] = []
     
     // profileVC - userIsPermanentUpdateUI
+    private var signInModel: SignInModelInput?
     weak var delegate:SignInViewControllerDelegate?
     
     // MARK: - override methods
@@ -143,6 +142,7 @@ final class NewSignInViewController: UIViewController {
 private extension NewSignInViewController {
     func setupView() {
         view.backgroundColor = R.Colors.systemBackground
+        signInModel = SignInFirebaseService()
         assemblyStackView()
         addActions()
         setupStackView()
@@ -295,10 +295,22 @@ private extension NewSignInViewController {
     }
     
     @objc func didTapSignInButton(_ sender: UIButton) {
-//        showTopView(title: "Password was reset. Please check you email.", backgroundColor: R.Colors.systemGreen)
-        self.dismiss(animated: true)
-        //        guard let email = emailTextField.text, let password = passwordTextField.text else { return }
+
+                guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         
+        signInButton.isSignInProcessActive = true
+        signInModel?.signIn(email: email, password: password, completion: { error in
+            self.signInButton.isSignInProcessActive = false
+            if let error = error {
+                self.signInAlert(title: "Error", message: error.localizedDescription, comletionHandler: {
+//                    self?.isInvalidSignIn = true
+                })
+            } else {
+                self.isEnabledSignInButton(enabled: false)
+                self.userDidRegisteredNew()
+                self.presentingViewController?.dismiss(animated: true, completion: nil)
+            }
+        })
         //  signingIn - flag changed configuration button
         //        signingIn = true
         //        managerFB.signIn(email: email, password: password) { [weak self] (stateAuthError) in
@@ -306,14 +318,14 @@ private extension NewSignInViewController {
         //            switch stateAuthError {
         //            case .success:
         //                self?.signingIn = false
-        //                self?.isEnabledSignInButton(enabled: false)
-        //                self?.userDidRegisteredNew()
-        //                self?.presentingViewController?.dismiss(animated: true, completion: nil)
+//                        self?.isEnabledSignInButton(enabled: false)
+//                        self?.userDidRegisteredNew()
+//                        self?.presentingViewController?.dismiss(animated: true, completion: nil)
         //            case .failed:
         //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
-        ////                    self?.isInvalidSignIn = true
-        //                })
+//                        self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
+//        //                    self?.isInvalidSignIn = true
+//                        })
         //            case .invalidEmail:
         //                self?.signingIn = false
         //                self?.signInAlert(title: "Error", message: "Invalid email", comletionHandler: {
@@ -353,6 +365,9 @@ private extension NewSignInViewController {
         //                })
         //            }
         //        }
+        
+        //        showTopView(title: "Password was reset. Please check you email.", backgroundColor: R.Colors.systemGreen)
+        //        self.dismiss(animated: true)
     }
     
     @objc func didTapSignUpButton(_ sender: UIButton) {

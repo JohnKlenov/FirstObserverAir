@@ -171,6 +171,29 @@ struct Mall {
     }
 }
 
+enum AuthErrorCodeState {
+    // Добавьте свойства для кода ошибки и сообщения об ошибке
+    case success
+    case failed(String)
+    case invalidUserToken(String)
+    case userTokenExpired(String)
+    case requiresRecentLogin(String)
+    case keychainError(String)
+    case networkError(String)
+    case userNotFound(String)
+    case wrongPassword(String)
+    case tooManyRequests(String)
+    case expiredActionCode(String)
+    case invalidCredential(String)
+    case invalidRecipientEmail(String)
+    case missingEmail(String)
+    case invalidEmail(String)
+    case providerAlreadyLinked(String)
+    case credentialAlreadyInUse(String)
+    case userDisabled(String)
+    case emailAlreadyInUse(String)
+    case weakPassword(String)
+}
 
 
 

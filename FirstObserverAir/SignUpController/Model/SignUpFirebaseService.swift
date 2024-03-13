@@ -8,7 +8,8 @@
 import Foundation
 // Протокол для модели данных
 protocol SignUpModelInput: AnyObject {
-    func signUp(email: String, password: String, name: String, completion: @escaping (Error?, Bool) -> Void)
+    func signUp(email: String, password: String, name: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void)
+    func verificationEmail()
 }
 
 final class SignUpFirebaseService {
@@ -21,9 +22,17 @@ final class SignUpFirebaseService {
 }
 
 extension SignUpFirebaseService: SignUpModelInput {
-    func signUp(email: String, password: String, name: String, completion: @escaping (Error?, Bool) -> Void) {
-        serviceFB.signUp(email: email, password: password, name: name) { error, isAnon in
-            completion(error, isAnon)
+    
+    func verificationEmail() {
+        serviceFB.verificationEmail()
+    }
+    
+    func signUp(email: String, password: String, name: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
+//        serviceFB.signUp(email: email, password: password, name: name) { error, isAnon in
+//            completion(error, isAnon)
+//        }
+        serviceFB.signUp(email: email, password: password, name: name) { state, isAnon in
+            completion(state,isAnon)
         }
     }
     

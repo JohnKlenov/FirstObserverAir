@@ -7,10 +7,10 @@
 
 import UIKit
 
-@objc protocol NewSignUpViewControllerDelegate: AnyObject {
-//    @objc optional func saveCartProductFBNew()
-    @objc optional func userDidRegisteredNew()
-}
+//@objc protocol NewSignUpViewControllerDelegate: AnyObject {
+////    @objc optional func saveCartProductFBNew()
+//    @objc optional func userDidRegisteredNew()
+//}
 
 final class NewSignUpViewController: UIViewController {
 
@@ -97,7 +97,7 @@ final class NewSignUpViewController: UIViewController {
 
 //    var isInvalidSignIn = false
     private var signUpModel: SignUpModelInput?
-    weak var signInDelegate:NewSignUpViewControllerDelegate?
+    weak var delegate:DidChangeUserDelegate?
 
     // MARK: - Methods
 
@@ -408,22 +408,119 @@ func textFieldHandler(_ textField: UITextField?) {
         guard let name = nameTextField.text, let email = emailTextField.text, let password = passwordTextField.text else { return }
         
         signUpButton.isProcessActive = true
-        signUpModel?.signUp(email: email, password: password, name: name, completion: { error, isAnon in
+        
+        signUpModel?.signUp(email: email, password: password, name: name, completion: { state, isAnon in
             self.signUpButton.isProcessActive = false
-            if let error = error {
-                self.registerShowAlert(title: "Error", message: error.localizedDescription)
-            } else {
+            
+            switch state {
+                
+            
+            case .success:
                 self.isEnabledSignUpButton(enabled: false)
-                if !isAnon {
-                    print("!isAnon")
-                    self.signInDelegate?.userDidRegisteredNew?()
+                if isAnon {
+                    print("SignUpController isAnon")
+                    self.delegate?.userChanged(isFromAnon: isAnon)
                 } else {
-                    print("isAnon")
+                    self.delegate?.userChanged(isFromAnon: isAnon)
+                    print("SignUpController not isAnon")
                 }
-               
-                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+            case .failed(_):
+//                self.registerShowAlert(title: "error", message: errorMessage)
+                self.registerShowAlert(title: "Подтвердите вашу электронную почту", message: "Мы отправили вам письмо с подтверждением на вашу электронную почту. Пожалуйста, проверьте свою почту, перейдите по ссылке для подтверждения, затем вернитесь и повторите попытку регистрации.") {
+                    self.signUpModel?.verificationEmail()
+                }
+                print("failed")
+            case .invalidUserToken(let errorMessage):
+                print("invalidUserToken")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .userTokenExpired(let errorMessage):
+                print("userTokenExpired")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .requiresRecentLogin(_):
+                print("requiresRecentLogin")
+                self.registerShowAlert(title: "Подтвердите вашу электронную почту", message: "Мы отправили вам письмо с подтверждением на вашу электронную почту. Пожалуйста, проверьте свою почту, перейдите по ссылке для подтверждения, затем вернитесь и повторите попытку регистрации.") {
+                    self.signUpModel?.verificationEmail()
+                }
+//                self.registerShowAlert(title: "error", message: errorMessage)
+            case .keychainError(let errorMessage):
+                print("keychainError")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .networkError(let errorMessage):
+                print("networkError")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .userNotFound(let errorMessage):
+                print("userNotFound")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .wrongPassword(let errorMessage):
+                print("wrongPassword")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .tooManyRequests(let errorMessage):
+                print("tooManyRequests")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .expiredActionCode(let errorMessage):
+                print("expiredActionCode")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .invalidCredential(let errorMessage):
+                print("invalidCredential")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .invalidRecipientEmail(let errorMessage):
+                print("invalidRecipientEmail")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .missingEmail(let errorMessage):
+                print("missingEmail")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .invalidEmail(let errorMessage):
+                print("invalidEmail")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .providerAlreadyLinked(let errorMessage):
+                print("providerAlreadyLinked")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .credentialAlreadyInUse(let errorMessage):
+                print("credentialAlreadyInUse")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .userDisabled(let errorMessage):
+                print("userDisabled")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .emailAlreadyInUse(let errorMessage):
+                print("emailAlreadyInUse")
+                self.registerShowAlert(title: "error", message: errorMessage)
+            case .weakPassword(let errorMessage):
+                print("weakPassword")
+                self.registerShowAlert(title: "error", message: errorMessage)
             }
+//            if let error = error {
+//                self.registerShowAlert(title: "Error", message: error.localizedDescription)
+//            } else {
+//                self.isEnabledSignUpButton(enabled: false)
+//                if isAnon {
+//                    print("SignUpController isAnon")
+//                    self.delegate?.userChanged(isFromAnon: isAnon)
+//                } else {
+//                    self.delegate?.userChanged(isFromAnon: isAnon)
+//                    print("SignUpController not isAnon")
+//                }
+//
+//                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+//            }
         })
+
+//        signUpModel?.signUp(email: email, password: password, name: name, completion: { error, isAnon in
+//            self.signUpButton.isProcessActive = false
+//            if let error = error {
+//                self.registerShowAlert(title: "Error", message: error.localizedDescription)
+//            } else {
+//                self.isEnabledSignUpButton(enabled: false)
+//                if isAnon {
+//                    print("SignUpController isAnon")
+//                    self.delegate?.userChanged(isFromAnon: isAnon)
+//                } else {
+//                    self.delegate?.userChanged(isFromAnon: isAnon)
+//                    print("SignUpController not isAnon")
+//                }
+//
+//                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+//            }
+//        })
     }
 }
 

@@ -200,9 +200,8 @@ private extension CartController {
 extension CartController: CartViewDelegate {
     func didTaplogInButton() {
         let signInVC = NewSignInViewController()
-//        signInVC.cartProducts = cartProducts
         signInVC.delegate = self
-        signInVC.presentationController?.delegate = self
+//        signInVC.presentationController?.delegate = self
         present(signInVC, animated: true, completion: nil)
         removeObserverNotification()
         addObserverNotification()
@@ -213,39 +212,37 @@ extension CartController: CartViewDelegate {
     }
 }
 
-extension CartController: SignInViewControllerDelegate {
+
+// MARK: - DidChangeUserDelegate
+extension CartController: DidChangeUserDelegate {
     /// нужно сюда передовать isAnon потому что если мы  link с Anon addStateDidChangeListener не сработает
     /// и нам нужно указать что reloadData(products: cartProducts, isAnonymous: false)
     /// cartProducts останется прежний ведь мы link а если cartProducts был пустым мы isAnonymous установим в false
     /// что бы указать что мы уже signUp
-    func userIsPermanent() {
-        /// !!!! если мы из SignUpController будучи анонимным успешно signUp addStateDidChangeListener не сработает
-        /// и мы затрем наш cartProduct если там есть данные
-        reloadData(products: [], isAnonymous: false)
+    /// /// !!!! если мы из SignUpController будучи анонимным успешно signUp addStateDidChangeListener не сработает
+    /// и мы затрем наш cartProduct если там есть данные
+    func userChanged(isFromAnon:Bool) {
+        if isFromAnon {
+            print("CartController isFromAnon")
+            reloadData(products: cartProducts, isAnonymous: false)
+        } else {
+            print("CartController is not FromAnon")
+            reloadData(products: [], isAnonymous: false)
+        }
+        
         print("CartController userIsPermanent()")
-        // refactor getCartObservser
-//        managerFB.removeObserverForCartProductsUser()
-        
-//        configureActivityView() ?????
-        
-//        getData` без активного подключения к сети вернет error
-        // ref.observe(.value) or think about it
-        
-        
-//        managerFB.getCartProductOnce { cartProducts in
-//            self.managerFB.userIsAnonymously { [weak self] (isAnonymously) in
-//                self?.isAnonymouslyUser = isAnonymously
-//                self?.cartProducts = cartProducts
-////                self?.activityView.stopAnimating() ?????
-////                self?.activityView.removeFromSuperview() ?????
-//                self?.tableView.reloadData()
-//            }
-//        }
     }
 }
 
 
 
+// MARK: - Test Plan
+
+// На анонимном добавляем товар в корзину
+// SignUp
+// Принудительно из кода SignOut
+// из нового анонимного с пустой корзиной SignIn
+// из залогининого пользователя с товаром в корзине SignUp (проверяем как работает вторая часть когда в SignUp)
 
 
 // MARK: - Feature

@@ -8,8 +8,8 @@
 import UIKit
 
 // NewSignInViewController BOSS he says Intern(NewProfileViewController) to do
-protocol SignInViewControllerDelegate : AnyObject {
-    func userIsPermanent()
+protocol DidChangeUserDelegate : AnyObject {
+    func userChanged(isFromAnon:Bool)
 }
 
 // class final - это ускоряет диспетчеризация от него никто не будет в дальнейшем наследоваться.
@@ -113,7 +113,7 @@ final class NewSignInViewController: UIViewController {
     
     // profileVC - userIsPermanentUpdateUI
     private var signInModel: SignInModelInput?
-    weak var delegate:SignInViewControllerDelegate?
+    weak var delegate:DidChangeUserDelegate?
     
     // MARK: - override methods
     override func viewDidLoad() {
@@ -307,7 +307,7 @@ private extension NewSignInViewController {
                 })
             } else {
                 self.isEnabledSignInButton(enabled: false)
-                self.userDidRegisteredNew()
+                self.delegate?.userChanged(isFromAnon: false)
                 self.presentingViewController?.dismiss(animated: true, completion: nil)
             }
         })
@@ -373,9 +373,9 @@ private extension NewSignInViewController {
     @objc func didTapSignUpButton(_ sender: UIButton) {
         
                 let signUpVC = NewSignUpViewController()
-                signUpVC.signInDelegate = self
+                signUpVC.delegate = self
         //        signUpVC.isInvalidSignIn = isInvalidSignIn
-                signUpVC.presentationController?.delegate = self
+//                signUpVC.presentationController?.delegate = self
                 present(signUpVC, animated: true, completion: nil)
         //        self.dismiss(animated: true, completion: nil)
     }
@@ -436,18 +436,18 @@ extension NewSignInViewController: UITextFieldDelegate {
 }
 
 
-// MARK: - SignUpViewControllerDelegate
-extension NewSignInViewController: NewSignUpViewControllerDelegate {
-    
-//    func saveCartProductFBNew() {
-//        managerFB.saveDeletedFromCart(products: cartProducts)
-//        self.isInvalidSignIn = false
-//    }
-    
-    func userDidRegisteredNew() {
-        // это свойство не nil только из ProfileVC
-        delegate?.userIsPermanent()
+// MARK: - DidChangeUserDelegate
+extension NewSignInViewController: DidChangeUserDelegate {
+    func userChanged(isFromAnon: Bool) {
+        delegate?.userChanged(isFromAnon: isFromAnon)
     }
+    
+    
+    
+//    func userDidRegisteredNew() {
+//        // это свойство не nil только из ProfileVC
+//        delegate?.userChanged(isFromAnon: false)
+//    }
 }
 
 

@@ -414,7 +414,6 @@ func textFieldHandler(_ textField: UITextField?) {
             
             switch state {
                 
-            
             case .success:
                 self.isEnabledSignUpButton(enabled: false)
                 if isAnon {
@@ -426,62 +425,62 @@ func textFieldHandler(_ textField: UITextField?) {
                 }
                 self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
             case .failed(let errorMessage):
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
                 print("failed")
             case .invalidUserToken(let errorMessage):
                 print("invalidUserToken")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .userTokenExpired(let errorMessage):
                 print("userTokenExpired")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .requiresRecentLogin(let errorMessage):
                 print("requiresRecentLogin")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .keychainError(let errorMessage):
                 print("keychainError")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .networkError(let errorMessage):
                 print("networkError")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .userNotFound(let errorMessage):
                 print("userNotFound")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .wrongPassword(let errorMessage):
                 print("wrongPassword")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .tooManyRequests(let errorMessage):
                 print("tooManyRequests")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .expiredActionCode(let errorMessage):
                 print("expiredActionCode")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .invalidCredential(let errorMessage):
                 print("invalidCredential")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .invalidRecipientEmail(let errorMessage):
                 print("invalidRecipientEmail")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .missingEmail(let errorMessage):
                 print("missingEmail")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .invalidEmail(let errorMessage):
                 print("invalidEmail")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .providerAlreadyLinked(let errorMessage):
                 print("providerAlreadyLinked")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .credentialAlreadyInUse(let errorMessage):
                 print("credentialAlreadyInUse")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .userDisabled(let errorMessage):
                 print("userDisabled")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .emailAlreadyInUse(let errorMessage):
                 print("emailAlreadyInUse")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             case .weakPassword(let errorMessage):
                 print("weakPassword")
-                self.registerShowAlert(title: "error", message: errorMessage)
+                self.signUpAlert(title: "error", message: errorMessage)
             }
         })
     }
@@ -547,7 +546,7 @@ extension NewSignUpViewController: UITextFieldDelegate {
 
 private extension NewSignUpViewController {
 
-    func registerShowAlert(title: String, message: String, completion: @escaping () -> Void = {}) {
+    func signUpAlert(title: String, message: String, completion: @escaping () -> Void = {}) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let actionOK = UIAlertAction(title: "ok", style: .default) { (_) in
             completion()

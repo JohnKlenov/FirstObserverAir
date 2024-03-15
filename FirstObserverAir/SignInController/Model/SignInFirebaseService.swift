@@ -9,7 +9,7 @@ import Foundation
 
 // Протокол для модели данных
 protocol SignInModelInput: AnyObject {
-    func signIn(email: String, password: String, completion: @escaping (Error?) -> Void)
+    func signIn(email: String, password: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void)
 }
 final class SignInFirebaseService {
     
@@ -21,9 +21,9 @@ final class SignInFirebaseService {
 }
 
 extension SignInFirebaseService: SignInModelInput {
-    func signIn(email: String, password: String, completion: @escaping (Error?) -> Void) {
-        serviceFB.signIn(email: email, password: password) { error in
-            completion(error)
+    func signIn(email: String, password: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
+        serviceFB.signIn(email: email, password: password) { state, isAnon in
+            completion(state,isAnon)
         }
     }
     

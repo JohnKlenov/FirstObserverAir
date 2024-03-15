@@ -299,72 +299,74 @@ private extension NewSignInViewController {
         guard let email = emailTextField.text, let password = passwordTextField.text else { return }
         
         signInButton.isProcessActive = true
-        signInModel?.signIn(email: email, password: password, completion: { error in
+        signInModel?.signIn(email: email, password: password, completion: { state, isAnon in
+            
             self.signInButton.isProcessActive = false
-            if let error = error {
-                self.signInAlert(title: "Error", message: error.localizedDescription, comletionHandler: {
-                    //                    self?.isInvalidSignIn = true
-                })
-            } else {
+            switch state {
+
+            case .success:
                 self.isEnabledSignInButton(enabled: false)
                 self.delegate?.userChanged(isFromAnon: false)
                 self.presentingViewController?.dismiss(animated: true, completion: nil)
+            case .failed(let errorMessage):
+                self.signInAlert(title: "error", message: errorMessage)
+                print("failed")
+            case .invalidUserToken(let errorMessage):
+                print("invalidUserToken")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .userTokenExpired(let errorMessage):
+                print("userTokenExpired")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .requiresRecentLogin(let errorMessage):
+                print("requiresRecentLogin")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .keychainError(let errorMessage):
+                print("keychainError")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .networkError(let errorMessage):
+                print("networkError")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .userNotFound(let errorMessage):
+                print("userNotFound")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .wrongPassword(let errorMessage):
+                print("wrongPassword")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .tooManyRequests(let errorMessage):
+                print("tooManyRequests")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .expiredActionCode(let errorMessage):
+                print("expiredActionCode")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .invalidCredential(let errorMessage):
+                print("invalidCredential")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .invalidRecipientEmail(let errorMessage):
+                print("invalidRecipientEmail")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .missingEmail(let errorMessage):
+                print("missingEmail")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .invalidEmail(let errorMessage):
+                print("invalidEmail")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .providerAlreadyLinked(let errorMessage):
+                print("providerAlreadyLinked")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .credentialAlreadyInUse(let errorMessage):
+                print("credentialAlreadyInUse")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .userDisabled(let errorMessage):
+                print("userDisabled")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .emailAlreadyInUse(let errorMessage):
+                print("emailAlreadyInUse")
+                self.signInAlert(title: "error", message: errorMessage)
+            case .weakPassword(let errorMessage):
+                print("weakPassword")
+                self.signInAlert(title: "error", message: errorMessage)
             }
         })
-        //  signingIn - flag changed configuration button
-        //        signingIn = true
-        //        managerFB.signIn(email: email, password: password) { [weak self] (stateAuthError) in
-        //
-        //            switch stateAuthError {
-        //            case .success:
-        //                self?.signingIn = false
-//                        self?.isEnabledSignInButton(enabled: false)
-//                        self?.userDidRegisteredNew()
-//                        self?.presentingViewController?.dismiss(animated: true, completion: nil)
-        //            case .failed:
-        //                self?.signingIn = false
-//                        self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
-//        //                    self?.isInvalidSignIn = true
-//                        })
-        //            case .invalidEmail:
-        //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "Invalid email", comletionHandler: {
-        //                    self?.separatorEmailView.backgroundColor = R.Colors.systemRed
-        ////                    self?.isInvalidSignIn = true
-        //                })
-        //            case .wrongPassword:
-        //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "Wrong password!", comletionHandler: {
-        //                    self?.separatorPasswordView.backgroundColor = R.Colors.systemRed
-        ////                    self?.isInvalidSignIn = true
-        //                })
-        //            case .userTokenExpired:
-        //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
-        ////                    self?.isInvalidSignIn = true
-        //                })
-        //            case .invalidUserToken:
-        //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
-        ////                    self?.isInvalidSignIn = true
-        //                })
-        //            case .requiresRecentLogin:
-        //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "You need to re-login to your account!", comletionHandler: {
-        ////                    self?.isInvalidSignIn = true
-        //                })
-        //            case .tooManyRequests:
-        //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "Try again later!", comletionHandler: {
-        ////                    self?.isInvalidSignIn = true
-        //                })
-        //            default:
-        //                self?.signingIn = false
-        //                self?.signInAlert(title: "Error", message: "Something went wrong! Try again!", comletionHandler: {
-        ////                    self?.isInvalidSignIn = true
-        //                })
-        //            }
-        //        }
         
         //        showTopView(title: "Password was reset. Please check you email.", backgroundColor: R.Colors.systemGreen)
         //        self.dismiss(animated: true)
@@ -455,16 +457,24 @@ extension NewSignInViewController: DidChangeUserDelegate {
 // MARK: - Alert
 private extension NewSignInViewController {
     
-    func signInAlert(title:String, message:String, comletionHandler: @escaping () -> Void) {
-        
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let  okAction = UIAlertAction(title: "Ok", style: .default) { _ in
-            comletionHandler()
+    func signInAlert(title: String, message: String, completion: @escaping () -> Void = {}) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let actionOK = UIAlertAction(title: "ok", style: .default) { (_) in
+            completion()
         }
-
-        alertController.addAction(okAction)
-        self.present(alertController, animated: true, completion: nil)
+        alert.addAction(actionOK)
+        self.present(alert, animated: true, completion: nil)
     }
+//    func signInAlert(title:String, message:String, comletionHandler: @escaping () -> Void) {
+//
+//        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//        let  okAction = UIAlertAction(title: "Ok", style: .default) { _ in
+//            comletionHandler()
+//        }
+//
+//        alertController.addAction(okAction)
+//        self.present(alertController, animated: true, completion: nil)
+//    }
     
     func sendPasswordResetAlert(title:String, placeholder: String, completionHandler: @escaping (String) -> Void) {
         

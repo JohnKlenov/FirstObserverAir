@@ -57,6 +57,7 @@ final class CartController: UIViewController {
         print("CartController viewWillDisappear")
         removeObserverNotification()
     }
+
 }
 
 
@@ -225,13 +226,12 @@ extension CartController: DidChangeUserDelegate {
     /// /// !!!! если мы из SignUpController будучи анонимным успешно signUp addStateDidChangeListener не сработает
     /// и мы затрем наш cartProduct если там есть данные
     func userChanged(isFromAnon:Bool) {
-        print("CartController userChanged(isFromAnon:Bool)")
         if isFromAnon {
-            print("CartController isFromAnon")
+            print("CartController userChanged isFromAnon")
             reloadData(products: cartProducts, isAnonymous: false)
         } else {
-            print("CartController is not FromAnon")
-            let products = cartModel?.fetchCartProducts()
+            let products = cartModel?.fetchCurrentCartProducts()
+            print("CartController userChanged is not FromAnon products - \(String(describing: products))")
             reloadData(products: products ?? [], isAnonymous: false)
         }
         

@@ -28,9 +28,6 @@ extension SignUpFirebaseService: SignUpModelInput {
     }
     
     func signUp(email: String, password: String, name: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
-//        serviceFB.signUp(email: email, password: password, name: name) { error, isAnon in
-//            completion(error, isAnon)
-//        }
         serviceFB.signUp(email: email, password: password, name: name) { state, isAnon in
             completion(state,isAnon)
         }

@@ -424,11 +424,9 @@ func textFieldHandler(_ textField: UITextField?) {
                     self.delegate?.userChanged(isFromAnon: isAnon)
                     print("SignUpController not isAnon")
                 }
-            case .failed(_):
-//                self.registerShowAlert(title: "error", message: errorMessage)
-                self.registerShowAlert(title: "Подтвердите вашу электронную почту", message: "Мы отправили вам письмо с подтверждением на вашу электронную почту. Пожалуйста, проверьте свою почту, перейдите по ссылке для подтверждения, затем вернитесь и повторите попытку регистрации.") {
-                    self.signUpModel?.verificationEmail()
-                }
+                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+            case .failed(let errorMessage):
+                self.registerShowAlert(title: "error", message: errorMessage)
                 print("failed")
             case .invalidUserToken(let errorMessage):
                 print("invalidUserToken")
@@ -436,12 +434,9 @@ func textFieldHandler(_ textField: UITextField?) {
             case .userTokenExpired(let errorMessage):
                 print("userTokenExpired")
                 self.registerShowAlert(title: "error", message: errorMessage)
-            case .requiresRecentLogin(_):
+            case .requiresRecentLogin(let errorMessage):
                 print("requiresRecentLogin")
-                self.registerShowAlert(title: "Подтвердите вашу электронную почту", message: "Мы отправили вам письмо с подтверждением на вашу электронную почту. Пожалуйста, проверьте свою почту, перейдите по ссылке для подтверждения, затем вернитесь и повторите попытку регистрации.") {
-                    self.signUpModel?.verificationEmail()
-                }
-//                self.registerShowAlert(title: "error", message: errorMessage)
+                self.registerShowAlert(title: "error", message: errorMessage)
             case .keychainError(let errorMessage):
                 print("keychainError")
                 self.registerShowAlert(title: "error", message: errorMessage)
@@ -488,39 +483,7 @@ func textFieldHandler(_ textField: UITextField?) {
                 print("weakPassword")
                 self.registerShowAlert(title: "error", message: errorMessage)
             }
-//            if let error = error {
-//                self.registerShowAlert(title: "Error", message: error.localizedDescription)
-//            } else {
-//                self.isEnabledSignUpButton(enabled: false)
-//                if isAnon {
-//                    print("SignUpController isAnon")
-//                    self.delegate?.userChanged(isFromAnon: isAnon)
-//                } else {
-//                    self.delegate?.userChanged(isFromAnon: isAnon)
-//                    print("SignUpController not isAnon")
-//                }
-//
-//                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-//            }
         })
-
-//        signUpModel?.signUp(email: email, password: password, name: name, completion: { error, isAnon in
-//            self.signUpButton.isProcessActive = false
-//            if let error = error {
-//                self.registerShowAlert(title: "Error", message: error.localizedDescription)
-//            } else {
-//                self.isEnabledSignUpButton(enabled: false)
-//                if isAnon {
-//                    print("SignUpController isAnon")
-//                    self.delegate?.userChanged(isFromAnon: isAnon)
-//                } else {
-//                    self.delegate?.userChanged(isFromAnon: isAnon)
-//                    print("SignUpController not isAnon")
-//                }
-//
-//                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-//            }
-//        })
     }
 }
 

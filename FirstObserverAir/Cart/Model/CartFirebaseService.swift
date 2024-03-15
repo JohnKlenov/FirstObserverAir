@@ -19,6 +19,7 @@ protocol CartModelInput: AnyObject {
     func removeCartProduct(model:String, index:Int)
     func checkingActualCurrentCartProducts(cartProducts: [ProductItem])
     func checkListenerStatus() -> Bool
+    func fetchCartProducts() -> [ProductItem]?
 }
     
 final class CartFirebaseService {
@@ -149,6 +150,10 @@ private extension CartFirebaseService {
 
 // MARK: - CartModelInput
 extension CartFirebaseService: CartModelInput {
+    
+    func fetchCartProducts() -> [ProductItem]? {
+        return serviceFB.currentCartProducts
+    }
     
     ///делаем запрос в CloudFirestore на актуальность товаров в корзине
     func checkingActualCurrentCartProducts(cartProducts: [ProductItem]) {

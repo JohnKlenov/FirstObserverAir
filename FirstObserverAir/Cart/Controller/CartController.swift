@@ -176,8 +176,11 @@ extension CartController:CartModelOutput {
     }
     
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
-        reloadData(products: cartProduct, isAnonymous: isAnonymousUser)
+        print("func updateData(cartProduct:  ..)")
+//        isAnonymousUser
+        reloadData(products: cartProduct, isAnonymous: true)
         if let cartModel = cartModel, cartModel.checkListenerStatus() {
+            print("cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)")
             cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)
         } else {
             print("cartModel?.restartFetchCartProducts()")
@@ -222,15 +225,17 @@ extension CartController: DidChangeUserDelegate {
     /// /// !!!! если мы из SignUpController будучи анонимным успешно signUp addStateDidChangeListener не сработает
     /// и мы затрем наш cartProduct если там есть данные
     func userChanged(isFromAnon:Bool) {
+        print("CartController userChanged(isFromAnon:Bool)")
         if isFromAnon {
             print("CartController isFromAnon")
             reloadData(products: cartProducts, isAnonymous: false)
         } else {
             print("CartController is not FromAnon")
-            reloadData(products: [], isAnonymous: false)
+            let products = cartModel?.fetchCartProducts()
+            reloadData(products: products ?? [], isAnonymous: false)
         }
         
-        print("CartController userIsPermanent()")
+        
     }
 }
 

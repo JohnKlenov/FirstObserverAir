@@ -30,7 +30,6 @@ final class FirebaseService {
             currentCartProducts?.forEach({ item in
                 print("currentCartProducts - \(String(describing: item.model))")
             })
-            updateCartProducts()
         }
     }
     var shops:[String:[Shop]] = [:]
@@ -40,9 +39,9 @@ final class FirebaseService {
         return UserDefaults.standard.string(forKey: "gender") ?? "Woman"
     }
     
-    func updateCartProducts() {
-        NotificationCenter.default.post(name: Notification.Name("UpdateCartProductNotification"), object: nil)
-    }
+//    func updateCartProducts() {
+//        NotificationCenter.default.post(name: Notification.Name("UpdateCartProductNotification"), object: nil)
+//    }
     
     // MARK: - UserDefaults
     
@@ -257,121 +256,212 @@ final class FirebaseService {
           }
     }
     
+    
+
+    
     func signUp(email: String, password: String, name: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
         
-        print("email - \(email)")
-        print("password - \(password)")
         guard let _ = currentUser else {
             completion(.failed("User is not authorized!"), false)
-            return }
+            return
+        }
         
-        Auth.auth().currentUser?.reload(completion: { (error) in
-            guard error == nil else {
-                let errorMessage = error?.localizedDescription
-                completion(.failed(errorMessage ?? "Something went wrong! Try again!"), false)
-                return
-            }
-            
-            if Auth.auth().currentUser?.isEmailVerified == true {
-                print("isEmailVerified == true")
-            } else {
-                print("isEmailVerified == false")
-            }
-            // Теперь, когда мы обновили данные пользователя, мы можем попытаться связать учетные записи
-            if Auth.auth().currentUser?.isAnonymous == true {
-                let credential = EmailAuthProvider.credential(withEmail: email, password: password)
-                Auth.auth().currentUser?.link(with: credential) { (result, error) in
-                    // Обработайте результат
-                    if let error = error as? AuthErrorCode {
-                        print("user.link localizedDescription  - \(error.localizedDescription)")
-                        print("user.link code  - \(error.code.rawValue)")
-                            let errorMessage = error.localizedDescription
-                            switch error.code {
-                            case .providerAlreadyLinked:
-                                completion(.providerAlreadyLinked(errorMessage),true)
-                            case .credentialAlreadyInUse:
-                                completion(.credentialAlreadyInUse(errorMessage),true)
-                            case .tooManyRequests:
-                                completion(.tooManyRequests(errorMessage),true)
-                            case .userTokenExpired:
-                                completion(.userTokenExpired(errorMessage),true)
-                            case .invalidUserToken:
-                                completion(.invalidUserToken(errorMessage),true)
-                            case .requiresRecentLogin:
-                                completion(.requiresRecentLogin(errorMessage),true)
-                            case .emailAlreadyInUse:
-                                completion(.emailAlreadyInUse(errorMessage),true)
-                            case .invalidEmail:
-                                completion(.invalidEmail(errorMessage),true)
-                            case .weakPassword:
-                                completion(.weakPassword(errorMessage),true)
-                            case .networkError:
-                                completion(.networkError(errorMessage),true)
-                            default:
-                                completion(.failed(errorMessage),true)
-                            }
-                    } else {
-                        self.createProfileChangeRequest(name: name, { error in
-                            if error != nil {
-                                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
-                            }
-                            completion(.success, true)
-                        })
-                    }
+        if Auth.auth().currentUser?.isAnonymous == true {
+            let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+            Auth.auth().currentUser?.link(with: credential) { [weak self] (result, error) in
+                // Обработайте результат
+                if let error = error as? AuthErrorCode {
+                    self?.handleAuthError(error: error, isAnonymous: true, completion: completion)
+                } else {
+                    self?.createProfileAndHandleError(name: name, isAnonymous: true, completion: completion)
                 }
-            } else {
-                // Создайте новую учетную запись
-                print("implemintation Auth.auth().createUser(withEmail:..")
-                
             }
-        })
-
-//        guard let user = currentUser else {
-//            ///need created build Error
-//            let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
-//            completion(error, true)
-//            return
-//        }
-//
-//        if user.isAnonymous {
-//
-//            let credential = EmailAuthProvider.credential(withEmail: email, password: password)
-//            user.link(with: credential) { [weak self] (result, error) in
-//
-//                if let error = error, let authError = error as? AuthErrorCode {
-//                    print("user.link localizedDescription  - \(error.localizedDescription)")
-//                    print("user.link code  - \(authError.code.rawValue)")
-//                    completion(error, true)
-//                } else {
-//                        self?.createProfileChangeRequest(name: name, { error in
-//                            if error != nil {
-//                                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
-//                            }
-//                            self?.verificationEmail()
-//                            completion(nil, true)
-//                        })
-//                }
-//            }
-//        } else {
-//            Auth.auth().createUser(withEmail: email, password: password) { [weak self] (result, error) in
-//
-//                if let error = error, let authError = error as? AuthErrorCode {
-//                    print("createUser localizedDescription  - \(error.localizedDescription)")
-//                    print("createUser code  - \(authError.code.rawValue)")
-//                    completion(error, false)
-//                } else {
-//                        self?.createProfileChangeRequest(name: name, { error in
-//                            if error != nil {
-//                                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
-//                            }
-//                            self?.verificationEmail()
-//                            completion(nil, false)
-//                        })
-//
-//                }
-//            }
-//        }
+        } else {
+            print("implemintation Auth.auth().createUser(withEmail:..")
+            Auth.auth().createUser(withEmail: email, password: password) { [weak self] (result, error) in
+                if let error = error as? AuthErrorCode {
+                    self?.handleAuthError(error: error, isAnonymous: false, completion: completion)
+                } else {
+                    self?.createProfileAndHandleError(name: name, isAnonymous: false, completion: completion)
+                }
+            }
+        }
     }
+    
+    func handleAuthError(error: AuthErrorCode, isAnonymous: Bool, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
+        let errorMessage = error.localizedDescription
+        switch error.code {
+        case .providerAlreadyLinked:
+            completion(.providerAlreadyLinked(errorMessage),isAnonymous)
+        case .credentialAlreadyInUse:
+            completion(.credentialAlreadyInUse(errorMessage),isAnonymous)
+        case .tooManyRequests:
+            completion(.tooManyRequests(errorMessage),isAnonymous)
+        case .userTokenExpired:
+            completion(.userTokenExpired(errorMessage),isAnonymous)
+        case .invalidUserToken:
+            completion(.invalidUserToken(errorMessage),isAnonymous)
+        case .requiresRecentLogin:
+            completion(.requiresRecentLogin(errorMessage),isAnonymous)
+        case .emailAlreadyInUse:
+            completion(.emailAlreadyInUse(errorMessage),isAnonymous)
+        case .invalidEmail:
+            completion(.invalidEmail(errorMessage),isAnonymous)
+        case .weakPassword:
+            completion(.weakPassword(errorMessage),isAnonymous)
+        case .networkError:
+            completion(.networkError(errorMessage),isAnonymous)
+        default:
+            completion(.failed(errorMessage),isAnonymous)
+        }
+    }
+    
+    func createProfileAndHandleError(name: String, isAnonymous: Bool, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
+        createProfileChangeRequest(name: name, { error in
+            if error != nil {
+                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+            }
+            self.verificationEmail()
+            completion(.success, isAnonymous)
+        })
+    }
+
+    //                    self?.createProfileChangeRequest(name: name, { error in
+    //                        if error != nil {
+    //                            print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+    //                        }
+    //                        //                            self?.verificationEmail()
+    //                        completion(.success, true)
+    //                    })
+    
+    //                    self?.createProfileChangeRequest(name: name, { error in
+    //                        if error != nil {
+    //                            print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+    //                        }
+    //                        //                            self?.verificationEmail()
+    //                        completion(.success, false)
+    //                    })
+    
+    
+    //                    let errorMessage = error.localizedDescription
+    //                    switch error.code {
+    //                    case .providerAlreadyLinked:
+    //                        completion(.providerAlreadyLinked(errorMessage),true)
+    //                    case .credentialAlreadyInUse:
+    //                        completion(.credentialAlreadyInUse(errorMessage),true)
+    //                    case .tooManyRequests:
+    //                        completion(.tooManyRequests(errorMessage),true)
+    //                    case .userTokenExpired:
+    //                        completion(.userTokenExpired(errorMessage),true)
+    //                    case .invalidUserToken:
+    //                        completion(.invalidUserToken(errorMessage),true)
+    //                    case .requiresRecentLogin:
+    //                        completion(.requiresRecentLogin(errorMessage),true)
+    //                    case .emailAlreadyInUse:
+    //                        completion(.emailAlreadyInUse(errorMessage),true)
+    //                    case .invalidEmail:
+    //                        completion(.invalidEmail(errorMessage),true)
+    //                    case .weakPassword:
+    //                        completion(.weakPassword(errorMessage),true)
+    //                    case .networkError:
+    //                        completion(.networkError(errorMessage),true)
+    //                    default:
+    //                        completion(.failed(errorMessage),true)
+    //                    }
+    
+    //                    let errorMessage = error.localizedDescription
+    //                    switch error.code {
+    //                    case .providerAlreadyLinked:
+    //                        completion(.providerAlreadyLinked(errorMessage),false)
+    //                    case .credentialAlreadyInUse:
+    //                        completion(.credentialAlreadyInUse(errorMessage),false)
+    //                    case .tooManyRequests:
+    //                        completion(.tooManyRequests(errorMessage),false)
+    //                    case .userTokenExpired:
+    //                        completion(.userTokenExpired(errorMessage),false)
+    //                    case .invalidUserToken:
+    //                        completion(.invalidUserToken(errorMessage),false)
+    //                    case .requiresRecentLogin:
+    //                        completion(.requiresRecentLogin(errorMessage),false)
+    //                    case .emailAlreadyInUse:
+    //                        completion(.emailAlreadyInUse(errorMessage),false)
+    //                    case .invalidEmail:
+    //                        completion(.invalidEmail(errorMessage),false)
+    //                    case .weakPassword:
+    //                        completion(.weakPassword(errorMessage),false)
+    //                    case .networkError:
+    //                        completion(.networkError(errorMessage),false)
+    //                    default:
+    //                        completion(.failed(errorMessage),false)
+    //                    }
+    
+//    print("user.link localizedDescription  - \(error.localizedDescription)")
+//    print("user.link code  - \(error.code.rawValue)")
+    
+    //        print("email - \(email)")
+    //        print("password - \(password)")
+    
+    //        Auth.auth().currentUser?.reload(completion: { (error) in
+    //            guard error == nil else {
+    //                let errorMessage = error?.localizedDescription
+    //                completion(.failed(errorMessage ?? "Something went wrong! Try again!"), false)
+    //                return
+    //            }
+                
+    //            if Auth.auth().currentUser?.isEmailVerified == true {
+    //                print("isEmailVerified == true")
+    //            } else {
+    //                print("isEmailVerified == false")
+    //            }
+    
+    //        })
+
+    //        guard let user = currentUser else {
+    //            ///need created build Error
+    //            let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
+    //            completion(error, true)
+    //            return
+    //        }
+    //
+    //        if user.isAnonymous {
+    //
+    //            let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+    //            user.link(with: credential) { [weak self] (result, error) in
+    //
+    //                if let error = error, let authError = error as? AuthErrorCode {
+    //                    print("user.link localizedDescription  - \(error.localizedDescription)")
+    //                    print("user.link code  - \(authError.code.rawValue)")
+    //                    completion(error, true)
+    //                } else {
+    //                        self?.createProfileChangeRequest(name: name, { error in
+    //                            if error != nil {
+    //                                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+    //                            }
+    //                            self?.verificationEmail()
+    //                            completion(nil, true)
+    //                        })
+    //                }
+    //            }
+    //        } else {
+    //            Auth.auth().createUser(withEmail: email, password: password) { [weak self] (result, error) in
+    //
+    //                if let error = error, let authError = error as? AuthErrorCode {
+    //                    print("createUser localizedDescription  - \(error.localizedDescription)")
+    //                    print("createUser code  - \(authError.code.rawValue)")
+    //                    completion(error, false)
+    //                } else {
+    //                        self?.createProfileChangeRequest(name: name, { error in
+    //                            if error != nil {
+    //                                print("createProfileChangeRequest Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+    //                            }
+    //                            self?.verificationEmail()
+    //                            completion(nil, false)
+    //                        })
+    //
+    //                }
+    //            }
+    //        }
+    
 //    func signUp(email: String, password: String, name: String, completion: @escaping (Error?, Bool) -> Void) {
 //
 //        guard let user = currentUser else {
@@ -514,15 +604,17 @@ final class FirebaseService {
     /// когда мы переходим на CartController мы можем снова вызыать serviceFB.fetchCartProducts() если currentCartProducts == nil
     
     func fetchCartProducts() {
+        print("fetchCartProducts()")
         fetchData { cartProducts, error, state in
             
             guard let error = error, let state = state else {
                 /// firstStartApp
                 /// этот NotificationCenter.default.post работает один раз для HomeController потом после успеха NotificationCenter.default.removeObserver
                     NotificationCenter.default.post(name: NSNotification.Name("SuccessfulFetchPersonalDataNotification"), object: nil)
-                NotificationCenter.default.post(name: NSNotification.Name("UpdateCartProductNotification"), object: nil)
+                
                 self.currentCartProducts = cartProducts
                 self.isOnListenerForCartProduct = true
+                NotificationCenter.default.post(name: NSNotification.Name("UpdateCartProductNotification"), object: nil)
                 return
             }
         

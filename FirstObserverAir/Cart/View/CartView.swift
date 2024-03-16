@@ -97,6 +97,7 @@ final class CartView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        print("init CartView")
         setupView()
     }
     

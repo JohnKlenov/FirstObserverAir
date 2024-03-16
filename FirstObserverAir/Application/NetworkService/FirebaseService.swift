@@ -209,6 +209,7 @@ final class FirebaseService {
         }
         
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] (result, error) in
+            print("first Auth.auth().signIn")
             // Обработайте результат
             if let error = error as? AuthErrorCode {
                 self?.handleAuthError(error: error, isAnonymous: false, completion: completion)

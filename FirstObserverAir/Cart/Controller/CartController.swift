@@ -149,6 +149,7 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // действие удаления
         let actionDelete = UIContextualAction(style: .destructive, title: "Delete") { _,_,_ in
+            print("let actionDelete = UIContextualAction(style: .destructive ..)")
             self.removeObserverNotification()
             self.removeCartProduct(tableView: tableView, indexPath: indexPath)
         }
@@ -178,13 +179,15 @@ extension CartController:CartModelOutput {
     
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
         print("func updateData(cartProduct:  ..)")
-//        isAnonymousUser
+//        isAnonymousUser !!!!!!!!!!!!??????????
         reloadData(products: cartProduct, isAnonymous: true)
         if let cartModel = cartModel, cartModel.checkListenerStatus() {
             print("cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)")
             cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)
         } else {
             print("cartModel?.restartFetchCartProducts()")
+            /// а может addObserverNotification тыт быть вызван дважды???
+            /// да если мы нажали  SignIn/Up значит нужно вызвать removeObserverNotification() + addObserverNotification() и вынести это в отдельный метод
             ///addObserverNotification() ???
             cartModel?.restartFetchCartProducts()
         }
@@ -219,12 +222,7 @@ extension CartController: CartViewDelegate {
 
 // MARK: - DidChangeUserDelegate
 extension CartController: DidChangeUserDelegate {
-    /// нужно сюда передовать isAnon потому что если мы  link с Anon addStateDidChangeListener не сработает
-    /// и нам нужно указать что reloadData(products: cartProducts, isAnonymous: false)
-    /// cartProducts останется прежний ведь мы link а если cartProducts был пустым мы isAnonymous установим в false
-    /// что бы указать что мы уже signUp
-    /// /// !!!! если мы из SignUpController будучи анонимным успешно signUp addStateDidChangeListener не сработает
-    /// и мы затрем наш cartProduct если там есть данные
+   
     func userChanged(isFromAnon:Bool) {
         if isFromAnon {
             print("CartController userChanged isFromAnon")

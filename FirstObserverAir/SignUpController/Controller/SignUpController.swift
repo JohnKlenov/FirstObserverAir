@@ -403,13 +403,14 @@ func textFieldHandler(_ textField: UITextField?) {
     //            }
     //        }
     @objc func didTapSignUpButton(_ sender: UIButton) {
-        print("didTapSignUpButton")
+        
         
         guard let name = nameTextField.text, let email = emailTextField.text, let password = passwordTextField.text else { return }
         
         signUpButton.isProcessActive = true
         
         signUpModel?.signUp(email: email, password: password, name: name, completion: { state, isAnon in
+            print("SignUpController signUpModel?.signUp(email: .. )")
             self.signUpButton.isProcessActive = false
             
             switch state {

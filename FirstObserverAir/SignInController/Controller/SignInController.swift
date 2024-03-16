@@ -300,7 +300,7 @@ private extension NewSignInViewController {
         
         signInButton.isProcessActive = true
         signInModel?.signIn(email: email, password: password, completion: { state, isAnon in
-            
+            print("SignInController signInModel?.signIn(email: .. )")
             self.signInButton.isProcessActive = false
             switch state {
 

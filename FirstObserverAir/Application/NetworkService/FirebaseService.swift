@@ -212,7 +212,9 @@ final class FirebaseService {
             print("first Auth.auth().signIn")
             // Обработайте результат
             if let error = error as? AuthErrorCode {
-                self?.handleAuthError(error: error, isAnonymous: false, completion: completion)
+                self?.handleAuthError(error: error, completion: { state in
+                    completion(state,false)
+                })
             } else {
 //                self?.deleteDataAnonUser(user: user)
                 completion(.success, false)
@@ -269,7 +271,10 @@ final class FirebaseService {
             Auth.auth().currentUser?.link(with: credential) { [weak self] (result, error) in
                 // Обработайте результат
                 if let error = error as? AuthErrorCode {
-                    self?.handleAuthError(error: error, isAnonymous: true, completion: completion)
+                    self?.handleAuthError(error: error, completion: { state in
+                        completion(state,true)
+                    })
+//                    self?.handleAuthError(error: error, isAnonymous: true, completion: completion)
                 } else {
                     self?.createProfileAndHandleError(name: name, isAnonymous: true, completion: completion)
                 }
@@ -278,7 +283,10 @@ final class FirebaseService {
             print("implemintation Auth.auth().createUser(withEmail:..")
             Auth.auth().createUser(withEmail: email, password: password) { [weak self] (result, error) in
                 if let error = error as? AuthErrorCode {
-                    self?.handleAuthError(error: error, isAnonymous: false, completion: completion)
+                    self?.handleAuthError(error: error, completion: { state in
+                        completion(state,false)
+                    })
+//                    self?.handleAuthError(error: error, isAnonymous: false, completion: completion)
                 } else {
                     self?.createProfileAndHandleError(name: name, isAnonymous: false, completion: completion)
                 }
@@ -286,33 +294,111 @@ final class FirebaseService {
         }
     }
     
-    func handleAuthError(error: AuthErrorCode, isAnonymous: Bool, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
-        let errorMessage = error.localizedDescription
-        switch error.code {
-        case .providerAlreadyLinked:
-            completion(.providerAlreadyLinked(errorMessage),isAnonymous)
-        case .credentialAlreadyInUse:
-            completion(.credentialAlreadyInUse(errorMessage),isAnonymous)
-        case .tooManyRequests:
-            completion(.tooManyRequests(errorMessage),isAnonymous)
-        case .userTokenExpired:
-            completion(.userTokenExpired(errorMessage),isAnonymous)
-        case .invalidUserToken:
-            completion(.invalidUserToken(errorMessage),isAnonymous)
-        case .requiresRecentLogin:
-            completion(.requiresRecentLogin(errorMessage),isAnonymous)
-        case .emailAlreadyInUse:
-            completion(.emailAlreadyInUse(errorMessage),isAnonymous)
-        case .invalidEmail:
-            completion(.invalidEmail(errorMessage),isAnonymous)
-        case .weakPassword:
-            completion(.weakPassword(errorMessage),isAnonymous)
-        case .networkError:
-            completion(.networkError(errorMessage),isAnonymous)
-        default:
-            completion(.failed(errorMessage),isAnonymous)
+    func handleAuthError(error: AuthErrorCode, completion: @escaping (AuthErrorCodeState) -> Void) {
+            let errorMessage = error.localizedDescription
+            switch error.code {
+            case .providerAlreadyLinked:
+                completion(.providerAlreadyLinked(errorMessage))
+            case .credentialAlreadyInUse:
+                completion(.credentialAlreadyInUse(errorMessage))
+            case .tooManyRequests:
+                completion(.tooManyRequests(errorMessage))
+            case .userTokenExpired:
+                completion(.userTokenExpired(errorMessage))
+            case .invalidUserToken:
+                completion(.invalidUserToken(errorMessage))
+            case .requiresRecentLogin:
+                completion(.requiresRecentLogin(errorMessage))
+            case .emailAlreadyInUse:
+                completion(.emailAlreadyInUse(errorMessage))
+            case .invalidEmail:
+                completion(.invalidEmail(errorMessage))
+            case .weakPassword:
+                completion(.weakPassword(errorMessage))
+            case .networkError:
+                completion(.networkError(errorMessage))
+            case .keychainError:
+                completion(.keychainError(errorMessage))
+            case .userNotFound:
+                completion(.userNotFound(errorMessage))
+            case .wrongPassword:
+                completion(.wrongPassword(errorMessage))
+            case .expiredActionCode:
+                completion(.expiredActionCode(errorMessage))
+            case .invalidCredential:
+                completion(.invalidCredential(errorMessage))
+            case .invalidRecipientEmail:
+                completion(.invalidRecipientEmail(errorMessage))
+            case .missingEmail:
+                completion(.missingEmail(errorMessage))
+            case .userDisabled:
+                completion(.userDisabled(errorMessage))
+            case .invalidSender:
+                completion(.invalidSender(errorMessage))
+            case .invalidMessagePayload:
+                completion(.invalidMessagePayload(errorMessage))
+            default:
+                completion(.failed(errorMessage))
+            }
         }
+    
+    func fetchValueAuthErrorCodeState(state: AuthErrorCodeState, completion: @escaping (AuthErrorCodeState, String?) -> Void) {
+        let errorMessage: String?
+        switch state {
+        case .success:
+            errorMessage = nil
+        case .failed(let message),
+             .invalidUserToken(let message),
+             .userTokenExpired(let message),
+             .requiresRecentLogin(let message),
+             .keychainError(let message),
+             .networkError(let message),
+             .userNotFound(let message),
+             .wrongPassword(let message),
+             .tooManyRequests(let message),
+             .expiredActionCode(let message),
+             .invalidCredential(let message),
+             .invalidRecipientEmail(let message),
+             .missingEmail(let message),
+             .invalidEmail(let message),
+             .providerAlreadyLinked(let message),
+             .credentialAlreadyInUse(let message),
+             .userDisabled(let message),
+             .emailAlreadyInUse(let message),
+             .weakPassword(let message),
+             .invalidSender(let message),
+             .invalidMessagePayload(let message):
+            errorMessage = message
+        }
+        completion(state, errorMessage)
     }
+//    func handleAuthError(error: AuthErrorCode, isAnonymous: Bool, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
+//        let errorMessage = error.localizedDescription
+//        switch error.code {
+//        case .providerAlreadyLinked:
+//            completion(.providerAlreadyLinked(errorMessage),isAnonymous)
+//        case .credentialAlreadyInUse:
+//            completion(.credentialAlreadyInUse(errorMessage),isAnonymous)
+//        case .tooManyRequests:
+//            completion(.tooManyRequests(errorMessage),isAnonymous)
+//        case .userTokenExpired:
+//            completion(.userTokenExpired(errorMessage),isAnonymous)
+//        case .invalidUserToken:
+//            completion(.invalidUserToken(errorMessage),isAnonymous)
+//        case .requiresRecentLogin:
+//            completion(.requiresRecentLogin(errorMessage),isAnonymous)
+//        case .emailAlreadyInUse:
+//            completion(.emailAlreadyInUse(errorMessage),isAnonymous)
+//        case .invalidEmail:
+//            completion(.invalidEmail(errorMessage),isAnonymous)
+//        case .weakPassword:
+//            completion(.weakPassword(errorMessage),isAnonymous)
+//        case .networkError:
+//            completion(.networkError(errorMessage),isAnonymous)
+//        default:
+//            completion(.failed(errorMessage),isAnonymous)
+//        }
+//    }
     
     func createProfileAndHandleError(name: String, isAnonymous: Bool, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
         createProfileChangeRequest(name: name, { error in
@@ -356,6 +442,17 @@ final class FirebaseService {
             ///need created build Error
             let error = NSError(domain: "com.yourapp.error", code: 401, userInfo: [NSLocalizedDescriptionKey: "User is not authorized."])
             completion(error)
+        }
+    }
+    
+    func sendPasswordReset(email: String, completion: @escaping (AuthErrorCodeState) -> Void) {
+        Auth.auth().sendPasswordReset(withEmail: email) { [weak self] (error) in
+            
+            if let error = error as? AuthErrorCode {
+                self?.handleAuthError(error: error, completion: completion)
+            } else {
+                completion(.success)
+            }
         }
     }
     

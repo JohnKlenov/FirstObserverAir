@@ -179,20 +179,29 @@ enum AuthErrorCodeState {
     case userTokenExpired(String)
     case requiresRecentLogin(String)
     case keychainError(String)
+    /// проблемы с сетью.
     case networkError(String)
+    ///адрес электронной почты не связан с каким-либо аккаунтом.
     case userNotFound(String)
     case wrongPassword(String)
+    ///слишком много запросов к серверу в короткий промежуток времени.
     case tooManyRequests(String)
     case expiredActionCode(String)
     case invalidCredential(String)
+    ///в запросе был отправлен недействительный адрес электронной почты получателя.
     case invalidRecipientEmail(String)
     case missingEmail(String)
+    ///не соответствует формату стандартного адреса электронной почты.
     case invalidEmail(String)
     case providerAlreadyLinked(String)
     case credentialAlreadyInUse(String)
     case userDisabled(String)
     case emailAlreadyInUse(String)
     case weakPassword(String)
+    ///в консоли для этого действия установлен недействительный адрес электронной почты отправителя.
+    case invalidSender(String)
+    ///был указан недействительный шаблон электронной почты для отправки обновления.
+    case invalidMessagePayload(String)
 }
 
 

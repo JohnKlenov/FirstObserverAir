@@ -179,16 +179,15 @@ extension CartController:CartModelOutput {
     
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
         print("func updateData(cartProduct:  ..)")
-//        isAnonymousUser !!!!!!!!!!!!??????????
+//        isAnonymousUser
         reloadData(products: cartProduct, isAnonymous: true)
         if let cartModel = cartModel, cartModel.checkListenerStatus() {
             print("cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)")
             cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)
         } else {
             print("cartModel?.restartFetchCartProducts()")
-            /// а может addObserverNotification тыт быть вызван дважды???
-            /// да если мы нажали  SignIn/Up значит нужно вызвать removeObserverNotification() + addObserverNotification() и вынести это в отдельный метод
-            ///addObserverNotification() ???
+            removeObserverNotification()
+            addObserverNotification()
             cartModel?.restartFetchCartProducts()
         }
     }

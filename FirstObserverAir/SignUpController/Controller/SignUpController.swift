@@ -286,6 +286,7 @@ func textFieldHandler(_ textField: UITextField?) {
             warningTextEmail.text = isEmailValid ? "" : "Invalid email format"
             separatorEmailView.backgroundColor = isEmailValid ? R.Colors.separator : R.Colors.systemRed
         case passwordTextField:
+            /// нужно сделать Validators.validatePassword иначе потом при SignIn не зайти
             let passwordValidationResult = Validators.validateCountPassword(passwordTextField.text ?? "")
             isPasswordValid = passwordValidationResult == "success"
             if isPasswordValid {
@@ -409,80 +410,101 @@ func textFieldHandler(_ textField: UITextField?) {
         
         signUpButton.isProcessActive = true
         
-        signUpModel?.signUp(email: email, password: password, name: name, completion: { state, isAnon in
+        signUpModel?.signUp(email: email, password: password, name: name, completion: { [weak self] (state, isAnon) in
             print("SignUpController signUpModel?.signUp(email: .. )")
-            self.signUpButton.isProcessActive = false
+            self?.signUpButton.isProcessActive = false
             
-            switch state {
-                
-            case .success:
-                self.isEnabledSignUpButton(enabled: false)
-                if isAnon {
-                    print("SignUpController isAnon")
-                    self.delegate?.userChanged(isFromAnon: isAnon)
-                } else {
-                    self.delegate?.userChanged(isFromAnon: isAnon)
-                    print("SignUpController not isAnon")
+            self?.signUpModel?.fetchValueAuthErrorCodeState(state: state, completion: { [weak self] (state, errorMessage) in
+                switch state {
+                case .success:
+                    self?.isEnabledSignUpButton(enabled: false)
+                    if isAnon {
+                        print("SignUpController isAnon")
+                        self?.delegate?.userChanged(isFromAnon: isAnon)
+                    } else {
+                        self?.delegate?.userChanged(isFromAnon: isAnon)
+                        print("SignUpController not isAnon")
+                    }
+                    self?.signUpAlert(title: "Регистрация прошла успешно", message: "Поздравляем! Вы успешно зарегистрировались. Мы отправили вам электронное письмо с подтверждением регистрации. Пожалуйста, проверьте свою почту и следуйте инструкциям в письме, чтобы завершить процесс регистрации.") {
+                        self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                    }
+                default:
+                    self?.signUpAlert(title: "error", message: errorMessage ?? "Something went wrong! Try again!")
                 }
-                self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-            case .failed(let errorMessage):
-                self.signUpAlert(title: "error", message: errorMessage)
-                print("failed")
-            case .invalidUserToken(let errorMessage):
-                print("invalidUserToken")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .userTokenExpired(let errorMessage):
-                print("userTokenExpired")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .requiresRecentLogin(let errorMessage):
-                print("requiresRecentLogin")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .keychainError(let errorMessage):
-                print("keychainError")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .networkError(let errorMessage):
-                print("networkError")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .userNotFound(let errorMessage):
-                print("userNotFound")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .wrongPassword(let errorMessage):
-                print("wrongPassword")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .tooManyRequests(let errorMessage):
-                print("tooManyRequests")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .expiredActionCode(let errorMessage):
-                print("expiredActionCode")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .invalidCredential(let errorMessage):
-                print("invalidCredential")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .invalidRecipientEmail(let errorMessage):
-                print("invalidRecipientEmail")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .missingEmail(let errorMessage):
-                print("missingEmail")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .invalidEmail(let errorMessage):
-                print("invalidEmail")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .providerAlreadyLinked(let errorMessage):
-                print("providerAlreadyLinked")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .credentialAlreadyInUse(let errorMessage):
-                print("credentialAlreadyInUse")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .userDisabled(let errorMessage):
-                print("userDisabled")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .emailAlreadyInUse(let errorMessage):
-                print("emailAlreadyInUse")
-                self.signUpAlert(title: "error", message: errorMessage)
-            case .weakPassword(let errorMessage):
-                print("weakPassword")
-                self.signUpAlert(title: "error", message: errorMessage)
-            }
+            })
+//            switch state {
+//
+//            case .success:
+//                self.isEnabledSignUpButton(enabled: false)
+//                if isAnon {
+//                    print("SignUpController isAnon")
+//                    self.delegate?.userChanged(isFromAnon: isAnon)
+//                } else {
+//                    self.delegate?.userChanged(isFromAnon: isAnon)
+//                    print("SignUpController not isAnon")
+//                }
+//                self.signUpAlert(title: "Регистрация прошла успешно", message: "Поздравляем! Вы успешно зарегистрировались. Мы отправили вам электронное письмо с подтверждением регистрации. Пожалуйста, проверьте свою почту и следуйте инструкциям в письме, чтобы завершить процесс регистрации.") {
+//                    self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+//                }
+//
+//            case .failed(let errorMessage):
+//                self.signUpAlert(title: "error", message: errorMessage)
+//                print("failed")
+//            case .invalidUserToken(let errorMessage):
+//                print("invalidUserToken")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .userTokenExpired(let errorMessage):
+//                print("userTokenExpired")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .requiresRecentLogin(let errorMessage):
+//                print("requiresRecentLogin")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .keychainError(let errorMessage):
+//                print("keychainError")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .networkError(let errorMessage):
+//                print("networkError")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .userNotFound(let errorMessage):
+//                print("userNotFound")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .wrongPassword(let errorMessage):
+//                print("wrongPassword")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .tooManyRequests(let errorMessage):
+//                print("tooManyRequests")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .expiredActionCode(let errorMessage):
+//                print("expiredActionCode")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .invalidCredential(let errorMessage):
+//                print("invalidCredential")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .invalidRecipientEmail(let errorMessage):
+//                print("invalidRecipientEmail")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .missingEmail(let errorMessage):
+//                print("missingEmail")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .invalidEmail(let errorMessage):
+//                print("invalidEmail")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .providerAlreadyLinked(let errorMessage):
+//                print("providerAlreadyLinked")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .credentialAlreadyInUse(let errorMessage):
+//                print("credentialAlreadyInUse")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .userDisabled(let errorMessage):
+//                print("userDisabled")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .emailAlreadyInUse(let errorMessage):
+//                print("emailAlreadyInUse")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            case .weakPassword(let errorMessage):
+//                print("weakPassword")
+//                self.signUpAlert(title: "error", message: errorMessage)
+//            }
         })
     }
 }

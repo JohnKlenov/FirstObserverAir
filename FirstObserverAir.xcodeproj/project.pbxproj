@@ -54,6 +54,7 @@
 		5E3F6E092B7B5659005C6776 /* CartFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E082B7B5659005C6776 /* CartFirebaseService.swift */; };
 		5E3F6E0B2B7B65FA005C6776 /* CartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E0A2B7B65FA005C6776 /* CartCell.swift */; };
 		5E3F6E0D2B7B696B005C6776 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3F6E0C2B7B696B005C6776 /* CartView.swift */; };
+		5E5AACFB2BA94DD3004FDAEA /* CustomAnimateTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5AACFA2BA94DD3004FDAEA /* CustomAnimateTopView.swift */; };
 		5E690EED2B7F9AE50067B410 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E690EEC2B7F9AE40067B410 /* CacheManager.swift */; };
 		5E7D7E6A2B44A0EE0009B8E8 /* ProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */; };
 		5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */; };
@@ -79,7 +80,6 @@
 		5E8D30E12B8A7A5D009402BD /* Validators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E02B8A7A5D009402BD /* Validators.swift */; };
 		5E8D30E32B8A7B2B009402BD /* EyeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E22B8A7B2B009402BD /* EyeButton.swift */; };
 		5E8D30E52B8A7B61009402BD /* AuthTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E42B8A7B61009402BD /* AuthTextField.swift */; };
-		5E8D30E72B8A7B94009402BD /* AlertTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E62B8A7B94009402BD /* AlertTopView.swift */; };
 		5E8D30E92B8A7BF1009402BD /* SignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8D30E82B8A7BF1009402BD /* SignInController.swift */; };
 		5E99AB5C2B358B7C00FA9FD4 /* HomeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E99AB5B2B358B7C00FA9FD4 /* HomeCollectionView.swift */; };
 		5E9B52222B5121E400F907B6 /* FullScreenImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9B52212B5121E400F907B6 /* FullScreenImageController.swift */; };
@@ -154,6 +154,7 @@
 		5E3F6E082B7B5659005C6776 /* CartFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartFirebaseService.swift; sourceTree = "<group>"; };
 		5E3F6E0A2B7B65FA005C6776 /* CartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartCell.swift; sourceTree = "<group>"; };
 		5E3F6E0C2B7B696B005C6776 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
+		5E5AACFA2BA94DD3004FDAEA /* CustomAnimateTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnimateTopView.swift; sourceTree = "<group>"; };
 		5E690EEC2B7F9AE40067B410 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		5E7D7E692B44A0EE0009B8E8 /* ProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductController.swift; sourceTree = "<group>"; };
 		5E7D7E6B2B44A7B70009B8E8 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
@@ -181,7 +182,6 @@
 		5E8D30E02B8A7A5D009402BD /* Validators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validators.swift; sourceTree = "<group>"; };
 		5E8D30E22B8A7B2B009402BD /* EyeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeButton.swift; sourceTree = "<group>"; };
 		5E8D30E42B8A7B61009402BD /* AuthTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTextField.swift; sourceTree = "<group>"; };
-		5E8D30E62B8A7B94009402BD /* AlertTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTopView.swift; sourceTree = "<group>"; };
 		5E8D30E82B8A7BF1009402BD /* SignInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInController.swift; sourceTree = "<group>"; };
 		5E99AB5B2B358B7C00FA9FD4 /* HomeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionView.swift; sourceTree = "<group>"; };
 		5E9B52212B5121E400F907B6 /* FullScreenImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenImageController.swift; sourceTree = "<group>"; };
@@ -318,6 +318,7 @@
 				5E1148F62B5BC5BA0073B2E8 /* CustomNavigationBar.swift */,
 				5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */,
 				5E1C91192B8FC72300B43619 /* Keyboard.swift */,
+				5E5AACFA2BA94DD3004FDAEA /* CustomAnimateTopView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -831,7 +832,6 @@
 			children = (
 				5E8D30E22B8A7B2B009402BD /* EyeButton.swift */,
 				5E8D30E42B8A7B61009402BD /* AuthTextField.swift */,
-				5E8D30E62B8A7B94009402BD /* AlertTopView.swift */,
 				5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */,
 				5E1C91172B8D2D6400B43619 /* SignInUpButton.swift */,
 			);
@@ -1121,7 +1121,6 @@
 				5E7DE9E82B751699007B44CC /* FilterTabBar.swift in Sources */,
 				5E1148FC2B5BC6EA0073B2E8 /* UIApplication + ext.swift in Sources */,
 				5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */,
-				5E8D30E72B8A7B94009402BD /* AlertTopView.swift in Sources */,
 				5E0DE9052B45479700F3387C /* AddToCartAnimationView.swift in Sources */,
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
 				5E1148F72B5BC5BA0073B2E8 /* CustomNavigationBar.swift in Sources */,
@@ -1165,6 +1164,7 @@
 				5E1148FA2B5BC6180073B2E8 /* Date.swift in Sources */,
 				5E3F6E0B2B7B65FA005C6776 /* CartCell.swift in Sources */,
 				5E1A35462B13E7CC0076FDC1 /* MallsController.swift in Sources */,
+				5E5AACFB2BA94DD3004FDAEA /* CustomAnimateTopView.swift in Sources */,
 				5E1A35672B1734A90076FDC1 /* PlaceholderView.swift in Sources */,
 				5E22B1432B3C443500CDD18A /* ListProductCollectionView.swift in Sources */,
 				5E1148E92B5907680073B2E8 /* MallController.swift in Sources */,

@@ -197,33 +197,6 @@ private extension NewSignInViewController {
             signInButton.isEnabled = false
         }
     }
-    
-    func createTopView(textWarning:String, color: UIColor, comletionHandler: @escaping (AlertTopView) -> Void) {
-        DispatchQueue.main.async {
-            let alert = AlertTopView(frame: CGRect(origin: CGPoint(x: 0, y: -64), size: CGSize(width: self.view.frame.width, height: 64)))
-            alert.setupAlertTopView(labelText: textWarning, backgroundColor: color)
-            self.view.addSubview(alert)
-            comletionHandler(alert)
-        }
-    }
-
-    func showTopView(title: String, backgroundColor: UIColor) {
-        self.createTopView(textWarning: title, color: backgroundColor) { (alertView) in
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 0.1, options: .curveEaseIn, animations: {
-                    alertView.frame.origin = CGPoint(x: 0, y: -20)
-                }) { (isFinished) in
-                    if isFinished {
-                        UIView.animate(withDuration: 0.5, delay: 5, options: .curveEaseOut, animations: {
-                            alertView.frame.origin = CGPoint(x: 0, y: -64)
-                        }) { _ in
-                            alertView.removeFromSuperview()
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 
@@ -329,11 +302,12 @@ private extension NewSignInViewController {
         sendPasswordResetAlert(title: "Сброс пароля", message: "Введите адрес электронной почты, связанный с вашей учетной записью. Мы отправим вам ссылку для сброса пароля.", placeholder: "Введите email") {  [weak self] email in
             self?.signInModel?.sendPasswordReset(email: email, completion: { state in
                 self?.signInModel?.fetchValueAuthErrorCodeState(state: state, completion: { state, errorMessage in
+                    let error = errorMessage ?? "Что то пошло не так."
                     switch state {
                     case .success:
-                        self?.showTopView(title: "Пароль был сброшен. Пожалуйста, проверьте свою электронную почту.", backgroundColor: R.Colors.systemGreen)
+                        self?.signInAlert(title: "Сброс пароля", message: "Запрос на сброс пароля успешно отправлен. Пожалуйста, проверьте свою электронную почту и следуйте инструкциям для сброса пароля.")
                     default:
-                        self?.showTopView(title: errorMessage ?? "Something went wrong! Try again!", backgroundColor: R.Colors.systemRed)
+                        self?.signInAlert(title: "Ошибка сброса пароля", message: "Произошла ошибка: \(error)) Пожалуйста, попробуйте еще раз.")
                     }
                 })
             })
@@ -385,6 +359,7 @@ extension NewSignInViewController: DidChangeUserDelegate {
 // MARK: - Alert
 private extension NewSignInViewController {
     
+    ///= {} означает, что по умолчанию для этого замыкания установлено пустое замыкание, то есть если замыкание не предоставлено при вызове функции, будет использоваться пустое замыкание.
     func signInAlert(title: String, message: String, completion: @escaping () -> Void = {}) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let actionOK = UIAlertAction(title: "ok", style: .default) { (_) in

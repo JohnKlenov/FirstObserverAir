@@ -287,7 +287,9 @@ func textFieldHandler(_ textField: UITextField?) {
             separatorEmailView.backgroundColor = isEmailValid ? R.Colors.separator : R.Colors.systemRed
         case passwordTextField:
             /// нужно сделать Validators.validatePassword иначе потом при SignIn не зайти
-            let passwordValidationResult = Validators.validateCountPassword(passwordTextField.text ?? "")
+//            let passwordValidationResult = Validators.validateCountPassword(passwordTextField.text ?? "")
+//            isPasswordValid = passwordValidationResult == "success"
+            let passwordValidationResult = Validators.validatePassword(passwordTextField.text ?? "")
             isPasswordValid = passwordValidationResult == "success"
             if isPasswordValid {
                 separatorPasswordView.backgroundColor = R.Colors.separator

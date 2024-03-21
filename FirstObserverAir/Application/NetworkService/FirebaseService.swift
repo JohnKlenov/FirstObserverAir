@@ -203,7 +203,7 @@ final class FirebaseService {
     
     func signIn(email: String, password: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
         
-        guard let _ = currentUser else {
+        guard let user = currentUser else {
             completion(.failed("User is not authorized."), false)
             return
         }
@@ -216,7 +216,7 @@ final class FirebaseService {
                     completion(state,false)
                 })
             } else {
-//                self?.deleteDataAnonUser(user: user)
+                self?.deleteDataAnonUser(user: user)
                 completion(.success, false)
             }
         }
@@ -224,21 +224,36 @@ final class FirebaseService {
     
     func deleteDataAnonUser(user:User) {
         if user.isAnonymous {
-            ///let group = DispatchGroup() можно использовать перед тем как completion(error)
-            ///group.enter()
+            
             deleteAccountUser(user: user) { error in
-                ///group.leave()
+                
                 if let error = error {
                     print("deleteAccountUser Returne message for analitic FB Crashlystics error - \(error.localizedDescription) ")
                 }
             }
-            deleteCartProductUser(uid: user.uid)
+            addFieldPreviousUserId(anonUserId: user.uid)
+//            deleteCartProductUser(uid: user.uid)
         }
     }
     
     func deleteAccountUser(user:User, completion: @escaping (Error?) -> Void) {
         user.delete { error in
             completion(error)
+        }
+    }
+    
+    func addFieldPreviousUserId(anonUserId:String) {
+        // Если вход в систему прошел успешно, сохраняем идентификатор анонимного пользователя в базе данных
+        if let userId = Auth.auth().currentUser?.uid {
+            let db = Firestore.firestore()
+            db.collection("users").document(userId).setData(["previousUserId": anonUserId ], merge: true) { error in
+                if let error = error {
+                    print("Error saving previousUserId: \(error) Returne message for analitic FB Crashlystics")
+                } else {
+                    print("previousUserId successfully saved!")
+                    self.deleteCartProductUser(uid: anonUserId)
+                }
+            }
         }
     }
     

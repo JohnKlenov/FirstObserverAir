@@ -209,7 +209,6 @@ final class FirebaseService {
         }
         
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] (result, error) in
-            print("first Auth.auth().signIn")
             // Обработайте результат
             if let error = error as? AuthErrorCode {
                 self?.handleAuthError(error: error, completion: { state in
@@ -232,7 +231,6 @@ final class FirebaseService {
                 }
             }
             addFieldPreviousUserId(anonUserId: user.uid)
-//            deleteCartProductUser(uid: user.uid)
         }
     }
     
@@ -250,7 +248,6 @@ final class FirebaseService {
                 if let error = error {
                     print("Error saving previousUserId: \(error) Returne message for analitic FB Crashlystics")
                 } else {
-                    print("previousUserId successfully saved!")
                     self.deleteCartProductUser(uid: anonUserId)
                 }
             }
@@ -289,7 +286,6 @@ final class FirebaseService {
                     self?.handleAuthError(error: error, completion: { state in
                         completion(state,true)
                     })
-//                    self?.handleAuthError(error: error, isAnonymous: true, completion: completion)
                 } else {
                     self?.createProfileAndHandleError(name: name, isAnonymous: true, completion: completion)
                 }
@@ -301,7 +297,6 @@ final class FirebaseService {
                     self?.handleAuthError(error: error, completion: { state in
                         completion(state,false)
                     })
-//                    self?.handleAuthError(error: error, isAnonymous: false, completion: completion)
                 } else {
                     self?.createProfileAndHandleError(name: name, isAnonymous: false, completion: completion)
                 }
@@ -318,45 +313,45 @@ final class FirebaseService {
             let errorMessage = error.localizedDescription
             switch error.code {
             case .providerAlreadyLinked:
-                completion(.providerAlreadyLinked(errorMessage))
+                completion(.providerAlreadyLinked("Пользователь уже связан с этим поставщиком учетных данных. Пожалуйста, войдите, используя этого поставщика, или свяжитесь с другим."))
             case .credentialAlreadyInUse:
-                completion(.credentialAlreadyInUse(errorMessage))
+                completion(.credentialAlreadyInUse("Учетные данные уже используются другим пользователем. Пожалуйста, войдите с помощью этих учетных данных или используйте другие."))
             case .tooManyRequests:
-                completion(.tooManyRequests(errorMessage))
+                completion(.tooManyRequests("Было сделано слишком много запросов к серверу в короткий промежуток времени. Попробуйте повторить попытку позже."))
             case .userTokenExpired:
                 completion(.userTokenExpired(errorMessage))
             case .invalidUserToken:
                 completion(.invalidUserToken(errorMessage))
             case .requiresRecentLogin:
-                completion(.requiresRecentLogin(errorMessage))
+                completion(.requiresRecentLogin("Вам необходимо войти в систему снова перед этой операцией. Это необходимо для подтверждения вашей личности и защиты вашего аккаунта от несанкционированного доступа. Пожалуйста, выйдите из системы и войдите снова, чтобы продолжить."))
             case .emailAlreadyInUse:
-                completion(.emailAlreadyInUse(errorMessage))
+                completion(.emailAlreadyInUse("Электронная почта уже используется другим пользователем. Пожалуйста, войдите с помощью этой электронной почты или используйте другую."))
             case .invalidEmail:
-                completion(.invalidEmail(errorMessage))
+                completion(.invalidEmail("Предоставленный адрес электронной почты недействителен или не соответствует формату стандартного адреса электронной почты. Убедитесь, что вы вводите адрес электронной почты в правильном формате."))
             case .weakPassword:
-                completion(.weakPassword(errorMessage))
+                completion(.weakPassword("Введенный пароль слишком слабый. Пожалуйста, введите более сложный пароль и попробуйте снова."))
             case .networkError:
-                completion(.networkError(errorMessage))
+                completion(.networkError("Произошла сетевая ошибка. Пожалуйста, проверьте свое сетевое подключение и попробуйте снова."))
             case .keychainError:
                 completion(.keychainError(errorMessage))
             case .userNotFound:
-                completion(.userNotFound(errorMessage))
+                completion(.userNotFound("Адрес электронной почты не связан с существующим аккаунтом. Убедитесь, что вы вводите адрес электронной почты, который был использован при создании аккаунта."))
             case .wrongPassword:
-                completion(.wrongPassword(errorMessage))
+                completion(.wrongPassword("Предоставленный пароль неверен. Убедитесь, что вы вводите правильный пароль для своего аккаунта."))
             case .expiredActionCode:
                 completion(.expiredActionCode(errorMessage))
             case .invalidCredential:
-                completion(.invalidCredential(errorMessage))
+                completion(.invalidCredential("Предоставленные учетные данные недействительны. Пожалуйста, проверьте свои данные и попробуйте снова."))
             case .invalidRecipientEmail:
-                completion(.invalidRecipientEmail(errorMessage))
+                completion(.invalidRecipientEmail("Адрес электронной почты получателя недействителен. Пожалуйста, проверьте адрес и попробуйте снова."))
             case .missingEmail:
-                completion(.missingEmail(errorMessage))
+                completion(.missingEmail("Адрес электронной почты отсутствует. Пожалуйста, предоставьте действующий адрес электронной почты и попробуйте снова."))
             case .userDisabled:
-                completion(.userDisabled(errorMessage))
+                completion(.userDisabled("Пользователь был отключен. Свяжитесь с администратором вашего системы или службой поддержки."))
             case .invalidSender:
-                completion(.invalidSender(errorMessage))
-            case .invalidMessagePayload:
-                completion(.invalidMessagePayload(errorMessage))
+                completion(.invalidSender("Отправитель, указанный в запросе, недействителен. Пожалуйста, проверьте данные отправителя и попробуйте снова."))
+            case .accountExistsWithDifferentCredential:
+                completion(.accountExistsWithDifferentCredential("Учетные данные уже используются с другим аккаунтом. Пожалуйста, используйте другой метод входа или используйте эти учетные данные для входа в существующий аккаунт."))
             default:
                 completion(.failed(errorMessage))
             }
@@ -367,36 +362,37 @@ final class FirebaseService {
     ///У нас есть три сценария обработки ошибок
     ///Ошибки которые пользователь понимает и может  повлиять(не может повлиять), ошибки которые не понимает(Something went wrong! Try again!)
     ///По этому нам для каждого конкретного метода который возвращает ошибку нужно определять каую из всех возможных ошибок мы будем показывать пользователю а какие обернем в Something went wrong! Try again!
-    func fetchValueAuthErrorCodeState(state: AuthErrorCodeState, completion: @escaping (AuthErrorCodeState, String?) -> Void) {
-        let errorMessage: String?
-        switch state {
-        case .success:
-            errorMessage = nil
-        case .failed(let message),
-             .invalidUserToken(let message),
-             .userTokenExpired(let message),
-             .requiresRecentLogin(let message),
-             .keychainError(let message),
-             .networkError(let message),
-             .userNotFound(let message),
-             .wrongPassword(let message),
-             .tooManyRequests(let message),
-             .expiredActionCode(let message),
-             .invalidCredential(let message),
-             .invalidRecipientEmail(let message),
-             .missingEmail(let message),
-             .invalidEmail(let message),
-             .providerAlreadyLinked(let message),
-             .credentialAlreadyInUse(let message),
-             .userDisabled(let message),
-             .emailAlreadyInUse(let message),
-             .weakPassword(let message),
-             .invalidSender(let message),
-             .invalidMessagePayload(let message):
-            errorMessage = message
-        }
-        completion(state, errorMessage)
-    }
+    
+//    func fetchValueAuthErrorCodeState(state: AuthErrorCodeState, completion: @escaping (AuthErrorCodeState, String?) -> Void) {
+//        let errorMessage: String?
+//        switch state {
+//        case .success:
+//            errorMessage = nil
+//        case .failed(let message),
+//             .invalidUserToken(let message),
+//             .userTokenExpired(let message),
+//             .requiresRecentLogin(let message),
+//             .keychainError(let message),
+//             .networkError(let message),
+//             .userNotFound(let message),
+//             .wrongPassword(let message),
+//             .tooManyRequests(let message),
+//             .expiredActionCode(let message),
+//             .invalidCredential(let message),
+//             .invalidRecipientEmail(let message),
+//             .missingEmail(let message),
+//             .invalidEmail(let message),
+//             .providerAlreadyLinked(let message),
+//             .credentialAlreadyInUse(let message),
+//             .userDisabled(let message),
+//             .emailAlreadyInUse(let message),
+//             .weakPassword(let message),
+//             .invalidSender(let message),
+//             .invalidMessagePayload(let message):
+//            errorMessage = message
+//        }
+//        completion(state, errorMessage)
+//    }
 //    func handleAuthError(error: AuthErrorCode, isAnonymous: Bool, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
 //        let errorMessage = error.localizedDescription
 //        switch error.code {

@@ -187,6 +187,7 @@ enum AuthErrorCodeState {
     ///слишком много запросов к серверу в короткий промежуток времени.
     case tooManyRequests(String)
     case expiredActionCode(String)
+    ///“Предоставленные учетные данные недействительны. Пожалуйста, проверьте свои данные и попробуйте снова.”
     case invalidCredential(String)
     ///в запросе был отправлен недействительный адрес электронной почты получателя.
     case invalidRecipientEmail(String)
@@ -200,8 +201,9 @@ enum AuthErrorCodeState {
     case weakPassword(String)
     ///в консоли для этого действия установлен недействительный адрес электронной почты отправителя.
     case invalidSender(String)
-    ///был указан недействительный шаблон электронной почты для отправки обновления.
-    case invalidMessagePayload(String)
+    case accountExistsWithDifferentCredential(String)
+//    ///был указан недействительный шаблон электронной почты для отправки обновления.
+//    case invalidMessagePayload(String)
 }
 
 

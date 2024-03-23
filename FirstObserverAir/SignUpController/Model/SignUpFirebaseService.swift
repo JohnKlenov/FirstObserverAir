@@ -10,7 +10,6 @@ import Foundation
 protocol SignUpModelInput: AnyObject {
     func signUp(email: String, password: String, name: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void)
     func verificationEmail()
-    func fetchValueAuthErrorCodeState(state: AuthErrorCodeState, completion: @escaping (AuthErrorCodeState, String?) -> Void)
 }
 
 final class SignUpFirebaseService {
@@ -30,14 +29,6 @@ extension SignUpFirebaseService: SignUpModelInput {
     
     func signUp(email: String, password: String, name: String, completion: @escaping (AuthErrorCodeState, Bool) -> Void) {
         serviceFB.signUp(email: email, password: password, name: name, completion: completion)
-//        serviceFB.signUp(email: email, password: password, name: name) { state, isAnon in
-//            completion(state,isAnon)
-//        }
     }
-    
-    func fetchValueAuthErrorCodeState(state: AuthErrorCodeState, completion: @escaping (AuthErrorCodeState, String?) -> Void) {
-        serviceFB.fetchValueAuthErrorCodeState(state: state, completion: completion)
-    }
-    
 }
 

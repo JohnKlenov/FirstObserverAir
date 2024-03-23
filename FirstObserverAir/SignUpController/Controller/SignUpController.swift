@@ -320,91 +320,22 @@ func textFieldHandler(_ textField: UITextField?) {
     isEnabledSignUpButton(enabled: isNameValid && isEmailValid && isPasswordValid && isRePasswordValid)
 }
 
-@objc private func displayBookMarksSignUp() {
-
-    let imageName = isPrivateEye ? R.Strings.AuthControllers.SignUP.imageSystemNameEye : R.Strings.AuthControllers.SignUP.imageSystemNameEyeSlash
-    passwordTextField.isSecureTextEntry.toggle()
-    eyePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
-
-    reEnterTextField.isSecureTextEntry.toggle()
-    eyeRePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
-    isPrivateEye.toggle()
-}
-
-@objc func dismissKeyboard() {
-    print("gestureSignUpDidTap")
-    view.endEditing(true)
-}
-    //
-    //        self.signingIn = true
-    ////
-    ////        if isInvalidSignIn {
-    ////            signInDelegate?.saveCartProductFBNew?()
-    ////            isInvalidSignIn = false
-    ////        }
-    //
-    //        managerFB.registerUserSignUpVC(email: email, password: password, name: name) { [weak self] stateAuthError in
-    //
-    //            self?.signingIn = false
-    //            switch stateAuthError {
-    //            case .success:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                // это нужно для ProfileVC и CartVC что бы обновить UI
-    //                self?.signInDelegate?.userDidRegisteredNew?()
-    //                self?.registerShowAlert(title: "Success", message: "An email has been sent to \(email), please confirm your email address.") {
-    //                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-    //                }
-    //            case .failed:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "Something went wrong! Try again!")
-    //            case .providerAlreadyLinked:
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "Attempt to associate a provider already associated with this account!")
-    //            case .credentialAlreadyInUse:
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "You are trying to associate credentials that have already been associated with another account!")
-    //            case .userTokenExpired:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-//                    self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
-    //            case .invalidUserToken:
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
-    //            case .requiresRecentLogin:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "You need to re-login to your account!")
-    //            case .networkError:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "Server connection problems. Try again!")
-    //            case .tooManyRequests:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "Try again later!")
-    //            case .invalidEmail:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.separatorEmailView.backgroundColor = R.Colors.systemRed
-    //                self?.registerShowAlert(title: "Error", message: "Email address is not in the correct format!")
-    //            case .emailAlreadyInUse:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.separatorEmailView.backgroundColor = R.Colors.systemRed
-    //                self?.registerShowAlert(title: "Error", message: "The email address used to attempt registration already exists!")
-    //            case .weakPassword:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.separatorPasswordView.backgroundColor = R.Colors.systemRed
-    //                self?.registerShowAlert(title: "Error", message: "The entered password is too weak!")
-    //            default:
-    ////                self?.signingIn = false
-    //                self?.isEnabledSignUpButton(enabled: false)
-    //                self?.registerShowAlert(title: "Error", message: "Something went wrong! Try again!")
-    //            }
-    //        }
+    @objc private func displayBookMarksSignUp() {
+        
+        let imageName = isPrivateEye ? R.Strings.AuthControllers.SignUP.imageSystemNameEye : R.Strings.AuthControllers.SignUP.imageSystemNameEyeSlash
+        passwordTextField.isSecureTextEntry.toggle()
+        eyePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
+        
+        reEnterTextField.isSecureTextEntry.toggle()
+        eyeRePassswordButton.setImage(UIImage(systemName: imageName), for: .normal)
+        isPrivateEye.toggle()
+    }
+    
+    @objc func dismissKeyboard() {
+        print("gestureSignUpDidTap")
+        view.endEditing(true)
+    }
+    
     @objc func didTapSignUpButton(_ sender: UIButton) {
         
         
@@ -416,97 +347,42 @@ func textFieldHandler(_ textField: UITextField?) {
             print("SignUpController signUpModel?.signUp(email: .. )")
             self?.signUpButton.isProcessActive = false
             
-            self?.signUpModel?.fetchValueAuthErrorCodeState(state: state, completion: { [weak self] (state, errorMessage) in
-                switch state {
-                case .success:
-                    self?.isEnabledSignUpButton(enabled: false)
-                    if isAnon {
-                        print("SignUpController isAnon")
-                        self?.delegate?.userChanged(isFromAnon: isAnon)
-                    } else {
-                        self?.delegate?.userChanged(isFromAnon: isAnon)
-                        print("SignUpController not isAnon")
-                    }
-                    self?.signUpAlert(title: "Регистрация прошла успешно", message: "Поздравляем! Вы успешно зарегистрировались. Мы отправили вам электронное письмо с подтверждением регистрации. Пожалуйста, проверьте свою почту и следуйте инструкциям в письме, чтобы завершить процесс регистрации.") {
-                        self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-                    }
-                default:
-                    self?.signUpAlert(title: "error", message: errorMessage ?? "Something went wrong! Try again!")
+            switch state {
+            case .success:
+                self?.isEnabledSignUpButton(enabled: false)
+                if isAnon {
+                    print("SignUpController isAnon")
+                    self?.delegate?.userChanged(isFromAnon: isAnon)
+                } else {
+                    self?.delegate?.userChanged(isFromAnon: isAnon)
+                    print("SignUpController not isAnon")
                 }
-            })
-//            switch state {
-//
-//            case .success:
-//                self.isEnabledSignUpButton(enabled: false)
-//                if isAnon {
-//                    print("SignUpController isAnon")
-//                    self.delegate?.userChanged(isFromAnon: isAnon)
-//                } else {
-//                    self.delegate?.userChanged(isFromAnon: isAnon)
-//                    print("SignUpController not isAnon")
-//                }
-//                self.signUpAlert(title: "Регистрация прошла успешно", message: "Поздравляем! Вы успешно зарегистрировались. Мы отправили вам электронное письмо с подтверждением регистрации. Пожалуйста, проверьте свою почту и следуйте инструкциям в письме, чтобы завершить процесс регистрации.") {
-//                    self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
-//                }
-//
-//            case .failed(let errorMessage):
-//                self.signUpAlert(title: "error", message: errorMessage)
-//                print("failed")
-//            case .invalidUserToken(let errorMessage):
-//                print("invalidUserToken")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .userTokenExpired(let errorMessage):
-//                print("userTokenExpired")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .requiresRecentLogin(let errorMessage):
-//                print("requiresRecentLogin")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .keychainError(let errorMessage):
-//                print("keychainError")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .networkError(let errorMessage):
-//                print("networkError")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .userNotFound(let errorMessage):
-//                print("userNotFound")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .wrongPassword(let errorMessage):
-//                print("wrongPassword")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .tooManyRequests(let errorMessage):
-//                print("tooManyRequests")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .expiredActionCode(let errorMessage):
-//                print("expiredActionCode")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .invalidCredential(let errorMessage):
-//                print("invalidCredential")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .invalidRecipientEmail(let errorMessage):
-//                print("invalidRecipientEmail")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .missingEmail(let errorMessage):
-//                print("missingEmail")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .invalidEmail(let errorMessage):
-//                print("invalidEmail")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .providerAlreadyLinked(let errorMessage):
-//                print("providerAlreadyLinked")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .credentialAlreadyInUse(let errorMessage):
-//                print("credentialAlreadyInUse")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .userDisabled(let errorMessage):
-//                print("userDisabled")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .emailAlreadyInUse(let errorMessage):
-//                print("emailAlreadyInUse")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            case .weakPassword(let errorMessage):
-//                print("weakPassword")
-//                self.signUpAlert(title: "error", message: errorMessage)
-//            }
+                self?.signUpAlert(title: "Регистрация прошла успешно", message: "Поздравляем! Вы успешно зарегистрировались. Мы отправили вам электронное письмо с подтверждением регистрации. Пожалуйста, проверьте свою почту и следуйте инструкциям в письме, чтобы завершить процесс регистрации.") {
+                    self?.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
+                }
+            case .networkError(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .tooManyRequests(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .invalidEmail(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .emailAlreadyInUse(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .weakPassword(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .invalidCredential(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .credentialAlreadyInUse(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .accountExistsWithDifferentCredential(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .requiresRecentLogin(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            case .providerAlreadyLinked(let errorMessage):
+                self?.signUpAlert(title: "Ошибка", message: errorMessage)
+            default:
+                self?.signUpAlert(title: "Ошибка", message: "Что то пошло не так! Попробуйте еще раз!")
+            }
         })
     }
 }
@@ -515,9 +391,9 @@ func textFieldHandler(_ textField: UITextField?) {
 extension NewSignUpViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-
+        
         switch textField {
-
+            
         case nameTextField:
             emailTextField.becomeFirstResponder()
         case emailTextField:

@@ -275,18 +275,32 @@ private extension NewSignInViewController {
         signInModel?.signIn(email: email, password: password, completion: { [weak self] (state, isAnon) in
             print("SignInController signInModel?.signIn(email: .. )")
             self?.signInButton.isProcessActive = false
-            self?.signInModel?.fetchValueAuthErrorCodeState(state: state, completion: { [weak self] (state, errorMessage) in
-                switch state {
-                case .success:
-                    self?.isEnabledSignInButton(enabled: false)
-                    self?.delegate?.userChanged(isFromAnon: false)
-                    self?.signInAlert(title: "Вход выполнен успешно", message: "Поздравляем! Вы успешно вошли в систему.") { [weak self] in
-                        self?.presentingViewController?.dismiss(animated: true, completion: nil)
-                    }
-                default:
-                    self?.signInAlert(title: "error", message: errorMessage ?? "Something went wrong! Try again!")
+            switch state {
+            case .success:
+                self?.isEnabledSignInButton(enabled: false)
+                self?.delegate?.userChanged(isFromAnon: false)
+                self?.signInAlert(title: "Вход выполнен успешно", message: "Поздравляем! Вы успешно вошли в систему.") { [weak self] in
+                    self?.presentingViewController?.dismiss(animated: true, completion: nil)
                 }
-            })
+            case .networkError(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            case .userNotFound(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            case .wrongPassword(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            case .tooManyRequests(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            case .invalidCredential(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            case .missingEmail(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            case .invalidEmail(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            case .userDisabled(let errorMessage):
+                self?.signInAlert(title: "Ошибка", message: errorMessage)
+            default:
+                self?.signInAlert(title: "Ошибка", message: "Что то пошло не так! Попробуйте еще раз!")
+            }
         })
     }
     
@@ -300,16 +314,25 @@ private extension NewSignInViewController {
     @objc func didTapForgotPasswordButton(_ sender: UIButton) {
         
         sendPasswordResetAlert(title: "Сброс пароля", message: "Введите адрес электронной почты, связанный с вашей учетной записью. Мы отправим вам ссылку для сброса пароля.", placeholder: "Введите email") {  [weak self] email in
-            self?.signInModel?.sendPasswordReset(email: email, completion: { state in
-                self?.signInModel?.fetchValueAuthErrorCodeState(state: state, completion: { state, errorMessage in
-                    let error = errorMessage ?? "Что то пошло не так."
-                    switch state {
-                    case .success:
-                        self?.signInAlert(title: "Сброс пароля", message: "Запрос на сброс пароля успешно отправлен. Пожалуйста, проверьте свою электронную почту и следуйте инструкциям для сброса пароля.")
-                    default:
-                        self?.signInAlert(title: "Ошибка сброса пароля", message: "Произошла ошибка: \(error)) Пожалуйста, попробуйте еще раз.")
-                    }
-                })
+            self?.signInModel?.sendPasswordReset(email: email, completion: { [weak self] state in
+                switch state {
+                case .success:
+                    self?.signInAlert(title: "Сброс пароля", message: "Запрос на сброс пароля успешно отправлен. Пожалуйста, проверьте свою электронную почту и следуйте инструкциям для сброса пароля.")
+                case .networkError(let errorMessage):
+                    self?.signInAlert(title: "Ошибка", message: errorMessage)
+                case .userNotFound(let errorMessage):
+                    self?.signInAlert(title: "Ошибка", message: errorMessage)
+                case .tooManyRequests(let errorMessage):
+                    self?.signInAlert(title: "Ошибка", message: errorMessage)
+                case .invalidRecipientEmail(let errorMessage):
+                    self?.signInAlert(title: "Ошибка", message: errorMessage)
+                case .invalidEmail(let errorMessage):
+                    self?.signInAlert(title: "Ошибка", message: errorMessage)
+                case .userDisabled(let errorMessage):
+                    self?.signInAlert(title: "Ошибка", message: errorMessage)
+                default:
+                    self?.signInAlert(title: "Ошибка", message: "Что то пошло не так! Попробуйте еще раз!")
+                }
             })
         }
     }

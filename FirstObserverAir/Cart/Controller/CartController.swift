@@ -159,6 +159,10 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /// Test delete cartProduct
+///        let signInVC = NewSignInViewController()
+///        present(signInVC, animated: true, completion: nil)
+        
         let product = cartProducts[indexPath.row]
         guard product.isNotAvailoble == nil else {
             tableView.deselectRow(at: indexPath, animated: true)

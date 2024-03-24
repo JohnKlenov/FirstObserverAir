@@ -95,6 +95,7 @@
 		5EC492422B307A950061C71F /* HeaderShopSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492412B307A950061C71F /* HeaderShopSection.swift */; };
 		5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492432B307CF90061C71F /* HeaderMallSection.swift */; };
 		5EC72F162B8B96E2007DF7D6 /* BuilderStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */; };
+		5EF3C2B82BB03F3C00C6C031 /* UIImage + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF3C2B72BB03F3C00C6C031 /* UIImage + ext.swift */; };
 		5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */; };
 		5EFAC9992B665F7F00B8A824 /* NavigationMallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */; };
 		5EFAC99B2B666C8100B8A824 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99A2B666C8100B8A824 /* MapCell.swift */; };
@@ -197,6 +198,7 @@
 		5EC492412B307A950061C71F /* HeaderShopSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderShopSection.swift; sourceTree = "<group>"; };
 		5EC492432B307CF90061C71F /* HeaderMallSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderMallSection.swift; sourceTree = "<group>"; };
 		5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderStackView.swift; sourceTree = "<group>"; };
+		5EF3C2B72BB03F3C00C6C031 /* UIImage + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage + ext.swift"; sourceTree = "<group>"; };
 		5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeLayoutCollectionAsMallVC.swift; sourceTree = "<group>"; };
 		5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMallCell.swift; sourceTree = "<group>"; };
 		5EFAC99A2B666C8100B8A824 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
@@ -367,6 +369,7 @@
 				5E1A35342B13DFED0076FDC1 /* UIColor + ext.swift */,
 				5E1A35512B14AE980076FDC1 /* UITabBarController + ext.swift */,
 				5E1148FB2B5BC6EA0073B2E8 /* UIApplication + ext.swift */,
+				5EF3C2B72BB03F3C00C6C031 /* UIImage + ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1123,6 +1126,7 @@
 				5E7D7E722B44ACAD0009B8E8 /* MallTableViewCell.swift in Sources */,
 				5E0DE9052B45479700F3387C /* AddToCartAnimationView.swift in Sources */,
 				5E1A35572B14D2BD0076FDC1 /* ChildPageController.swift in Sources */,
+				5EF3C2B82BB03F3C00C6C031 /* UIImage + ext.swift in Sources */,
 				5E1148F72B5BC5BA0073B2E8 /* CustomNavigationBar.swift in Sources */,
 				5E99AB5C2B358B7C00FA9FD4 /* HomeCollectionView.swift in Sources */,
 				5E7DE9EC2B751770007B44CC /* RangeSlider.swift in Sources */,

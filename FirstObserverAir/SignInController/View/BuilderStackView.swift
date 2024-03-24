@@ -51,4 +51,8 @@ class BuilderStackView {
 
         return (stackView, textField, separatorView, warningLabel)
     }
+    
+    deinit {
+        print("deinit BuilderStackView")
+    }
 }

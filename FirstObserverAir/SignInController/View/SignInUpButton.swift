@@ -7,7 +7,8 @@
 
 import UIKit
 
-class SignInUpProcessButton: UIButton {
+final class SignInUpProcessButton: UIButton {
+    
     var isProcessActive = false {
         didSet {
             self.setNeedsUpdateConfiguration()
@@ -49,6 +50,10 @@ class SignInUpProcessButton: UIButton {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("deinit SignInUpProcessButton")
     }
 }
 

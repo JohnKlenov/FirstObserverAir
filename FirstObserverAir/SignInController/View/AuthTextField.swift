@@ -29,7 +29,6 @@ final class AuthTextField: UITextField {
     }
     
     private func setupTextField(placeholder: String) {
-//        UIColor.lightGray
         backgroundColor = .clear
         textColor = R.Colors.label
         
@@ -41,7 +40,6 @@ final class AuthTextField: UITextField {
     
     
     ///настроиваем положение текста внутри UITextField
-    
     ///определяет область текста, когда текстовое поле не редактируется
     override func textRect(forBounds bounds: CGRect) -> CGRect {
         let rect = super.textRect(forBounds: bounds)
@@ -51,6 +49,10 @@ final class AuthTextField: UITextField {
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
         let rect = super.editingRect(forBounds: bounds)
         return rect.inset(by: textPadding)
+    }
+    
+    deinit {
+        print("deinit AuthTextField")
     }
 }
 

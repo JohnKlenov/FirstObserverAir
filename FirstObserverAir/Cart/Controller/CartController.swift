@@ -47,17 +47,14 @@ final class CartController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("CartController viewWillAppear")
         cartModel?.fetchData()
         resetBadgeValue()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        print("CartController viewWillDisappear")
         removeObserverNotification()
     }
-
 }
 
 
@@ -148,10 +145,9 @@ extension CartController: UITableViewDelegate, UITableViewDataSource {
     /// добавляем действие по свайпу
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // действие удаления
-        let actionDelete = UIContextualAction(style: .destructive, title: "Delete") { _,_,_ in
-            print("let actionDelete = UIContextualAction(style: .destructive ..)")
-            self.removeObserverNotification()
-            self.removeCartProduct(tableView: tableView, indexPath: indexPath)
+        let actionDelete = UIContextualAction(style: .destructive, title: "Delete") { [weak self] _,_,_ in
+            self?.removeObserverNotification()
+            self?.removeCartProduct(tableView: tableView, indexPath: indexPath)
         }
         // формируем экземпляр, описывающий доступные действия
         let actions = UISwipeActionsConfiguration(actions: [actionDelete])
@@ -182,14 +178,12 @@ extension CartController:CartModelOutput {
     }
     
     func updateData(cartProduct: [ProductItem], isAnonymousUser:Bool) {
-        print("func updateData(cartProduct:  ..)")
-//        isAnonymousUser
-        reloadData(products: cartProduct, isAnonymous: true)
+        
+        reloadData(products: cartProduct, isAnonymous: isAnonymousUser)
+        
         if let cartModel = cartModel, cartModel.checkListenerStatus() {
-            print("cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)")
             cartModel.checkingActualCurrentCartProducts(cartProducts: cartProducts)
         } else {
-            print("cartModel?.restartFetchCartProducts()")
             removeObserverNotification()
             addObserverNotification()
             cartModel?.restartFetchCartProducts()
@@ -200,7 +194,6 @@ extension CartController:CartModelOutput {
 // MARK: - Selectors
 private extension CartController {
     @objc func handleUpdateCartProductNotification(_ notification: NSNotification) {
-        print("CartController handleUpdateCartProductNotification")
         removeObserverNotification()
         cartModel?.fetchData()
     }
@@ -211,7 +204,6 @@ extension CartController: CartViewDelegate {
     func didTaplogInButton() {
         let signInVC = NewSignInViewController()
         signInVC.delegate = self
-//        signInVC.presentationController?.delegate = self
         present(signInVC, animated: true, completion: nil)
         removeObserverNotification()
         addObserverNotification()
@@ -228,27 +220,15 @@ extension CartController: DidChangeUserDelegate {
    
     func userChanged(isFromAnon:Bool) {
         if isFromAnon {
-            print("CartController userChanged isFromAnon")
             reloadData(products: cartProducts, isAnonymous: false)
         } else {
             let products = cartModel?.fetchCurrentCartProducts()
-            print("CartController userChanged is not FromAnon products - \(String(describing: products))")
             reloadData(products: products ?? [], isAnonymous: false)
         }
         
         
     }
 }
-
-
-
-// MARK: - Test Plan
-
-// На анонимном добавляем товар в корзину
-// SignUp
-// Принудительно из кода SignOut
-// из нового анонимного с пустой корзиной SignIn
-// из залогининого пользователя с товаром в корзине SignUp (проверяем как работает вторая часть когда в SignUp)
 
 
 // MARK: - Feature

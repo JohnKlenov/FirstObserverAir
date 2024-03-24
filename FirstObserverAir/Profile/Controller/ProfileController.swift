@@ -7,18 +7,20 @@
 
 import UIKit
 
-//class ProfileController: UIViewController {
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        view.backgroundColor = R.Colors.systemBackground
-//    }
-//}
-
 enum StateProfileInfo {
     case success
     case failed(image:Bool? = nil, name:Bool? = nil)
     case nul
+}
+
+struct UserProfile {
+    var name:String
+    var email:String
+    var url:String
+}
+
+protocol ProfileModelOutput:AnyObject {
+    func updateUserProfile(with userData:UserProfile)
 }
 
 final class ProfileController: UIViewController {
@@ -196,6 +198,8 @@ final class ProfileController: UIViewController {
     private var dataForNewImageUser: Data?
     private var casheImageUserSavedOnTheServer: UIImage?
     
+    private var profileModel: ProfileModelInput?
+    
     // MARK: FB property
 //    let managerFB = FBManager.shared
 //    private var currentUser: User?
@@ -204,75 +208,78 @@ final class ProfileController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        setNeedsStatusBarAppearanceUpdate()
-//        self.navigationController?.navigationBar.barStyle = .black
-        
-//        managerFB.userListener { [weak self] (user) in
-//            self?.currentUser = user
-//
-//            if let user = user, !user.isAnonymous {
-//                self?.updateUIForPermanentUser(user)
-//            } else {
-//                self?.updateUIForAnonymousUser()
-//            }
+        setupView()
+    }
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//            return .portrait // Здесь указываем ориентацию, которую вы хотите разрешить (например, только портретную)
 //        }
+
+}
+
+// MARK: - Setting Views
+private extension ProfileController {
+    func setupView() {
+        //        setNeedsStatusBarAppearanceUpdate()
+        //        self.navigationController?.navigationBar.barStyle = .black
         
+        //        managerFB.userListener { [weak self] (user) in
+        //            self?.currentUser = user
+        //
+        //            if let user = user, !user.isAnonymous {
+        //                self?.updateUIForPermanentUser(user)
+        //            } else {
+        //                self?.updateUIForAnonymousUser()
+        //            }
+        //        }
+        profileModel = ProfileFirebaseService(output: self)
         view.backgroundColor = R.Colors.systemBackground
         updateUIForPermanentUser()
-//        navigationController?.navigationBar.prefersLargeTitles = true
+        //        navigationController?.navigationBar.prefersLargeTitles = true
         configureNavigationBar(largeTitleColor: R.Colors.label, backgoundColor: R.Colors.systemGray5, tintColor: R.Colors.label, title: R.Strings.NavBar.profile, preferredLargeTitle: true)
         configureNavigationItem()
         setupStackView()
         imageUser.addGestureRecognizer(imageUserTapGestureRecognizer)
         addActions()
-        
-        
+        addSubview()
+        //        imageUser.image = UIImage(named: "DefaultImage")
+        setupConstraints()
+    }
+}
+
+// MARK: - Setting
+private extension ProfileController {
+    
+    func configureNavigationItem() {
+        editButton.addTarget(self, action: #selector(editingModeButtonHandler), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelButtonHandler), for: .touchUpInside)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: cancelButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: editButton)
+    }
+    
+    func setupStackView() {
+        infoUserStackView.addArrangedSubview(userNameTextField)
+        infoUserStackView.addArrangedSubview(emailUserTextField)
+        buttonsStackView.addArrangedSubview(signInSignUp)
+        buttonsStackView.addArrangedSubview(signOutButton)
+        buttonsStackView.addArrangedSubview(deleteAccountButton)
+    }
+    
+    func addActions() {
+        userNameTextField.addTarget(self, action: #selector(didChangeNameTextField), for: .editingChanged)
+        signInSignUp.addTarget(self, action: #selector(didTapsignInSignUp(_:)), for: .touchUpInside)
+        signOutButton.addTarget(self, action: #selector(didTapSignOut(_:)), for: .touchUpInside)
+        deleteAccountButton.addTarget(self, action: #selector(didTapDeleteAccount(_:)), for: .touchUpInside)
+        imageUserTapGestureRecognizer.addTarget(self, action: #selector(handleTapSingleGesture))
+    }
+    
+    func addSubview() {
         view.addSubview(topView)
         view.addSubview(imageUser)
         view.addSubview(infoUserStackView)
         view.addSubview(buttonsStackView)
-        
-        
-//        imageUser.image = UIImage(named: "DefaultImage")
-        setupConstraints()
     }
     
-    
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//            return .portrait // Здесь указываем ориентацию, которую вы хотите разрешить (например, только портретную)
-//        }
-
-    
-    // MARK: - helper methods for func managerFB.updateProfileInfo()
-
-    private func failedUpdateImage() {
-        editButton.configuration?.showsActivityIndicator = false
-//        switchSaveButton(isSwitch: false)
-        if isChangedCurrentImageUser {
-            imageUser.image = casheImageUserSavedOnTheServer
-            resetAvatarBufferProperties()
-        }
-    }
-    
-    private func successUpdateImage() {
-        if isChangedCurrentImageUser {
-//            managerFB.cacheImageRemoveMemoryAndDisk(imageView: imageUser)
-            resetAvatarBufferProperties()
-        }
-    }
-
-    private func failedUpdateName() {
-//        self.userNameTextField.text = self.currentUser?.displayName
-    }
-    
-    private func resetAvatarBufferProperties() {
-        dataForNewImageUser = nil
-        casheImageUserSavedOnTheServer = nil
-        isChangedCurrentImageUser = false
-    }
-
-    
-    // MARK: - update UI methods
+    // MARK: update UI methods
 
     ///updateUIForPermanentUser(_ user:User)
     ///emailUserTextField.text = user.email
@@ -328,32 +335,9 @@ final class ProfileController: UIViewController {
             signOutButton.isHidden = true
             deleteAccountButton.isHidden = true
         }
-
     }
     
-    // MARK: - helper methods for updateImageProfile
-    
-    private func startRemoveAvatarUpdateUI() {
-        editButton.configuration?.showsActivityIndicator = true
-        editButton.isUserInteractionEnabled = false
-    }
-
-    private func endRemoveAvatarUpdateUI() {
-        self.editButton.configuration?.showsActivityIndicator = false
-        self.enableEditingModeForProfile(isSwitch: self.isStateEditingModeProfile)
-        self.setupAlert(title: "Success", message: "Profile avatar is delete!")
-        self.isChangedCurrentImageUser = false
-    }
-    
-    private func failedRemoveAvatarUpdateUI(additionalMessage: String) {
-        self.editButton.configuration?.showsActivityIndicator = false
-        self.enableSaveButton(isSwitch: false)
-        self.setupAlert(title: "Error", message: additionalMessage)
-    }
-    
-    
-    
-    // MARK: - methods for changing state buttons
+    // MARK: methods for changing state buttons
     
     private func enableEditingModeForProfile(isSwitch: Bool) {
          isSwitch ? enableSaveButton(isSwitch: !isSwitch) : enableEditButton(isSwitch: !isSwitch)
@@ -388,25 +372,58 @@ final class ProfileController: UIViewController {
         deleteAccountButton.isEnabled = isEdittButtonState ? true : false
     }
     
-    
-    func configureNavigationItem() {
-        
-        editButton.addTarget(self, action: #selector(editingModeButtonHandler), for: .touchUpInside)
-        cancelButton.addTarget(self, action: #selector(cancelButtonHandler), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: cancelButton)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: editButton)
+    // MARK: helper methods for func managerFB.updateProfileInfo()
+
+    private func failedUpdateImage() {
+        editButton.configuration?.showsActivityIndicator = false
+//        switchSaveButton(isSwitch: false)
+        if isChangedCurrentImageUser {
+            imageUser.image = casheImageUserSavedOnTheServer
+            resetAvatarBufferProperties()
+        }
     }
     
-    func setupStackView() {
-        
-        infoUserStackView.addArrangedSubview(userNameTextField)
-        infoUserStackView.addArrangedSubview(emailUserTextField)
-        
-        buttonsStackView.addArrangedSubview(signInSignUp)
-        buttonsStackView.addArrangedSubview(signOutButton)
-        buttonsStackView.addArrangedSubview(deleteAccountButton)
+    private func successUpdateImage() {
+        if isChangedCurrentImageUser {
+//            managerFB.cacheImageRemoveMemoryAndDisk(imageView: imageUser)
+            resetAvatarBufferProperties()
+        }
+    }
+
+    private func failedUpdateName() {
+//        self.userNameTextField.text = self.currentUser?.displayName
     }
     
+    private func resetAvatarBufferProperties() {
+        dataForNewImageUser = nil
+        casheImageUserSavedOnTheServer = nil
+        isChangedCurrentImageUser = false
+    }
+    
+    // MARK: helper methods for updateImageProfile
+    
+    private func startRemoveAvatarUpdateUI() {
+        editButton.configuration?.showsActivityIndicator = true
+        editButton.isUserInteractionEnabled = false
+    }
+
+    private func endRemoveAvatarUpdateUI() {
+        self.editButton.configuration?.showsActivityIndicator = false
+        self.enableEditingModeForProfile(isSwitch: self.isStateEditingModeProfile)
+        self.setupAlert(title: "Success", message: "Profile avatar is delete!")
+        self.isChangedCurrentImageUser = false
+    }
+    
+    private func failedRemoveAvatarUpdateUI(additionalMessage: String) {
+        self.editButton.configuration?.showsActivityIndicator = false
+        self.enableSaveButton(isSwitch: false)
+        self.setupAlert(title: "Error", message: additionalMessage)
+    }
+    
+}
+
+// MARK: - Layout
+private extension ProfileController {
     func setupConstraints() {
         topView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 0).isActive = true
         topView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0).isActive = true
@@ -427,22 +444,9 @@ final class ProfileController: UIViewController {
         buttonsStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
         buttonsStackView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20).isActive = true
     }
-    
-    func addActions() {
-        
-        userNameTextField.addTarget(self, action: #selector(didChangeNameTextField), for: .editingChanged)
-        
-        signInSignUp.addTarget(self, action: #selector(didTapsignInSignUp(_:)), for: .touchUpInside)
-        signOutButton.addTarget(self, action: #selector(didTapSignOut(_:)), for: .touchUpInside)
-        deleteAccountButton.addTarget(self, action: #selector(didTapDeleteAccount(_:)), for: .touchUpInside)
-        imageUserTapGestureRecognizer.addTarget(self, action: #selector(handleTapSingleGesture))
-    }
 }
 
-
-
-// MARK: - @objc func
-
+// MARK: - Selectors
 private extension ProfileController {
     
     @objc func didTapsignInSignUp(_ sender: UIButton) {
@@ -623,8 +627,7 @@ private extension ProfileController {
     }
 }
 
-// MARK: - extension Alerts -
-
+// MARK: - Alert
 private extension ProfileController {
 
     func setupAlertEditImageAvatar() {
@@ -932,6 +935,14 @@ extension ProfileController:DidChangeUserDelegate {
 //        guard let user = currentUser else {return}
 //        self.updateUIForPermanentUser(user)
 //    }
+}
+
+
+// MARK: - ProfileModelOutput
+extension ProfileController:ProfileModelOutput {
+    func updateUserProfile(with userData: UserProfile) {
+        <#code#>
+    }
 }
 
 

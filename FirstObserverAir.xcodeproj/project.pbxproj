@@ -96,6 +96,7 @@
 		5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC492432B307CF90061C71F /* HeaderMallSection.swift */; };
 		5EC72F162B8B96E2007DF7D6 /* BuilderStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */; };
 		5EF3C2B82BB03F3C00C6C031 /* UIImage + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF3C2B72BB03F3C00C6C031 /* UIImage + ext.swift */; };
+		5EF3C2BB2BB0C39B00C6C031 /* ProfileFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF3C2BA2BB0C39B00C6C031 /* ProfileFirebaseService.swift */; };
 		5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */; };
 		5EFAC9992B665F7F00B8A824 /* NavigationMallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */; };
 		5EFAC99B2B666C8100B8A824 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99A2B666C8100B8A824 /* MapCell.swift */; };
@@ -199,6 +200,7 @@
 		5EC492432B307CF90061C71F /* HeaderMallSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderMallSection.swift; sourceTree = "<group>"; };
 		5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderStackView.swift; sourceTree = "<group>"; };
 		5EF3C2B72BB03F3C00C6C031 /* UIImage + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage + ext.swift"; sourceTree = "<group>"; };
+		5EF3C2BA2BB0C39B00C6C031 /* ProfileFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFirebaseService.swift; sourceTree = "<group>"; };
 		5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeLayoutCollectionAsMallVC.swift; sourceTree = "<group>"; };
 		5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMallCell.swift; sourceTree = "<group>"; };
 		5EFAC99A2B666C8100B8A824 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
@@ -449,6 +451,7 @@
 		5E1A354B2B13E8380076FDC1 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				5EF3C2B92BB0C35900C6C031 /* Model */,
 				5E1A354C2B13E8560076FDC1 /* Controller */,
 			);
 			path = Profile;
@@ -939,6 +942,14 @@
 			path = Header;
 			sourceTree = "<group>";
 		};
+		5EF3C2B92BB0C35900C6C031 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5EF3C2BA2BB0C39B00C6C031 /* ProfileFirebaseService.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		5EFAC9A32B6BCF2200B8A824 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -1177,6 +1188,7 @@
 				5E7DE9E42B7515EF007B44CC /* FilterParameterCell.swift in Sources */,
 				5E2700392B70C99D0073367C /* ModelDataTransformation.swift in Sources */,
 				5EFAC9992B665F7F00B8A824 /* NavigationMallCell.swift in Sources */,
+				5EF3C2BB2BB0C39B00C6C031 /* ProfileFirebaseService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

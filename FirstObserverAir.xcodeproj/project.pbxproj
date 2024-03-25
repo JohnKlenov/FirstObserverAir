@@ -97,6 +97,7 @@
 		5EC72F162B8B96E2007DF7D6 /* BuilderStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */; };
 		5EF3C2B82BB03F3C00C6C031 /* UIImage + ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF3C2B72BB03F3C00C6C031 /* UIImage + ext.swift */; };
 		5EF3C2BB2BB0C39B00C6C031 /* ProfileFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF3C2BA2BB0C39B00C6C031 /* ProfileFirebaseService.swift */; };
+		5EF3C2BD2BB17DCF00C6C031 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF3C2BC2BB17DCF00C6C031 /* ImageService.swift */; };
 		5EFAC9952B6510E600B8A824 /* CompositeLayoutCollectionAsMallVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */; };
 		5EFAC9992B665F7F00B8A824 /* NavigationMallCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */; };
 		5EFAC99B2B666C8100B8A824 /* MapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EFAC99A2B666C8100B8A824 /* MapCell.swift */; };
@@ -201,6 +202,7 @@
 		5EC72F152B8B96E2007DF7D6 /* BuilderStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderStackView.swift; sourceTree = "<group>"; };
 		5EF3C2B72BB03F3C00C6C031 /* UIImage + ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage + ext.swift"; sourceTree = "<group>"; };
 		5EF3C2BA2BB0C39B00C6C031 /* ProfileFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFirebaseService.swift; sourceTree = "<group>"; };
+		5EF3C2BC2BB17DCF00C6C031 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		5EFAC9942B6510E500B8A824 /* CompositeLayoutCollectionAsMallVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositeLayoutCollectionAsMallVC.swift; sourceTree = "<group>"; };
 		5EFAC9982B665F7F00B8A824 /* NavigationMallCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationMallCell.swift; sourceTree = "<group>"; };
 		5EFAC99A2B666C8100B8A824 /* MapCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCell.swift; sourceTree = "<group>"; };
@@ -801,6 +803,7 @@
 				5E1A355E2B161B3D0076FDC1 /* FirebaseService.swift */,
 				5E0701852B25D4C300517EA0 /* NetworkMonitor.swift */,
 				5E690EEC2B7F9AE40067B410 /* CacheManager.swift */,
+				5EF3C2BC2BB17DCF00C6C031 /* ImageService.swift */,
 			);
 			path = NetworkService;
 			sourceTree = "<group>";
@@ -1159,6 +1162,7 @@
 				5EFAC9A12B6A602E00B8A824 /* MapHelper.swift in Sources */,
 				5E1A354E2B13E8700076FDC1 /* ProfileController.swift in Sources */,
 				5EC492442B307CF90061C71F /* HeaderMallSection.swift in Sources */,
+				5EF3C2BD2BB17DCF00C6C031 /* ImageService.swift in Sources */,
 				5EC492382B304C410061C71F /* ShopCell.swift in Sources */,
 				5E7D7E6C2B44A7B70009B8E8 /* ImageCell.swift in Sources */,
 				5E1C91202B90876500B43619 /* SignUpController.swift in Sources */,

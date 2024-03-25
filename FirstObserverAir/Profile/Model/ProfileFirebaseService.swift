@@ -10,7 +10,7 @@ import Foundation
 // Протокол для модели данных
 protocol ProfileModelInput: AnyObject {
     func fetchUserData()
-    func userIsAnonymously(completionHandler: @escaping (Bool?) -> Void)
+    func userIsAnonymously(completionHandler: @escaping (Bool) -> Void)
 }
     
 final class ProfileFirebaseService {
@@ -28,12 +28,13 @@ final class ProfileFirebaseService {
 }
 
 extension ProfileFirebaseService:ProfileModelInput {
-    func userIsAnonymously(completionHandler: @escaping (Bool?) -> Void) {
+    func userIsAnonymously(completionHandler: @escaping (Bool) -> Void) {
         serviceFB.userIsAnonymously(completionHandler: completionHandler)
     }
     
     func fetchUserData() {
-        let user = UserProfile(name: "Evgeny", email: "klenovminsk@mail.ru", url: "nil")
+        let currentUser = serviceFB.currentUser
+        let user = UserProfile(name: currentUser?.displayName ?? "No name", email: currentUser?.email ?? "No email", url: currentUser?.photoURL?.absoluteString ?? "nil")
         output?.updateUserProfile(with: user)
     }
 }

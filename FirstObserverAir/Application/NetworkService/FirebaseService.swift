@@ -174,7 +174,7 @@ final class FirebaseService {
     
     // MARK: - Auth
     
-    func userIsAnonymously(completionHandler: @escaping (Bool?) -> Void) {
+    func userIsAnonymously(completionHandler: @escaping (Bool) -> Void) {
         if let user = currentUser {
             if user.isAnonymous {
                 print("user.isAnonymous - true")
@@ -184,7 +184,7 @@ final class FirebaseService {
             }
         } else {
             print("Returned message for analytic FB Crashlytics error FirebaseService")
-            completionHandler(nil)
+            completionHandler(true)
         }
     }
     
@@ -242,7 +242,8 @@ final class FirebaseService {
     
     func addFieldPreviousUserId(anonUserId:String) {
         // Если вход в систему прошел успешно, сохраняем идентификатор анонимного пользователя в базе данных
-        if let userId = Auth.auth().currentUser?.uid {
+//        if let userId = Auth.auth().currentUser?.uid {
+        if let userId = currentUser?.uid {
             let db = Firestore.firestore()
             db.collection("users").document(userId).setData(["previousUserId": anonUserId ], merge: true) { error in
                 if let error = error {
@@ -277,10 +278,11 @@ final class FirebaseService {
             completion(.failed("User is not authorized!"), false)
             return
         }
-        
-        if Auth.auth().currentUser?.isAnonymous == true {
+//        if Auth.auth().currentUser?.isAnonymous == true {
+        if currentUser?.isAnonymous == true {
             let credential = EmailAuthProvider.credential(withEmail: email, password: password)
-            Auth.auth().currentUser?.link(with: credential) { [weak self] (result, error) in
+//            Auth.auth().currentUser?.link(with: credential) { [weak self]
+            currentUser?.link(with: credential) { [weak self] (result, error) in
                 // Обработайте результат
                 if let error = error as? AuthErrorCode {
                     self?.handleAuthError(error: error, completion: { state in
@@ -433,7 +435,8 @@ final class FirebaseService {
     
     // Отправить пользователю электронное письмо с подтверждением регистрации
     func verificationEmail() {
-        Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
+//        Auth.auth().currentUser?.sendEmailVerification(completion: { (error) in
+        currentUser?.sendEmailVerification(completion: { (error) in
             if error != nil {
                 print("Returne message for analitic FB Crashlystics error - \(String(describing: error))")
             } else {
@@ -506,6 +509,7 @@ final class FirebaseService {
 
         userListener { user in
             if let _ = user {
+                
                 self.currentCartProducts = nil
                 completion(nil, nil)
             } else {

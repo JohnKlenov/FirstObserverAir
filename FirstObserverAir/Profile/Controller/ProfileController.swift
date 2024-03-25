@@ -214,7 +214,18 @@ final class ProfileController: UIViewController {
 //            return .portrait // Здесь указываем ориентацию, которую вы хотите разрешить (например, только портретную)
 //        }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        profileModel?.userIsAnonymously(completionHandler: { [weak self] isAnon in
+            if isAnon {
+                self?.updateUIForAnonymousUser()
+            } else {
+                self?.profileModel?.fetchUserData()
+            }
+        })
+    }
 }
+
 
 // MARK: - Setting Views
 private extension ProfileController {
@@ -233,7 +244,6 @@ private extension ProfileController {
         //        }
         profileModel = ProfileFirebaseService(output: self)
         view.backgroundColor = R.Colors.systemBackground
-        updateUIForPermanentUser()
         //        navigationController?.navigationBar.prefersLargeTitles = true
         configureNavigationBar(largeTitleColor: R.Colors.label, backgoundColor: R.Colors.systemGray5, tintColor: R.Colors.label, title: R.Strings.NavBar.profile, preferredLargeTitle: true)
         configureNavigationItem()
@@ -287,12 +297,11 @@ private extension ProfileController {
     ///if let photoURL = user.photoURL?.absoluteString, photoURL != "nil" {
     ///можем создать струтуру UserProfile с полями для этих данных
     
-    private func updateUIForPermanentUser() {
+    private func updateUIForPermanentUser(userData:UserProfile) {
         editButton.isHidden = false
         emailUserTextField.isHidden = false
-        emailUserTextField.text = "user.email"
-//        print("user.displayName - \(String(describing: user.displayName))")
-        userNameTextField.text = "user.displayName"
+        emailUserTextField.text = userData.email
+        userNameTextField.text = userData.name
         cancelButton.isHidden = true
         userNameTextField.isUserInteractionEnabled = false
         emailUserTextField.isUserInteractionEnabled = false
@@ -300,7 +309,9 @@ private extension ProfileController {
 
         signOutButton.isHidden = false
         deleteAccountButton.isHidden = false
-        
+//        ImageService.shared.loadImage(from: userData.url, to: imageUser,
+        ImageService.shared.loadImage(from: userData.url, to: imageUser, placeholderImage: R.Images.Profile.defaultUserAvatarImage)
+//        imageUser.fetchingImageWithPlaceholder(url: userData.url, defaultImage: R.Images.Profile.defaultAvatarImage)
 //        print("user.photoURL?.absoluteString - \(String(describing: user.photoURL?.absoluteString))")
 //        if let photoURL = user.photoURL?.absoluteString, photoURL != "nil" {
 //            print("photoURL - \(photoURL)")
@@ -309,9 +320,10 @@ private extension ProfileController {
 //        } else {
 //            self.imageUser.image = R.Images.Profile.defaultAvatarImage
 //        }
-        let image = R.Images.Profile.defaultAvatarImage
+        
+//        let image = R.Images.Profile.defaultAvatarImage
 //        let tintableImage = image?.withRenderingMode(.alwaysTemplate)
-        imageUser.image = image
+//        imageUser.image = image
     }
    
 
@@ -941,7 +953,7 @@ extension ProfileController:DidChangeUserDelegate {
 // MARK: - ProfileModelOutput
 extension ProfileController:ProfileModelOutput {
     func updateUserProfile(with userData: UserProfile) {
-        <#code#>
+        updateUIForPermanentUser(userData: userData)
     }
 }
 

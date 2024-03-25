@@ -227,6 +227,8 @@ enum R {
 
         enum Profile {
             static let defaultAvatarImage = UIImage(systemName: "person.crop.circle")
+            static let defaultUserAvatarImage = UIImage(systemName: "person.crop.square.fill")
+            
         }
         
         enum DefaultImage {

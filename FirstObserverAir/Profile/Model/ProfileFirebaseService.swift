@@ -34,7 +34,7 @@ extension ProfileFirebaseService:ProfileModelInput {
     
     func fetchUserData() {
         let currentUser = serviceFB.currentUser
-        let user = UserProfile(name: currentUser?.displayName ?? "No name", email: currentUser?.email ?? "No email", url: currentUser?.photoURL?.absoluteString ?? "nil")
+        let user = UserProfile(name: currentUser?.displayName ?? "No name", email: currentUser?.email ?? "No email", url: currentUser?.photoURL?.absoluteString)
         output?.updateUserProfile(with: user)
     }
 }

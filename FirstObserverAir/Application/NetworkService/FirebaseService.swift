@@ -7,7 +7,7 @@
 
 import Foundation
 import Firebase
-//import FirebaseStorageUI
+import FirebaseStorageUI
 
 final class FirebaseService {
     
@@ -16,6 +16,7 @@ final class FirebaseService {
     
     private let db = Firestore.firestore()
     private var handle: AuthStateDidChangeListenerHandle?
+    private var avatarRef: StorageReference?
     private var listeners: [String:ListenerRegistration] = [:]
     var isOnListenerForCartProduct:Bool?
     
@@ -619,6 +620,107 @@ final class FirebaseService {
         }
         listeners[user.uid] = listener
     }
+    
+    
+    // MARK: - Profile methods
+    
+    func updateProfileInfo(withImage image: Data? = nil, name: String? = nil, _ completion: ((StateProfileInfo, Error?) -> ())? = nil) {
+        guard let user = currentUser else {
+            print("Returne message for analitic FB Crashlystics")
+            completion?(.nul, nil)
+            return
+        }
+        
+        if let image = image{
+            imageChangeRequest(user: user, image: image) { (error) in
+                let imageIsFailed = error != nil ? true: false
+                self.createProfileChangeRequest(name: name) { (error) in
+                    let nameIsFailed = error != nil ? true: false
+                    if !imageIsFailed, !nameIsFailed {
+//                        self.avatarRef = profileImgReference
+                        completion?(.success, error)
+                    } else {
+                        completion?(.failed(image: imageIsFailed, name: nameIsFailed), error)
+                    }
+                }
+            }
+        } else if let name = name {
+            self.createProfileChangeRequest(name: name) { error in
+                let nameIsFailed = error != nil ? true: false
+                if !nameIsFailed {
+                    completion?(.success, error)
+                } else {
+                    completion?(.failed(name: nameIsFailed), error)
+                }
+            }
+        } else {
+            // значит что то пошло не так(у нас name = nil, image = nil и при этом сработала save)
+            print("Returne message for analitic FB Crashlystics")
+            completion?(.nul, nil)
+        }
+    }
+    
+    //                    if let error = error {
+    //                        self.deleteStorageData(refStorage: profileImgReference)
+    //                        callback?(error)
+    //                    } else if let url = url {
+    //                        self.avatarRef = profileImgReference
+    //                        self.createProfileChangeRequest(photoURL: url) { (error) in
+    //                            if let error = error {
+    //                                self.deleteStorageData(refStorage: profileImgReference)
+    //                                self.avatarRef = nil
+    //                                callback?(error)
+    //                            } else {
+    //                                callback?(error)
+    //                            }
+    //                        }
+    //                    } else {
+    //                        // нужно отловить эту ошибку выше
+    //                        self.deleteStorageData(refStorage: profileImgReference)
+    //                        let userInfo = [NSLocalizedDescriptionKey: "Failed to get avatar link"]
+    //                        let customError = NSError(domain: "Firebase", code: 1001, userInfo: userInfo)
+    //                        callback?(customError)
+    //                    }
+    
+    func imageChangeRequest(user:User, image:Data,  _ callback: ((Error?) -> ())? = nil) {
+        
+        let randomFileName = ModelDataTransformation.randomString(length: user.uid.count) + ".jpeg"
+        
+        let profileImgReference = Storage.storage().reference().child("profile_pictures").child(user.uid).child(randomFileName)
+        
+        _ = profileImgReference.putData(image, metadata: nil) { [weak self] (metadata, error) in
+            if let error = error {
+                print("не удалось запулить data image в Storage")
+                callback?(error)
+            } else {
+                profileImgReference.downloadURL(completion: { [weak self] (url, error) in
+                    guard let url = url, error == nil else {
+                        self?.deleteStorageData(refStorage: profileImgReference)
+                        callback?(error)
+                        return
+                    }
+                    self?.createProfileChangeRequest(photoURL: url) { [weak self] (error) in
+                        if let error = error {
+                            self?.deleteStorageData(refStorage: profileImgReference)
+                            callback?(error)
+                        } else {
+                            callback?(error)
+                        }
+                    }
+                })
+            }
+        }
+    }
+    
+    func deleteStorageData(refStorage: StorageReference) {
+        refStorage.delete { error in
+            if error != nil {
+                // как я понял это не критично putData перезаписывает файлы с одинаковыми именами и форматом
+                print("deleteStorageData Returne message for analitic FB Crashlystics error - \(String(describing: error))")
+            }
+        }
+    }
+    
 }
 
 

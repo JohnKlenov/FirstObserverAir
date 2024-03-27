@@ -7,9 +7,15 @@
 
 import UIKit
 
-enum StateProfileInfo {
+//enum StateEditProfile {
+//    case success
+//    case failed(image:Bool? = nil, name:Bool? = nil)
+//    case nul
+//}
+
+enum StateEditProfile {
     case success
-    case failed(image:Bool? = nil, name:Bool? = nil)
+    case errorUpdating(photoURL: Bool? = nil, displayName: Bool? = nil)
     case nul
 }
 
@@ -183,7 +189,7 @@ final class ProfileController: UIViewController {
         return gesture
     }()
     
-//    private var cartProducts: [PopularProduct] = []
+    private var userData: UserProfile?
     private var isStateEditingModeProfile = true {
         didSet {
             disableAuthorizationButtons(isEdittButtonState: isStateEditingModeProfile)
@@ -385,24 +391,36 @@ private extension ProfileController {
     
     // MARK: helper methods for func managerFB.updateProfileInfo()
 
+//    private func failedUpdateImage() {
+//        if isChangedCurrentImageUser {
+//            imageUser.image = casheImageUserSavedOnTheServer
+//            resetAvatarBufferProperties()
+//        }
+//    }
+    
+    //    private func successUpdateImage() {
+    //        if isChangedCurrentImageUser {
+    ////            managerFB.cacheImageRemoveMemoryAndDisk(imageView: imageUser)
+    //            resetAvatarBufferProperties()
+    //        }
+    //    }
+
     private func failedUpdateImage() {
-        editButton.configuration?.showsActivityIndicator = false
-//        switchSaveButton(isSwitch: false)
-        if isChangedCurrentImageUser {
+        if let _ = dataForNewImageUser {
             imageUser.image = casheImageUserSavedOnTheServer
             resetAvatarBufferProperties()
         }
     }
     
     private func successUpdateImage() {
-        if isChangedCurrentImageUser {
+        if let _ = dataForNewImageUser {
 //            managerFB.cacheImageRemoveMemoryAndDisk(imageView: imageUser)
             resetAvatarBufferProperties()
         }
     }
 
     private func failedUpdateName() {
-//        self.userNameTextField.text = self.currentUser?.displayName
+        userNameTextField.text = userData?.name
     }
     
     private func resetAvatarBufferProperties() {
@@ -542,60 +560,52 @@ private extension ProfileController {
         } else {
             editButton.configuration?.showsActivityIndicator = true
             editButton.isUserInteractionEnabled = false
-
-//            let image = isChangedCurrentImageUser ? dataForNewImageUser : nil
-//            // if currentUser = nil ???
-//            let name = userNameTextField.text != currentUser?.displayName ? userNameTextField.text : nil
-//            managerFB.updateProfileInfo(withImage: image, name: name) { (state, error) in
-//                self.handleFirebaseAuthError(error) { isNeedAuthorization in
-//                    let needAuthorization = isNeedAuthorization ? "Log in and " : ""
-//                    self.stateHandlingForUpdateProfileInfo(state: state, additionalMessage: needAuthorization)
-//                }
-//            }
+            let name = userNameTextField.text != userData?.name ? userNameTextField.text : nil
+            profileModel?.updateProfileData(withImage: dataForNewImageUser, name: name, completion: { [weak self] state in
+                self?.stateHandlingForUpdateProfileData(state: state)
+            })
         }
     }
     
     
-    func stateHandlingForUpdateProfileInfo(state: StateProfileInfo, additionalMessage: String) {
+    func stateHandlingForUpdateProfileData(state: StateEditProfile) {
+        
+        self.editButton.configuration?.showsActivityIndicator = false
         
         switch state {
             
         case .success:
-            self.editButton.configuration?.showsActivityIndicator = false
+//            userData update???
             self.enableEditingModeForProfile(isSwitch: self.isStateEditingModeProfile)
             self.setupAlert(title: "Success", message: "Data changed!")
             self.successUpdateImage()
-            
-        case .failed(image: let image, name: let name):
+        case .errorUpdating(photoURL: let image, displayName: let name):
             if let image = image, let name = name {
                 if image && name {
                     self.enableSaveButton(isSwitch: false)
                     self.failedUpdateImage()
                     self.failedUpdateName()
-                    self.setupAlert(title: "Error", message: "Something went wrong! \(additionalMessage)Try again!")
+                    self.setupAlert(title: "Error", message: "Something went wrong! Try again!")
                 } else if image {
                     self.enableSaveButton(isSwitch: false)
                     self.failedUpdateImage()
-                    self.setupAlert(title: "Error", message: "Avatar not saved! \(additionalMessage)Try again!")
+                    self.setupAlert(title: "Error", message: "Avatar not saved! Try again!")
                     
                 } else if name {
                     
-                    self.editButton.configuration?.showsActivityIndicator = false
                     self.enableSaveButton(isSwitch: false)
                     self.failedUpdateName()
                     self.successUpdateImage()
-                    self.setupAlert(title: "Error", message: "Name not saved! \(additionalMessage)Try again!")
+                    self.setupAlert(title: "Error", message: "Name not saved! Try again!")
                 }
             } else if let name = name, name {
-                self.editButton.configuration?.showsActivityIndicator = false
                 self.enableSaveButton(isSwitch: false)
                 self.failedUpdateName()
-                self.setupAlert(title: "Error", message: "Name not saved! \(additionalMessage)Try again!")
+                self.setupAlert(title: "Error", message: "Name not saved! Try again!")
             }
         case .nul:
-            self.editButton.configuration?.showsActivityIndicator = false
             self.enableSaveButton(isSwitch: false)
-            self.setupAlert(title: "Error", message: "Something went wrong! \(additionalMessage)Try again!")
+            self.setupAlert(title: "Error", message: "Something went wrong! Try again!")
         }
     }
     
@@ -965,6 +975,7 @@ extension ProfileController:DidChangeUserDelegate {
 // MARK: - ProfileModelOutput
 extension ProfileController:ProfileModelOutput {
     func updateUserProfile(with userData: UserProfile) {
+        self.userData = userData
         updateUIForPermanentUser(userData: userData)
     }
 }

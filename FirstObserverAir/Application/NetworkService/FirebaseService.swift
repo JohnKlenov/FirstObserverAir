@@ -624,39 +624,40 @@ final class FirebaseService {
     
     // MARK: - Profile methods
     
-    func updateProfileInfo(withImage image: Data? = nil, name: String? = nil, _ completion: ((StateProfileInfo, Error?) -> ())? = nil) {
+    func updateProfileData(withImage image: Data? = nil, name: String? = nil, _ completion: ((StateEditProfile) -> ())? = nil) {
         guard let user = currentUser else {
             print("Returne message for analitic FB Crashlystics")
-            completion?(.nul, nil)
+            completion?(.nul)
             return
         }
         
         if let image = image{
             imageChangeRequest(user: user, image: image) { (error) in
-                let imageIsFailed = error != nil ? true: false
+                let isPhotoURLErrorUpdating = error != nil ? true: false
                 self.createProfileChangeRequest(name: name) { (error) in
-                    let nameIsFailed = error != nil ? true: false
-                    if !imageIsFailed, !nameIsFailed {
-//                        self.avatarRef = profileImgReference
-                        completion?(.success, error)
+                    let isDisplayNameErrorUpdating = error != nil ? true: false
+                    if !isPhotoURLErrorUpdating, !isDisplayNameErrorUpdating {
+                        completion?(.success)
                     } else {
-                        completion?(.failed(image: imageIsFailed, name: nameIsFailed), error)
+                        completion?(.errorUpdating(photoURL: isPhotoURLErrorUpdating, displayName: isDisplayNameErrorUpdating))
+//                        completion?(.failed(image: isphotoURLErrorUpdating, name: isDisplayNameErrorUpdating))
                     }
                 }
             }
         } else if let name = name {
             self.createProfileChangeRequest(name: name) { error in
-                let nameIsFailed = error != nil ? true: false
-                if !nameIsFailed {
-                    completion?(.success, error)
+                let isDisplayNameErrorUpdating = error != nil ? true: false
+                if !isDisplayNameErrorUpdating {
+                    completion?(.success)
                 } else {
-                    completion?(.failed(name: nameIsFailed), error)
+                    completion?(.errorUpdating(displayName: isDisplayNameErrorUpdating))
+//                    completion?(.failed(name: isDisplayNameErrorUpdating))
                 }
             }
         } else {
             // значит что то пошло не так(у нас name = nil, image = nil и при этом сработала save)
             print("Returne message for analitic FB Crashlystics")
-            completion?(.nul, nil)
+            completion?(.nul)
         }
     }
     
@@ -704,6 +705,7 @@ final class FirebaseService {
                             self?.deleteStorageData(refStorage: profileImgReference)
                             callback?(error)
                         } else {
+                            self?.avatarRef = profileImgReference
                             callback?(error)
                         }
                     }

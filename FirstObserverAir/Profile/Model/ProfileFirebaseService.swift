@@ -11,6 +11,7 @@ import Foundation
 protocol ProfileModelInput: AnyObject {
     func fetchUserData()
     func userIsAnonymously(completionHandler: @escaping (Bool) -> Void)
+    func updateProfileData(withImage image: Data?, name: String?, completion: @escaping (StateEditProfile) -> ())
 }
     
 final class ProfileFirebaseService {
@@ -28,6 +29,10 @@ final class ProfileFirebaseService {
 }
 
 extension ProfileFirebaseService:ProfileModelInput {
+    func updateProfileData(withImage image: Data?, name: String?, completion: @escaping (StateEditProfile) -> ()) {
+        serviceFB.updateProfileData(withImage: image, name: name, completion)
+    }
+    
     func userIsAnonymously(completionHandler: @escaping (Bool) -> Void) {
         serviceFB.userIsAnonymously(completionHandler: completionHandler)
     }

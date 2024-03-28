@@ -177,6 +177,7 @@ enum AuthErrorCodeState {
     case failed(String)
     case invalidUserToken(String)
     case userTokenExpired(String)
+    case userMismatch(String)
     case requiresRecentLogin(String)
     case keychainError(String)
     /// проблемы с сетью.
@@ -204,6 +205,11 @@ enum AuthErrorCodeState {
     case accountExistsWithDifferentCredential(String)
 //    ///был указан недействительный шаблон электронной почты для отправки обновления.
 //    case invalidMessagePayload(String)
+}
+
+enum StorageErrorCodeState {
+    case unauthenticated(String)
+    case retryLimitExceeded(String)
 }
 
 

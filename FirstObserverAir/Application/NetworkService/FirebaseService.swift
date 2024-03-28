@@ -322,9 +322,11 @@ final class FirebaseService {
             case .tooManyRequests:
                 completion(.tooManyRequests("Было сделано слишком много запросов к серверу в короткий промежуток времени. Попробуйте повторить попытку позже."))
             case .userTokenExpired:
-                completion(.userTokenExpired(errorMessage))
+                completion(.userTokenExpired("Токен пользователя истек. Необходим повторный вход в систему."))
             case .invalidUserToken:
-                completion(.invalidUserToken(errorMessage))
+                completion(.invalidUserToken("Токен пользователя больше не действителен. Необходим повторный вход в систему."))
+            case .userMismatch:
+                completion(.userMismatch("Идентификатор пользователя не совпадает. Необходим повторный вход в систему."))
             case .requiresRecentLogin:
                 completion(.requiresRecentLogin("Вам необходимо войти в систему снова перед этой операцией. Это необходимо для подтверждения вашей личности и защиты вашего аккаунта от несанкционированного доступа. Пожалуйста, выйдите из системы и войдите снова, чтобы продолжить."))
             case .emailAlreadyInUse:
@@ -720,6 +722,59 @@ final class FirebaseService {
                 // как я понял это не критично putData перезаписывает файлы с одинаковыми именами и форматом
                 print("deleteStorageData Returne message for analitic FB Crashlystics error - \(String(describing: error))")
             }
+        }
+    }
+    
+    func handleFirebaseErrors(error: Error?) -> String? {
+        var errorMessage:String?
+        if let error = error {
+            let error = error as NSError
+            switch error.domain {
+            case AuthErrorCode.errorDomain:
+                // обработка ошибок аутентификации...
+                if let error = error as? AuthErrorCode {
+                    errorMessage = handleProfileAuthError(error: error)
+                }
+                
+            case StorageErrorDomain:
+                // обработка ошибок хранилища...
+                if let error = error as? StorageErrorCode {
+                    errorMessage = handleProfileStorageError(error: error)
+                }
+            default:
+                print("Произошла неизвестная ошибка: \(error.localizedDescription)")
+                errorMessage = nil
+            }
+        }
+        return errorMessage
+    }
+    
+    func handleProfileAuthError(error: AuthErrorCode) ->String? {
+        switch error.code {
+            
+        case .tooManyRequests:
+            return "Было сделано слишком много запросов к серверу в короткий промежуток времени. Попробуйте повторить попытку позже."
+        case .invalidUserToken:
+            return "Токен пользователя больше не действителен. Необходим повторный вход в систему."
+        case .networkError:
+            return "Произошла сетевая ошибка. Пожалуйста, проверьте свое сетевое подключение и попробуйте снова."
+        case .userTokenExpired:
+            return "Токен пользователя истек. Необходим повторный вход в систему."
+        case .userMismatch:
+            return "Идентификатор пользователя не совпадает. Необходим повторный вход в систему."
+        default:
+            return nil
+        }
+    }
+    func handleProfileStorageError(error: StorageErrorCode) -> String? {
+        switch error {
+            
+        case .unauthenticated:
+            return "Необходим повторный вход в систему."
+        case .retryLimitExceeded:
+            return "Было сделано слишком много запросов к серверу в короткий промежуток времени. Попробуйте повторить попытку позже."
+        default:
+            return nil
         }
     }
     

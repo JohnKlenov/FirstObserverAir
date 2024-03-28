@@ -13,9 +13,17 @@ import UIKit
 //    case nul
 //}
 
+//enum StateEditProfile {
+//    case success
+//    case errorUpdating(photoURL: Bool? = nil, displayName: Bool? = nil)
+//    case nul
+//}
+
 enum StateEditProfile {
     case success
-    case errorUpdating(photoURL: Bool? = nil, displayName: Bool? = nil)
+    case failedAllUpdating
+    case failedUpdateDataExceptURL
+    case failedUpdatingOnlyName
     case nul
 }
 
@@ -536,23 +544,6 @@ private extension ProfileController {
         }
     }
     
-    //        if isStateEditingModeProfile {
-    //            enableEditingModeForProfile(isSwitch: isStateEditingModeProfile)
-    //        } else {
-    //            editButton.configuration?.showsActivityIndicator = true
-    //            editButton.isUserInteractionEnabled = false
-    //
-    //            let image = isChangedCurrentImageUser ? dataForNewImageUser : nil
-    //            // if currentUser = nil ???
-    //            let name = userNameTextField.text != currentUser?.displayName ? userNameTextField.text : nil
-    //            managerFB.updateProfileInfo(withImage: image, name: name) { (state, error) in
-    //                self.handleFirebaseAuthError(error) { isNeedAuthorization in
-    //                    let needAuthorization = isNeedAuthorization ? "Log in and " : ""
-    //                    self.stateHandlingForUpdateProfileInfo(state: state, additionalMessage: needAuthorization)
-    //                }
-    //            }
-    //        }
-    
     @objc func editingModeButtonHandler() {
         
         if isStateEditingModeProfile {
@@ -561,82 +552,46 @@ private extension ProfileController {
             editButton.configuration?.showsActivityIndicator = true
             editButton.isUserInteractionEnabled = false
             let name = userNameTextField.text != userData?.name ? userNameTextField.text : nil
-            profileModel?.updateProfileData(withImage: dataForNewImageUser, name: name, completion: { [weak self] state in
-                self?.stateHandlingForUpdateProfileData(state: state)
+            profileModel?.updateProfileData(withImage: dataForNewImageUser, name: name, completion: { [weak self] (state, errorMessage) in
+                self?.stateHandlingForUpdateProfileData(state: state, errorMessage: errorMessage)
             })
         }
     }
     
-    
-    func stateHandlingForUpdateProfileData(state: StateEditProfile) {
+    func stateHandlingForUpdateProfileData(state: StateEditProfile, errorMessage: String?) {
         
-        self.editButton.configuration?.showsActivityIndicator = false
+        editButton.configuration?.showsActivityIndicator = false
         
         switch state {
             
         case .success:
-//            userData update???
-            self.enableEditingModeForProfile(isSwitch: self.isStateEditingModeProfile)
-            self.setupAlert(title: "Success", message: "Data changed!")
-            self.successUpdateImage()
-        case .errorUpdating(photoURL: let image, displayName: let name):
-            if let image = image, let name = name {
-                if image && name {
-                    self.enableSaveButton(isSwitch: false)
-                    self.failedUpdateImage()
-                    self.failedUpdateName()
-                    self.setupAlert(title: "Error", message: "Something went wrong! Try again!")
-                } else if image {
-                    self.enableSaveButton(isSwitch: false)
-                    self.failedUpdateImage()
-                    self.setupAlert(title: "Error", message: "Avatar not saved! Try again!")
-                    
-                } else if name {
-                    
-                    self.enableSaveButton(isSwitch: false)
-                    self.failedUpdateName()
-                    self.successUpdateImage()
-                    self.setupAlert(title: "Error", message: "Name not saved! Try again!")
-                }
-            } else if let name = name, name {
-                self.enableSaveButton(isSwitch: false)
-                self.failedUpdateName()
-                self.setupAlert(title: "Error", message: "Name not saved! Try again!")
-            }
+            //            userData update???
+            enableEditingModeForProfile(isSwitch: isStateEditingModeProfile)
+            setupAlert(title: "Успешно", message: "Данные профиля успешно обновлены!")
+            successUpdateImage()
+        case .failedAllUpdating:
+            returnDataOriginalState(errorMessage: errorMessage)
+        case .failedUpdateDataExceptURL:
+            enableSaveButton(isSwitch: false)
+            failedUpdateName()
+            successUpdateImage()
+            setupAlert(title: "Не удалось обновить имя", message: errorMessage ?? "Что то пошло не так! Попробуйте еще раз!")
+        case .failedUpdatingOnlyName:
+            enableSaveButton(isSwitch: false)
+            failedUpdateName()
+            setupAlert(title: "Не удалось обновить имя", message: errorMessage ?? "Что то пошло не так! Попробуйте еще раз!")
         case .nul:
-            self.enableSaveButton(isSwitch: false)
-            self.setupAlert(title: "Error", message: "Something went wrong! Try again!")
+            returnDataOriginalState(errorMessage: errorMessage)
         }
     }
     
-    func handleFirebaseAuthError(_ error: Error?, callBack: (Bool) -> Void) {
-//        guard let error = error else {
-//            callBack(false)
-//            return
-//        }
-//
-//        if let error = error as? AuthErrorCode {
-//            switch error.code {
-//            case .requiresRecentLogin:
-//                print("Пользователь давно не входил в свой аккаунт Firebase, нужно авторизоваться")
-//                callBack(true)
-//            default:
-//                print("Another StorageErrorCode")
-//                callBack(false)
-//            }
-//        } else if let error = error as? StorageErrorCode {
-//            switch error {
-//            case .unauthenticated:
-//                print("Пользователь не аутентифицирован и не имеет доступа к хранилищу Firebase")
-//                callBack(true)
-//            default:
-//                print("Another StorageErrorCode")
-//                callBack(false)
-//            }
-//        } else {
-//            callBack(false)
-//        }
+    func returnDataOriginalState(errorMessage: String?) {
+        enableSaveButton(isSwitch: false)
+        failedUpdateImage()
+        failedUpdateName()
+        setupAlert(title: "Не удалось обновить данные", message: errorMessage ?? "Что то пошло не так! Попробуйте еще раз!")
     }
+
 
     
     
@@ -1069,6 +1024,79 @@ extension UIImageView {
 
 
 
+
+
+// MARK: - Trash
+
+//    func stateHandlingForUpdateProfileData(state: StateEditProfile) {
+//
+//        self.editButton.configuration?.showsActivityIndicator = false
+//
+//        switch state {
+//
+//        case .success:
+////            userData update???
+//            self.enableEditingModeForProfile(isSwitch: self.isStateEditingModeProfile)
+//            self.setupAlert(title: "Success", message: "Data changed!")
+//            self.successUpdateImage()
+//        case .errorUpdating(photoURL: let image, displayName: let name):
+//            if let image = image, let name = name {
+//                if image && name {
+//                    self.enableSaveButton(isSwitch: false)
+//                    self.failedUpdateImage()
+//                    self.failedUpdateName()
+//                    self.setupAlert(title: "Error", message: "Something went wrong! Try again!")
+//                } else if image {
+//                    self.enableSaveButton(isSwitch: false)
+//                    self.failedUpdateImage()
+//                    self.setupAlert(title: "Error", message: "Avatar not saved! Try again!")
+//
+//                } else if name {
+//
+//                    self.enableSaveButton(isSwitch: false)
+//                    self.failedUpdateName()
+//                    self.successUpdateImage()
+//                    self.setupAlert(title: "Error", message: "Name not saved! Try again!")
+//                }
+//            } else if let name = name, name {
+//                self.enableSaveButton(isSwitch: false)
+//                self.failedUpdateName()
+//                self.setupAlert(title: "Error", message: "Name not saved! Try again!")
+//            }
+//        case .nul:
+//            self.enableSaveButton(isSwitch: false)
+//            self.setupAlert(title: "Error", message: "Something went wrong! Try again!")
+//        }
+//    }
+    
+//    func handleFirebaseAuthError(_ error: Error?, callBack: (Bool) -> Void) {
+//        guard let error = error else {
+//            callBack(false)
+//            return
+//        }
+//
+//        if let error = error as? AuthErrorCode {
+//            switch error.code {
+//            case .requiresRecentLogin:
+//                print("Пользователь давно не входил в свой аккаунт Firebase, нужно авторизоваться")
+//                callBack(true)
+//            default:
+//                print("Another StorageErrorCode")
+//                callBack(false)
+//            }
+//        } else if let error = error as? StorageErrorCode {
+//            switch error {
+//            case .unauthenticated:
+//                print("Пользователь не аутентифицирован и не имеет доступа к хранилищу Firebase")
+//                callBack(true)
+//            default:
+//                print("Another StorageErrorCode")
+//                callBack(false)
+//            }
+//        } else {
+//            callBack(false)
+//        }
+//    }
 
 
 

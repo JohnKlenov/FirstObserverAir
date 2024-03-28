@@ -626,64 +626,48 @@ final class FirebaseService {
     
     // MARK: - Profile methods
     
-    func updateProfileData(withImage image: Data? = nil, name: String? = nil, _ completion: ((StateEditProfile) -> ())? = nil) {
+    
+    
+    func updateProfileData(withImage image: Data? = nil, name: String? = nil, _ completion: ((StateEditProfile, String?) -> ())? = nil) {
+        
+        var errorMessage:String?
+        
         guard let user = currentUser else {
             print("Returne message for analitic FB Crashlystics")
-            completion?(.nul)
+            completion?(.nul, errorMessage)
             return
         }
         
-        if let image = image{
+        if let image = image {
             imageChangeRequest(user: user, image: image) { (error) in
-                let isPhotoURLErrorUpdating = error != nil ? true: false
+                guard error == nil else {
+                    errorMessage = self.handleFirebaseErrors(error: error)
+                    completion?(.failedAllUpdating, errorMessage)
+                    return
+                }
                 self.createProfileChangeRequest(name: name) { (error) in
-                    let isDisplayNameErrorUpdating = error != nil ? true: false
-                    if !isPhotoURLErrorUpdating, !isDisplayNameErrorUpdating {
-                        completion?(.success)
-                    } else {
-                        completion?(.errorUpdating(photoURL: isPhotoURLErrorUpdating, displayName: isDisplayNameErrorUpdating))
-//                        completion?(.failed(image: isphotoURLErrorUpdating, name: isDisplayNameErrorUpdating))
+                    guard error == nil else {
+                        errorMessage = self.handleFirebaseErrors(error: error)
+                        completion?(.failedUpdateDataExceptURL, errorMessage)
+                        return
                     }
+                    completion?(.success, errorMessage)
                 }
             }
         } else if let name = name {
             self.createProfileChangeRequest(name: name) { error in
-                let isDisplayNameErrorUpdating = error != nil ? true: false
-                if !isDisplayNameErrorUpdating {
-                    completion?(.success)
-                } else {
-                    completion?(.errorUpdating(displayName: isDisplayNameErrorUpdating))
-//                    completion?(.failed(name: isDisplayNameErrorUpdating))
+                guard error == nil else {
+                    errorMessage = self.handleFirebaseErrors(error: error)
+                    completion?(.failedUpdatingOnlyName, errorMessage)
+                    return
                 }
+                completion?(.success, errorMessage)
             }
         } else {
-            // значит что то пошло не так(у нас name = nil, image = nil и при этом сработала save)
             print("Returne message for analitic FB Crashlystics")
-            completion?(.nul)
+            completion?(.nul, errorMessage)
         }
     }
-    
-    //                    if let error = error {
-    //                        self.deleteStorageData(refStorage: profileImgReference)
-    //                        callback?(error)
-    //                    } else if let url = url {
-    //                        self.avatarRef = profileImgReference
-    //                        self.createProfileChangeRequest(photoURL: url) { (error) in
-    //                            if let error = error {
-    //                                self.deleteStorageData(refStorage: profileImgReference)
-    //                                self.avatarRef = nil
-    //                                callback?(error)
-    //                            } else {
-    //                                callback?(error)
-    //                            }
-    //                        }
-    //                    } else {
-    //                        // нужно отловить эту ошибку выше
-    //                        self.deleteStorageData(refStorage: profileImgReference)
-    //                        let userInfo = [NSLocalizedDescriptionKey: "Failed to get avatar link"]
-    //                        let customError = NSError(domain: "Firebase", code: 1001, userInfo: userInfo)
-    //                        callback?(customError)
-    //                    }
     
     func imageChangeRequest(user:User, image:Data,  _ callback: ((Error?) -> ())? = nil) {
         
@@ -782,6 +766,75 @@ final class FirebaseService {
 
 
 
+
+// MARK: - Trash
+
+//                        completion?(.failed(image: isphotoURLErrorUpdating, name: isDisplayNameErrorUpdating))
+//                    completion?(.failed(name: isDisplayNameErrorUpdating))
+
+//    func updateProfileData(withImage image: Data? = nil, name: String? = nil, _ completion: ((StateEditProfile) -> ())? = nil) {
+//        var arrayError: [Error?] = []
+//        var errorMessage:String?
+//        guard let user = currentUser else {
+//            print("Returne message for analitic FB Crashlystics")
+//            completion?(.nul)
+//            return
+//        }
+//
+//        if let image = image{
+//            imageChangeRequest(user: user, image: image) { (error) in
+//                arrayError.append(error)
+//                let isPhotoURLErrorUpdating = error != nil ? true: false
+//                self.createProfileChangeRequest(name: name) { (error) in
+//                    arrayError.append(error)
+//                    let isDisplayNameErrorUpdating = error != nil ? true: false
+//                    if !isPhotoURLErrorUpdating, !isDisplayNameErrorUpdating {
+//                        completion?(.success)
+//                    } else {
+//                        let nonNilArray = arrayError.compactMap { $0 }
+//                        errorMessage = self.handleFirebaseErrors(error: nonNilArray.first)
+//                        completion?(.errorUpdating(photoURL: isPhotoURLErrorUpdating, displayName: isDisplayNameErrorUpdating))
+//                    }
+//                }
+//            }
+//        } else if let name = name {
+//            self.createProfileChangeRequest(name: name) { error in
+//                errorMessage = self.handleFirebaseErrors(error: error)
+//                let isDisplayNameErrorUpdating = error != nil ? true: false
+//                if !isDisplayNameErrorUpdating {
+//                    completion?(.success)
+//                } else {
+//                    completion?(.errorUpdating(displayName: isDisplayNameErrorUpdating))
+//                }
+//            }
+//        } else {
+//            // значит что то пошло не так(у нас name = nil, image = nil и при этом сработала save)
+//            print("Returne message for analitic FB Crashlystics")
+//            completion?(.nul)
+//        }
+//    }
+
+//                    if let error = error {
+//                        self.deleteStorageData(refStorage: profileImgReference)
+//                        callback?(error)
+//                    } else if let url = url {
+//                        self.avatarRef = profileImgReference
+//                        self.createProfileChangeRequest(photoURL: url) { (error) in
+//                            if let error = error {
+//                                self.deleteStorageData(refStorage: profileImgReference)
+//                                self.avatarRef = nil
+//                                callback?(error)
+//                            } else {
+//                                callback?(error)
+//                            }
+//                        }
+//                    } else {
+//                        // нужно отловить эту ошибку выше
+//                        self.deleteStorageData(refStorage: profileImgReference)
+//                        let userInfo = [NSLocalizedDescriptionKey: "Failed to get avatar link"]
+//                        let customError = NSError(domain: "Firebase", code: 1001, userInfo: userInfo)
+//                        callback?(customError)
+//                    }
 
 
 
